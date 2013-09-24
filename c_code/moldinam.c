@@ -65,26 +65,7 @@ Options GetOptionsFromArguments(int argc, char **argv)
 {
 	Options options = Options_create_default();
 
-	// for (int i = 0; i < argc; ++i)
-	// {
-	// 	if ( strcmp(argv[i], "--silent") == 0 )
-	// 	{
-	// 		options->full_log = false;		
-	// 	}
-	// 	if ( strcmp(argv[i], "-i") == 0 )
-	// 	{
-	// 		options->input_path = argv[i+1];
-	// 	}
-	// 	if ( strcmp(argv[i], "-o") )
-	// 	{
-	// 		options->log_path = argv[i+1];	
-	// 	}
-	// 	if (strcmp(argv[i], "--dt")
-	// 	{
-	// 		/* code */
-	// 	}
-	// }
-int c;
+	int c;
     int digit_optind = 0;
 
    while (1) {
