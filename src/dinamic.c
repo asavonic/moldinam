@@ -1,24 +1,4 @@
-#ifndef __DINAMIC_H
-#define __DINAMIC_H
-
-#include "types.h"
-#include "math.h"
-
-
-
-enum InteractionMode
-{
-	DEFAULT,
-	PERIODIC_SOUTH,
-	PERIODIC_SOUTH_WEST,
-	PERIODIC_SOUTH_EAST,
-	PERIODIC_NORTH,
-	PERIODIC_NORTH_WEST,
-	PERIODIC_NORTH_EAST,
-	PERIODIC_WEST,
-	PERIODIC_EAST,
-};
-typedef enum InteractionMode InteractionMode; 
+#include "include/dinamic.h"
 
 float ComputeForce(float r, float sigma, float eps)
 {
@@ -30,6 +10,7 @@ float ComputeForce(float r, float sigma, float eps)
 
     return force; 
 }
+
 
 float GetDistance(Molecule* firstMol, Molecule* secondMol, 
 								float sizeX, float sizeY, InteractionMode mode)
@@ -53,6 +34,7 @@ float GetDistance(Molecule* firstMol, Molecule* secondMol,
 
 	return sqrt ( dx*dx + dy*dy + dz*dz );
 }
+
 
 void ModifyForce(Molecule* firstMol, Molecule* secondMol, 
 								float sizeX, float sizeY, InteractionMode mode)
@@ -231,5 +213,3 @@ void DinamicInit(Cell* cell, float dt)
 		CorrectPosition(cell->molecules[i], cell->sizeX, cell->sizeY, cell->sizeZ);
 	}
 }
-
-#endif

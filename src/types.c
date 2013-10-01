@@ -1,25 +1,8 @@
-#ifndef __TYPES_H
-#define __TYPES_H
-
-#include <stdlib.h>
-#include <stdio.h>
-#if defined(_WIN32) || defined (_WIN64) /*ïåðâûé äëÿ îáåèõ îïðåäåë¸í*/
-	#define drand48()	(rand()*(1./35556))
-#endif
-struct objMolecule
-{
-	float pos[3];
-	float prevpos[3];
-	float speed[3];
-	float accel[3];
-	float force[3];
-} ;
-
-typedef struct objMolecule Molecule;
+#include "include/types.h"
 
 Molecule* Molecule_random_create(float cellSizeX, float cellSizeY, float cellSizeZ, float maxSpeed)
 {
-	Molecule* mol = malloc(sizeof(Molecule));
+	Molecule* mol = (Molecule*) malloc(sizeof(Molecule));
 
 	mol->pos[0] = rand() % (int)cellSizeX + drand48();
 	mol->pos[1] = rand() % (int)cellSizeY + drand48();
@@ -47,9 +30,10 @@ Molecule* Molecule_random_create(float cellSizeX, float cellSizeY, float cellSiz
 
 	return mol;
 }
+
 Molecule* Molecule_create(float pos[3], float speed[3])
 {
-	Molecule* mol = malloc(sizeof(Molecule));
+	Molecule* mol = (Molecule*) malloc(sizeof(Molecule));
 
 	mol->pos[0] = pos[0];
 	mol->pos[1] = pos[1];
@@ -69,62 +53,45 @@ Molecule* Molecule_create(float pos[3], float speed[3])
 	return mol;
 }
 
+Molecule* Molecule_empty_create()
+{
+	Molecule* mol = (Molecule*) malloc(sizeof(Molecule));
+
+	mol->pos[0] = 0;
+	mol->pos[1] = 0;
+	mol->pos[2] = 0;
+
+	mol->speed[0] = 0;
+	mol->speed[1] = 0;
+	mol->speed[2] = 0;
+
+	mol->accel[0] = 0;
+	mol->accel[1] = 0;
+	mol->accel[2] = 0;
+	mol->force[0] = 0;
+	mol->force[1] = 0;
+	mol->force[2] = 0;
+
+	return mol;
+}
+
 void Molecule_free(Molecule* mol)
 {
 	free(mol);
 }
 
-struct objCell
-{
-	Molecule** molecules;
-	int molNum;
-	float sizeX;
-	float sizeY;
-	float sizeZ;
-};
-
-typedef struct objCell Cell;
 
 
-// bool Compare(Molecule* first, Molecule* second)
-// {
-// 	//returns true when first > second
-// 	if ( first->pos[0] > second->pos[0] )
-// 	{
-// 		return true;
-// 	}
 
-// 	if (first->pos[0] == second->pos[0] && first->pos[1] > second->pos[1])
-// 	{
-// 		return true;
-// 	}
-
-// 	return false;
-// }
-// void Sort(Molecule** molecules, int count)
-// {
-// 	for (int i = 0; i < count - 1; ++i)
-// 	{
-// 		for (int j = i+1; j < count; ++j)
-// 		{
-// 			if ( Compare(molecules[i],molecules[j]) )
-// 			{
-// 				Molecule* tmp = molecules[i];
-// 				molecules[i] = molecules[j];
-// 				molecules[j] = tmp;
-// 			}
-// 		}
-// 	}
-// }
 
 Cell* Cell_random_create(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ, float maxSpeed)
 {
-	Cell* cell = malloc( sizeof(Cell) );
+	Cell* cell = (Cell*) malloc( sizeof(Cell) );
 	cell->molNum = molNum;
 	cell->sizeX = cellSizeX;
 	cell->sizeY = cellSizeY;
 	cell->sizeZ = cellSizeZ;
-	cell->molecules = malloc(molNum * sizeof(Molecule*));
+	cell->molecules = (Molecule**) malloc(molNum * sizeof(Molecule*));
 
 	for (int i = 0; i < molNum; ++i)
 	{
@@ -137,14 +104,18 @@ Cell* Cell_random_create(int molNum, float cellSizeX, float cellSizeY, float cel
 
 Cell* Cell_create_empty(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ)
 {
-	Cell* cell = malloc( sizeof(Cell) );
+	Cell* cell = (Cell*) malloc( sizeof(Cell) );
 	cell->molNum = molNum;
 	cell->sizeX = cellSizeX;
 	cell->sizeY = cellSizeY;
 	cell->sizeZ = cellSizeZ;
 
-	cell->molecules = malloc(molNum * sizeof(Molecule*));
+	cell->molecules = (Molecule**) malloc(molNum * sizeof(Molecule*));
 
+	for (int i = 0; i < molNum; ++i)
+	{
+		cell->molecules[i] = Molecule_empty_create();
+	}
 	return cell;
 }
 
@@ -159,33 +130,47 @@ void Cell_free(Cell* cell)
 	free(cell);
 }
 
-// struct objCellField
-// {
-// 	Cell** cells;
-// 	int cellNum;
-// 	float sizeX;
-// 	float sizeY;
-// };
-// typedef struct objCellField CellField;
+Cell* Cell_ImportFromFile(FILE* file)
+{
+	int molNum = 0;
+	float sizex;
+	float sizey;
+	float sizez;
 
-// CellField* CellField_create(int cellnum, Cell* initCell)
-// {
-// 	CellField* cellField= malloc (sizeof(CellField));
-// 	cellField->cellNum = cellnum;
-// 	cellField->cells = malloc (sizeof(Cell*) * cellnum);
+	fscanf(file,"%d %f %f %f", &molNum, &sizex, &sizey, &sizez);
+	printf("molecules num = %d\n", molNum);
+	printf("Size X = %f\n", sizex);
+	printf("Size Y = %f\n", sizey);
+	printf("Size Z = %f\n", sizez);
+	if (molNum <= 0)
+	{
+		return NULL;
+	}
 
-// 	Sort(initCell->molecules, initCell->molNum);
+	Cell* cell = Cell_create_empty(molNum, sizex, sizey, sizez);
 
-// 	int moleculesInCell = initCell->molNum / cellnum;
 
-// 	for (int i = 0; i < cellnum; ++i)
-// 	{
-// 		for (int j = i*moleculesInCell; j < (i+1) * moleculesInCell && j < initCell->molNum; ++j)
-// 		{
-// 			cellField
-// 		} 
-// 	}
-// }
+	for (int i = 0; i < molNum; ++i)
+	{
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		float vx = 0;
+		float vy = 0;
+		float vz = 0;
+		fscanf(file,"%f %f %f %f %f %f", &x, &y, &z, &vx, &vy, &vz);
+		printf("%f %f %f %f %f %f\n", x, y, z, vx, vy, vz);
+		cell->molecules[i]->pos[0] = x;
+		cell->molecules[i]->pos[1] = y;
+		cell->molecules[i]->pos[2] = z;
+		cell->molecules[i]->speed[0] = vx;
+		cell->molecules[i]->speed[1] = vy;
+		cell->molecules[i]->speed[2] = vz;
+
+	}
+
+	return cell;
+}
 
 void PrintCellCondition(FILE* file, Cell* cell)
 {
@@ -208,5 +193,3 @@ void PrintCellCondition(FILE* file, Cell* cell)
 	}
 	fprintf(file, "\n");
 }
-
-#endif

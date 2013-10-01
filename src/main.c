@@ -1,9 +1,10 @@
-#include "types.h"
-#include "dinamic.h"
+#include "include/types.h"
+#include "include/dinamic.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <getopt.h>
+
 
 struct Options
 {
@@ -22,43 +23,6 @@ Options Options_create_default()
 	opt.input_path = NULL;
 
 	return opt;
-}
-
-Cell* Cell_ImportFromFile(FILE* file)
-{
-	int molNum = 0;
-	float sizex;
-	float sizey;
-	float sizez;
-
-	fscanf(file,"%d", &molNum);
-	printf("molecules num = %d\n", molNum);
-	fscanf(file,"%d", &sizex);
-	printf("Size X = %d\n", sizex);
-	fscanf(file,"%d", &sizey);
-	printf("Size Y = %d\n", sizey);
-	fscanf(file,"%d", &sizez);
-	printf("Size Z = %d\n", sizez);
-	if (molNum <= 0)
-	{
-		return NULL;
-	}
-
-	Cell* cell = Cell_create_empty(molNum, sizex, sizey);
-
-	for (int i = 0; i < molNum; ++i)
-	{
-		float x = 0;
-		float y = 0;
-		float vx = 0;
-		float vy = 0;
-		fscanf(file,"%f %f %f %f", &x, &y, &vx, &vy);
-		printf("%f %f %f %f\n", x, y, vx, vy);
-		cell->molecules[i]->pos[0] = x;
-		cell->molecules[i]->pos[1] = y;
-		cell->molecules[i]->speed[0] = vx;
-		cell->molecules[i]->speed[1] = vy;
-	}
 }
 
 Options GetOptionsFromArguments(int argc, char **argv)
@@ -108,7 +72,6 @@ Options GetOptionsFromArguments(int argc, char **argv)
 
     return options;
 }
-
 
 int main(int argc, char **argv)
 {
