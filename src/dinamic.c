@@ -147,18 +147,18 @@ void MethodVerlet(Molecule* mol, float dt)
 	//  v = v + (a_prev + a_cur) / 2
 
 	// this is using a_prev
-	mol->speed[0] += accel[0] / 2 
-	mol->speed[1] += accel[1] / 2
-	mol->speed[2] += accel[2] / 2
+	mol->speed[0] += mol->accel[0] / 2; 
+	mol->speed[1] += mol->accel[1] / 2;
+	mol->speed[2] += mol->accel[2] / 2;
 
 	mol->accel[0] = mol->force[0];
 	mol->accel[1] = mol->force[1];
 	mol->accel[2] = mol->force[2];
 
 	// this using a_cur
-	mol->speed[0] += accel[0] / 2
-	mol->speed[1] += accel[1] / 2
-	mol->speed[2] += accel[2] / 2
+	mol->speed[0] += mol->accel[0] / 2;
+	mol->speed[1] += mol->accel[1] / 2;
+	mol->speed[2] += mol->accel[2] / 2;
 
 	float nextpos[3];
 	nextpos[0] = 2 * mol->pos[0] - mol->prevpos[0] + dt * dt * mol->accel[0];
