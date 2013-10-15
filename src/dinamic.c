@@ -174,7 +174,7 @@ void MethodVerlet(Molecule* mol, float dt)
 	mol->pos[2] = nextpos[2];
 }
 
-void CorrectPosition(Molecule* mol, float sizeX, float sizeY, float sizeZ)
+void PeriodicBorders(Molecule* mol, float sizeX, float sizeY, float sizeZ)
 {
 	if (mol->pos[0] > sizeX) {
 		mol->pos[0] = fmod(mol->pos[0], sizeX);
@@ -206,7 +206,7 @@ void RecalculateParametres(Cell* cell, float dt)
 	for (int i = 0; i < cell->molNum; ++i)
 	{
 		MethodVerlet(cell->molecules[i], dt);
-		CorrectPosition(cell->molecules[i], cell->sizeX, cell->sizeY, cell->sizeZ);
+		PeriodicBorders(cell->molecules[i], cell->sizeX, cell->sizeY, cell->sizeZ);
 	}
 }
 
@@ -223,6 +223,6 @@ void DinamicInit(Cell* cell, float dt)
 	for (int i = 0; i < cell->molNum; ++i)
 	{
 		MethodEuler(cell->molecules[i], dt);
-		CorrectPosition(cell->molecules[i], cell->sizeX, cell->sizeY, cell->sizeZ);
+		PeriodicBorders(cell->molecules[i], cell->sizeX, cell->sizeY, cell->sizeZ);
 	}
 }
