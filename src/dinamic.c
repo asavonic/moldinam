@@ -175,30 +175,30 @@ void MethodVerlet(Molecule* mol, float dt)
 }
 
 void CorrectPosition(Molecule* mol, float sizeX, float sizeY, float sizeZ)
-{// is there a better way?
-	if (mol->pos[0] > sizeX)
-	{
-		mol->pos[0] = mol->pos[0] - sizeX;
+{
+	if (mol->pos[0] > sizeX) {
+		mol->pos[0] = fmod(mol->pos[0], sizeX);
+		mol->prevpos[0] = fmod(mol->prevpos[0], sizeX);
 	}
-	if (mol->pos[1] > sizeY)
-	{
-		mol->pos[1] = mol->pos[1] - sizeY;
+	if (mol->pos[1] > sizeY) {
+		mol->pos[1] = fmod(mol->pos[1], sizeX);
+		mol->prevpos[1] = fmod(mol->prevpos[1], sizeX);
 	}
-	if (mol->pos[2] > sizeZ)
-	{
-		mol->pos[2] = mol->pos[2] - 2 * ( mol->pos[2] - sizeZ ) ; // REWRITE HERE!!!!!!!
+	if (mol->pos[2] > sizeZ) {
+		mol->pos[2] = mol->pos[2] - fmod(mol->pos[2], sizeZ); 
+		mol->prevpos[2] =  mol->prevpos[2] - fmod(mol->prevpos[2], sizeZ);
 	}
-	if (mol->pos[0] < 0)
-	{
-		mol->pos[0] = mol->pos[0] + sizeX;
+	if (mol->pos[0] < 0) {
+		mol->pos[0] = -fmod(mol->pos[0], sizeX);
+		mol->prevpos[0] = -fmod(mol->prevpos[0], sizeX);
 	}
-	if (mol->pos[1] < 0)
-	{
-		mol->pos[1] = mol->pos[1] + sizeY;
+	if (mol->pos[1] < 0) {
+		mol->pos[1] = -fmod(mol->pos[1], sizeX);
+		mol->prevpos[1] = -fmod(mol->prevpos[1], sizeX);
 	}
-	if (mol->pos[2] < 0)
-	{
-		mol->pos[2] = - mol->pos[2]; //hell, it`s a hardcode
+	if (mol->pos[2] < 0) {
+		mol->pos[2] = -fmod(mol->pos[2], sizeX);
+		mol->prevpos[2] = -fmod(mol->prevpos[2], sizeX);
 	}
 }
 void RecalculateParametres(Cell* cell, float dt)
