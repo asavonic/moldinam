@@ -1,0 +1,14 @@
+
+bin/
+tmp/
+*.tmp
+*.bak
+__pycache__
+
+*.exe
+*.out
+*.in
+output.*
+input.*
+*.swp
+*sublime*
