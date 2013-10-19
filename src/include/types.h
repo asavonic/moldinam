@@ -40,4 +40,20 @@ Cell* Cell_ImportFromFile(FILE* file);
 void PrintCellCondition(FILE* file, Cell* cell);
 void Cell_free(Cell* cell);
 
+typedef unsigned int cell_id ;
+
+struct objCellField
+{
+	Molecule* molecules;
+    Molecule** cells;
+};
+
+typedef struct objCellField CellField;
+void CellField_Move(CellField* field, Molecule* mol, cell_id dst, cell_id src);
+CellField* CellField_random_create(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ, float maxSpeed);
+CellField* CellField_create_empty(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ);
+CellField* CellField_ImportFromFile(FILE* file);
+void PrintCellFieldCondition(FILE* file, CellField* cell);
+void CellField_free(CellField* cell);
+
 #endif

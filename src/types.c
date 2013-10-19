@@ -193,3 +193,36 @@ void PrintCellCondition(FILE* file, Cell* cell)
 	}
 	fprintf(file, "\n");
 }
+
+void MoleculeSwap(Molecule* molA, Molecule* molB)
+{
+    Molecule tmp = *molA;
+    *molA = *molB;
+    *molB = tmp;
+}
+
+void CellField_Move(CellField* field, Molecule* mol, cell_id dst, cell_id src)
+{
+    for (int cur = src; cur != dst; ) {
+        if (src > dst) {
+            MoleculeSwap(field->cells[cur], mol);
+            mol = field->cells[cur];
+            field->cells[cur]++;
+            cur--;
+        } else {
+            MoleculeSwap(field->cells[cur+1]-1, mol);
+            mol = field->cells[cur+1]-1;
+            field->cells[cur]--;
+            cur++;
+        }
+    }
+}
+
+
+CellField* CellField_create_empty(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ)
+{
+    CellField* field = (CellField*) malloc (sizeof(CellField));
+    field->molecules = (Molecule*) malloc (sizeof(Molecule) * molNum);
+
+
+}
