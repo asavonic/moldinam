@@ -11,4 +11,5 @@ __pycache__
 output.*
 input.*
 *.swp
+*.swo
 *sublime*

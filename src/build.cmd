@@ -1,1 +1,1 @@
-gcc --std=gnu99 -O2 main.c dinamic.c portable_time.c types.c -o moldinam.exe
+gcc --std=gnu99 -O3 main.c dinamic.c portable_time.c types.c -o moldinam.exe

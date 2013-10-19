@@ -223,6 +223,53 @@ CellField* CellField_create_empty(int molNum, float cellSizeX, float cellSizeY, 
 {
     CellField* field = (CellField*) malloc (sizeof(CellField));
     field->molecules = (Molecule*) malloc (sizeof(Molecule) * molNum);
+}
+CellField* CellField_random_create(int molNum, float cellSizeX, float cellSizeY, float cellSizeZ, float maxSpeed)
+{
+    CellField* field = CellField_create_empty(molNum, cellSizeX, cellSizeY, cellSizeZ);   
 
+    for (int i = 0; i < molNum; i++) {
+        field->molecules[i] = *(Molecule_random_create(cellSizeX, cellSizeY, cellSizeZ, maxSpeed));
+    }
+}
 
+CellField* CellField_ImportFromFile(FILE* file)
+{
+	int molNum = 0;
+	float sizex;
+	float sizey;
+	float sizez;
+
+	fscanf(file,"%d %f %f %f", &molNum, &sizex, &sizey, &sizez);
+	printf("molecules num = %d\n", molNum);
+	printf("Size X = %f\n", sizex);
+	printf("Size Y = %f\n", sizey);
+	printf("Size Z = %f\n", sizez);
+	if (molNum <= 0)
+	{
+		return NULL;
+	}
+
+    CellField* field = CellField_create_empty(molNum, sizex, sizey, sizez);
+
+	for (int i = 0; i < molNum; ++i)
+	{
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		float vx = 0;
+		float vy = 0;
+		float vz = 0;
+		fscanf(file,"%f %f %f %f %f %f", &x, &y, &z, &vx, &vy, &vz);
+		printf("%f %f %f %f %f %f\n", x, y, z, vx, vy, vz);
+		field->molecules[i].pos[0] = x;
+		field->molecules[i].pos[1] = y;
+		field->molecules[i].pos[2] = z;
+		field->molecules[i].speed[0] = vx;
+		field->molecules[i].speed[1] = vy;
+		field->molecules[i].speed[2] = vz;
+
+	}
+
+	return field;
 }
