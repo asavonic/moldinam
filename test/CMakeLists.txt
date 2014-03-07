@@ -23,9 +23,12 @@ function( add_test_executable TEST_NAME TEST_SRC )
 
     add_test(${TEST_NAME} ${TEST_NAME})
 
-    INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} 
-             DESTINATION ${PROJECT_SOURCE_DIR}/build/tests 
-    )
+    #    INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} 
+    #        DESTINATION ${CMAKE_INSTALL_PREFIX}/tests
+    #)
+    INSTALL( FILES ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}
+             DESTINATION tests COMPONENT tests  OPTIONAL)
+
 endfunction(add_test_executable) 
 
 add_test_executable( cpp_sorter_test cpp_sorter_test.cpp  )
