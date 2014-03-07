@@ -2,11 +2,13 @@
 bin/
 tmp/
 build/
+builds/
 
 *.tmp
 *.bak
 __pycache__
-
+*.pyc
+*.db
 *.exe
 *.out
 *.in
