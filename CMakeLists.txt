@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.7)
-set(PROJECT_NAME_STR google-test-examples)
+set(PROJECT_NAME_STR moldinam)
 project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
@@ -32,7 +32,7 @@ include_directories(ext/gtest-1.7.0/include)
 #-------------------
 add_definitions(${MSVC_COMPILER_DEFS})
 enable_testing()
-set(PROJECT_TEST_NAME ${PROJECT_NAME_STR}_test)
+set(PROJECT_TEST_NAME test_${PROJECT_NAME_STR})
 include_directories(${COMMON_INCLUDES})
 
 file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
