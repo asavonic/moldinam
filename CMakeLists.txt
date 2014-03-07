@@ -34,25 +34,4 @@ add_definitions(${MSVC_COMPILER_DEFS})
 enable_testing()
 set(PROJECT_TEST_NAME test_${PROJECT_NAME_STR})
 include_directories(${COMMON_INCLUDES})
-
-file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
-add_executable(${PROJECT_TEST_NAME} ${TEST_SRC_FILES})
-add_dependencies(${PROJECT_TEST_NAME} googletest)
-
-
-if(NOT WIN32)
-	target_link_libraries(${PROJECT_TEST_NAME} pthread)
-    target_link_libraries(${PROJECT_TEST_NAME} gtest_main)
-else()
-
-	target_link_libraries(${PROJECT_TEST_NAME}
-	       debug ${GTEST_LIBS_DIR}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
-	       optimized ${GTEST_LIBS_DIR}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${CMAKE_FIND_LIBRARY_SUFFIXES}
-	)
-	target_link_libraries(${PROJECT_TEST_NAME}
-	       debug ${GTEST_LIBS_DIR}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
-	       optimized ${GTEST_LIBS_DIR}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest_main${CMAKE_FIND_LIBRARY_SUFFIXES}
-	)
-endif()
-
-add_test(test1 ${PROJECT_TEST_NAME})
+add_subdirectory(test)
