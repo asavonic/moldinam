@@ -39,6 +39,11 @@ os.chdir( tmp_dir )
 subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir,
                    "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2" ])
 
+<<<<<<< HEAD
+=======
+os.chdir( tmp_dir )
+subprocess.call( [ "make" ])
+>>>>>>> 324c679a6cdf8634cb2df5bd11b051c480e14449
 subprocess.call( [ "make", "install" ])
 
 repo.git.checkout( head )
