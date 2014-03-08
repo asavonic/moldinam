@@ -23,10 +23,8 @@ function( add_test_executable TEST_NAME TEST_SRC )
 
     add_test(${TEST_NAME} ${TEST_NAME})
 
-    #    INSTALL( PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} 
-    #        DESTINATION ${CMAKE_INSTALL_PREFIX}/tests
-    #)
     INSTALL( FILES ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}
+             PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
              DESTINATION tests COMPONENT tests  OPTIONAL)
 
 endfunction(add_test_executable) 
