@@ -30,3 +30,11 @@ function( add_test_executable TEST_NAME TEST_SRC )
 endfunction(add_test_executable) 
 
 add_test_executable( cpp_sorter_test cpp_sorter_test.cpp  )
+
+INSTALL ( FILES
+          run_tests.py
+
+          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
+          DESTINATION tests COMPONENT tests  OPTIONAL
+        )
+                   
