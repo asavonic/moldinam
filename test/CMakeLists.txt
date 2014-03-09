@@ -6,6 +6,8 @@ function( add_test_executable TEST_NAME TEST_SRC )
     add_executable(${TEST_NAME} ${TEST_SRC})
     add_dependencies(${TEST_NAME} googletest)
 
+    target_link_libraries( ${TEST_NAME} ${PROJECT_LIB_NAME} )
+
     if(NOT WIN32)
         target_link_libraries(${TEST_NAME} pthread)
         target_link_libraries(${TEST_NAME} gtest_main)
@@ -30,6 +32,7 @@ function( add_test_executable TEST_NAME TEST_SRC )
 endfunction(add_test_executable) 
 
 add_test_executable( cpp_sorter_test cpp_sorter_test.cpp  )
+add_test_executable( algorithms_test algorithms_test.cpp  )
 
 INSTALL ( FILES
           run_tests.py

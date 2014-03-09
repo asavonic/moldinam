@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR moldinam)
 project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions(-Wall -ansi -Wno-deprecated -pthread)
+	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 )
 endif()
 
 if(MSVC)
@@ -19,11 +19,11 @@ set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
 #-------------------
 # Module source
 #-------------------
-#set(PROJECT_LIB_NAME ${PROJECT_NAME_STR}_impl)
+set(PROJECT_LIB_NAME ${PROJECT_NAME_STR})
 
-#include_directories(${COMMON_INCLUDES})
-#file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
-#add_library(${PROJECT_LIB_NAME} ${SRC_FILES})
+include_directories(${COMMON_INCLUDES})
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+add_library(${PROJECT_LIB_NAME} ${SRC_FILES})
 
 add_subdirectory(ext/gtest-1.7.0)
 include_directories(ext/gtest-1.7.0/include)

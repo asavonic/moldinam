@@ -11,6 +11,9 @@ class MDTestCase(unittest.TestCase):
     def test_test1( self ):
         test_exe = os.path.join( os.getcwd(), "cpp_sorter_test" )
         self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
+    def test_algorithms( self ):
+        test_exe = os.path.join( os.getcwd(), "algorithms_test" )
+        self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
 
 suite = unittest.TestLoader().loadTestsFromTestCase(MDTestCase)
 
