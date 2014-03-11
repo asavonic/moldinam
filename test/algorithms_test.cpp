@@ -18,7 +18,7 @@ TEST( algorithms, lennard_jones ) {
     std::uniform_real_distribution<double> dist( 0.0, 300.0 );
     auto random_range = std::bind( dist, std::ref( rand_engine ) );
 
-    double precision = 0.000000000001;
+    double precision = 0.0000000001;
 
     for ( unsigned int i = 0; i < 1000000; i++ ) {
         double force = 0, force_gold = 0;
@@ -31,8 +31,8 @@ TEST( algorithms, lennard_jones ) {
         gold_Lennard_Jones( r, epsilon, sigma, force_gold, potential_gold );
         Lennard_Jones( r, epsilon, sigma, force, potential );
 
-        ASSERT_NEAR( force_gold, force, precision );
-        ASSERT_NEAR( potential_gold, potential, precision );
+        ASSERT_TRUE( std::abs( ( force_gold - force ) / force ) < precision );
+        ASSERT_TRUE( std::abs( ( potential_gold - potential ) / potential ) < precision );
     }
 
 }
