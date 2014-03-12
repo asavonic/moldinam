@@ -34,5 +34,4 @@ TEST( algorithms, lennard_jones ) {
         ASSERT_TRUE( std::abs( ( force_gold - force ) / force ) < precision );
         ASSERT_TRUE( std::abs( ( potential_gold - potential ) / potential ) < precision );
     }
-
 }

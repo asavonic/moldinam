@@ -33,11 +33,22 @@ endfunction(add_test_executable)
 
 add_test_executable( cpp_sorter_test cpp_sorter_test.cpp  )
 add_test_executable( algorithms_test algorithms_test.cpp  )
+add_test_executable( helpers_test helpers_test.cpp  )
 
+#installation of executable files
 INSTALL ( FILES
           run_tests.py
 
           PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
+          DESTINATION tests COMPONENT tests  OPTIONAL
+        )
+                   
+#installation for other files
+INSTALL ( FILES
+
+          testfiles/test_helpers_read_from_file.xyz
+
+          PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ
           DESTINATION tests COMPONENT tests  OPTIONAL
         )
                    

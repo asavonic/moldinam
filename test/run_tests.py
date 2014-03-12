@@ -15,6 +15,10 @@ class MDTestCase(unittest.TestCase):
         test_exe = os.path.join( os.getcwd(), "algorithms_test" )
         self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
 
+    def test_helpers( self ):
+        test_exe = os.path.join( os.getcwd(), "helpers_test" )
+        self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
+
 suite = unittest.TestLoader().loadTestsFromTestCase(MDTestCase)
 
 if __name__ == '__main__':
