@@ -2,6 +2,7 @@ import unittest
 import subprocess
 import os
 import shutil
+import filecmp
 
 class MDTestCase(unittest.TestCase):
     def setUp( self ) :
@@ -15,9 +16,15 @@ class MDTestCase(unittest.TestCase):
         test_exe = os.path.join( os.getcwd(), "algorithms_test" )
         self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
 
-    def test_helpers( self ):
+    def test_helpers_read_from_file( self ):
         test_exe = os.path.join( os.getcwd(), "helpers_test" )
-        self.assertEqual(subprocess.call( [ test_exe ] ), 0 )
+        self.assertEqual(subprocess.call( [ test_exe, "--gtest_filter=*read_from_file*" ] ), 0 )
+
+    def test_helpers_write_to_file( self ):
+        test_exe = os.path.join( os.getcwd(), "helpers_test" )
+        self.assertEqual(subprocess.call( [ test_exe, "--gtest_filter=*write_to_file*" ] ), 0 )
+        self.assertEqual( filecmp.cmp( "test_helpers_write_to_file.xyz", "test_helpers_read_from_file.xyz" ), True )
+        os.remove( "test_helpers_write_to_file.xyz" );
 
 suite = unittest.TestLoader().loadTestsFromTestCase(MDTestCase)
 
