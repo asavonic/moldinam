@@ -18,6 +18,7 @@ enum Molecule_Type {
 
 struct Molecule {
     double3 pos;
+    double3 pos_prev;
     double3 speed;
     double3 accel;
     Molecule_Type type;
