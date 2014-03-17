@@ -8,6 +8,11 @@ struct double3 {
     double3() {
         x = y = z = 0;
     } 
+    double3( double _x, double _y, double _z ) {
+        x = _x;
+        y = _y;
+        z = _z;
+    }
 };
 
 enum Molecule_Type {

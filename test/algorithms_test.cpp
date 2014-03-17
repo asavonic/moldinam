@@ -35,3 +35,35 @@ TEST( algorithms, lennard_jones ) {
         ASSERT_TRUE( std::abs( ( potential_gold - potential ) / potential ) < precision );
     }
 }
+
+TEST( algorithms, periodic_basic ) {
+    double3 area_size = { };
+    area_size.x = 3.0;
+    area_size.y = 3.0;
+    area_size.z = 3.0;
+
+    Molecule mol_1;
+    mol_1.pos.x = 5.0;
+    mol_1.pos.y = 6.0;
+    mol_1.pos.z = 7.0;
+
+    periodic( mol_1, area_size );
+
+    EXPECT_EQ( 2.0, mol_1.pos.x );
+    EXPECT_EQ( 0.0, mol_1.pos.y );
+    EXPECT_EQ( 1.0, mol_1.pos.z );
+
+    Molecule mol_2;
+    mol_2.pos.x = -5.0;
+    mol_2.pos.y = -6.0;
+    mol_2.pos.z = -7.0;
+
+    periodic( mol_2, area_size );
+
+    EXPECT_EQ( 1.0, mol_2.pos.x );
+    EXPECT_EQ( 3.0, mol_2.pos.y );
+    EXPECT_EQ( 2.0, mol_2.pos.z );
+}
+
+TEST( algorithms, periodic_full ) {
+}

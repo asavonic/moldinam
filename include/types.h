@@ -6,8 +6,9 @@ struct double3 {
     double y;
     double z;
 
-    double3() {
+/*    double3() {
         x = y = z = 0;
     } 
+*/
 };
 
