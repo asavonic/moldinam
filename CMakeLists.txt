@@ -22,7 +22,7 @@ set(EXT_PROJECTS_DIR ${PROJECT_SOURCE_DIR}/ext)
 set(PROJECT_LIB_NAME ${PROJECT_NAME_STR})
 
 include_directories(${COMMON_INCLUDES})
-file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/src/*.cpp)
+file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/lib/*.cpp)
 add_library(${PROJECT_LIB_NAME} ${SRC_FILES})
 
 add_subdirectory(ext/gtest-1.7.0)
@@ -35,3 +35,9 @@ enable_testing()
 set(PROJECT_TEST_NAME test_${PROJECT_NAME_STR})
 include_directories(${COMMON_INCLUDES})
 add_subdirectory(test)
+
+#-------------------
+# Executables
+#-------------------
+
+add_subdirectory(src)
