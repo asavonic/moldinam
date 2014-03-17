@@ -2,8 +2,12 @@
 #include <iostream>
 #include <vector> 
 #include <string>
+#include <md_algorithms.h>
+#include <md_helpers.h>
 
 namespace po = boost::program_options;
+
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt );
 
 int main( int argc, char** argv ) {
     try {
@@ -39,6 +43,9 @@ int main( int argc, char** argv ) {
         std::cout << "output file = " << output_file_path << std::endl;
         std::cout << "iterations  = " << iterations << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
+
+        moldinam_basic( input_file_path, output_file_path, iterations, dt );
+
     } 
     catch ( boost::program_options::error& po_error ) {
         std::cerr << po_error.what() << std::endl; 
@@ -46,4 +53,16 @@ int main( int argc, char** argv ) {
     catch ( std::exception& ex ) {
         std::cerr << "Unknown exception: " << ex.what() << std::endl;
     }
+}
+
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt ) {
+    std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
+
+    euler_step( molecules, dt );
+
+    for ( size_t i = 0; i < iterations; i++ ) {
+        verlet_step( molecules, dt );
+    }
+
+    write_molecules_to_file( molecules, output_file_path );
 }

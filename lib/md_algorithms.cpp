@@ -75,7 +75,7 @@ void simple_interact( Molecule& mol1, Molecule& mol2 ) {
     mol2.accel.y -= force_vec.y;
     mol2.accel.z -= force_vec.z;
 }
-void verlet_step( std::vector<Molecule> molecules, double dt ) {
+void verlet_step( std::vector<Molecule>& molecules, double dt ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
     }
@@ -90,7 +90,7 @@ void verlet_step( std::vector<Molecule> molecules, double dt ) {
         verlet( i, dt );
     }
 }
-void euler_step( std::vector<Molecule> molecules, double dt ) {
+void euler_step( std::vector<Molecule>& molecules, double dt ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
     }

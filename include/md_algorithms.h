@@ -13,7 +13,7 @@ double distance( Molecule& mol1, Molecule& mol2 );
 void simple_interact( Molecule& mol1, Molecule& mol2 );
 
 
-void verlet_step( std::vector<Molecule> molecules, double dt );
-void euler_step( std::vector<Molecule> molecules, double dt );
+void verlet_step( std::vector<Molecule>& molecules, double dt );
+void euler_step( std::vector<Molecule>& molecules, double dt );
 
 #endif

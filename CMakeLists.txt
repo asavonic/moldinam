@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR moldinam)
 project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 )
+	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 -O0 )
 endif()
 
 if(MSVC)

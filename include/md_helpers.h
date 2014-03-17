@@ -1,3 +1,6 @@
+#ifndef __MD_HELPERS_H
+#define __MD_HELPERS_H
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -5,3 +8,5 @@
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath );
 void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
+
+#endif

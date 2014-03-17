@@ -1,3 +1,6 @@
+#ifndef __MD_TYPES_H
+#define __MD_TYPES_H
+
 #include <vector>
 
 struct double3 {
@@ -32,3 +35,5 @@ struct Molecule {
 struct Molecule_Field  {
     std::vector< Molecule > molecules;
 };
+
+#endif
