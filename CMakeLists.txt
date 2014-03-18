@@ -27,6 +27,8 @@ add_library(${PROJECT_LIB_NAME} ${SRC_FILES})
 
 add_subdirectory(ext/gtest-1.7.0)
 include_directories(ext/gtest-1.7.0/include)
+
+add_subdirectory(ext/boost)
 #-------------------
 # Test
 #-------------------
