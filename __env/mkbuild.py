@@ -31,7 +31,9 @@ if not os.path.isdir( tmp_dir ):
     os.makedirs( tmp_dir )
 
 repo = git.Repo( MD_ROOT )
-head = repo.head.commit.sha
+
+active_branch = repo.active_branch
+
 repo.git.checkout( args.build_hash )
 
 os.chdir( tmp_dir )
@@ -41,4 +43,4 @@ subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir
 
 subprocess.call( [ "make", "install" ])
 
-repo.git.checkout( head )
+repo.git.checkout( active_branch )
