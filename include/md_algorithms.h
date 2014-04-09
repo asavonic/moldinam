@@ -9,6 +9,7 @@ void Lennard_Jones( double r, double epsilon, double sigma, double& force, doubl
 void verlet( Molecule& mol, double dt );
 void euler( Molecule& mol, double dt );
 void periodic( Molecule& mol, double3 area_size );
+void periodic( std::vector<Molecule>& molecules, double3 area_size );
 double distance( Molecule& mol1, Molecule& mol2 );
 void simple_interact( Molecule& mol1, Molecule& mol2 );
 

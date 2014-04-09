@@ -7,14 +7,15 @@
 
 namespace po = boost::program_options;
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt );
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic );
 
 int main( int argc, char** argv ) {
     try {
-        int iterations = 0;
-        double dt = 0;
-        std::string input_file_path;
-        std::string output_file_path;
+        int          iterations = 0;
+        double       dt = 0;
+        std::string  input_file_path;
+        std::string  output_file_path;
+        bool         use_periodic = false;
 
         // named arguments
         po::options_description desc("Allowed options");
@@ -24,6 +25,7 @@ int main( int argc, char** argv ) {
             ("dt", po::value<double>( &dt )->default_value( 0.00001 ), "dt on each step")
             ("input,i", po::value< std::string >( &input_file_path )->required(), "path to input .xyz file")
             ("output,o", po::value< std::string >( &output_file_path )->required(), "path to output .xyz file")
+            ("periodic", po::value<bool>( &use_periodic ), "compute with XYZ periodic boundaries")
         ;
 
         // positional arguments
@@ -44,7 +46,7 @@ int main( int argc, char** argv ) {
         std::cout << "iterations  = " << iterations << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
 
-        moldinam_basic( input_file_path, output_file_path, iterations, dt );
+        moldinam_basic( input_file_path, output_file_path, iterations, dt, use_periodic );
 
     } 
     catch ( boost::program_options::error& po_error ) {
@@ -55,13 +57,18 @@ int main( int argc, char** argv ) {
     }
 }
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt ) {
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
     euler_step( molecules, dt );
 
+    double3 area_size = { 10, 10, 10 };
     for ( size_t i = 0; i < iterations; i++ ) {
         verlet_step( molecules, dt );
+
+        if ( use_periodic ) {
+            periodic( molecules, area_size );
+        }
     }
 
     write_molecules_to_file( molecules, output_file_path );

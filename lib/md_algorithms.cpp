@@ -48,6 +48,12 @@ void periodic( Molecule& mol, double3 area_size ) {
     }
 }
 
+void periodic( std::vector<Molecule>& molecules, double3 area_size ) {
+    for ( Molecule& mol : molecules ) {
+        periodic( mol, area_size );
+    }
+}
+
 double distance( Molecule& mol1, Molecule& mol2 ) {
     double dx = mol1.pos.x - mol2.pos.x;
     double dy = mol1.pos.y - mol2.pos.y;
