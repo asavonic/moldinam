@@ -37,6 +37,8 @@ flags = [
 '/usr/local/include',
 '-I',
 './include',
+'-I',
+'./ext/gtest-1.7.0/include',
 ]
 
 
