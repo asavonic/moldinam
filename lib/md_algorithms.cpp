@@ -32,7 +32,7 @@ void periodic( Molecule& mol, double3 area_size ) {
     if ( mol.pos.y < 0 ) {
         mol.pos.y = area_size.y - abs( fmod( mol.pos.y, area_size.y ) );
     }
-    if ( mol.pos.x < 0 ) {
+    if ( mol.pos.z < 0 ) {
         mol.pos.z = area_size.z - abs( fmod( mol.pos.z, area_size.z ) );
     }
 
