@@ -17,7 +17,7 @@ std::vector<Molecule> read_molecules_from_file( std::string filepath ) {
 
     for ( int i = 0; i < lines_num; i++ ) {
         Molecule mol;
-        file >> mol.pos.x >> mol.pos.y >> mol.pos.z >> mol.speed.x >> mol.speed.y >> mol.speed.z ;
+        file >> mol;
         molecules.push_back( mol );
     }
 
@@ -34,7 +34,19 @@ void write_molecules_to_file( std::vector<Molecule>& molecules, std::string file
     file << molecules.size() << std::endl;
 
     for ( unsigned int i = 0; i < molecules.size(); i++ ) {
-        file << molecules[i].pos.x << " " << molecules[i].pos.y << " " << molecules[i].pos.z << " " 
-             << molecules[i].speed.x << " " << molecules[i].speed.y << " " << molecules[i].speed.z << std::endl;
+        file << molecules[i] << std::endl;
     }
 }
+
+std::ostream& operator<<( std::ostream& os, const Molecule molecule ) {
+    os << molecule.pos.x << " " << molecule.pos.y << " " << molecule.pos.z << " " 
+         << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z;
+
+    return os;
+}
+
+std::istream& operator>>( std::istream& is,  Molecule& molecule ) {
+    is >> molecule.pos.x >> molecule.pos.y >> molecule.pos.z >> molecule.speed.x >> molecule.speed.y >> molecule.speed.z ;
+    return is;
+}
+

@@ -85,9 +85,7 @@ void draw_scene() {
     glPopMatrix();
 }
 
-void
-setMatrix(void)
-{
+void setMatrix(void) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
@@ -95,9 +93,7 @@ setMatrix(void)
   glLoadIdentity();
 }
 
-void
-resize(int w, int h)
-{
+void resize(int w, int h) {
   glViewport(0, 0, w, h);
   setMatrix();
 }
