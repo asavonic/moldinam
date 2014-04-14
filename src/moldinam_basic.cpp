@@ -27,7 +27,7 @@ int main( int argc, char** argv ) {
             ("input,i", po::value< std::string >( &input_file_path )->required(), "path to input .xyz file")
             ("output,o", po::value< std::string >( &output_file_path )->required(), "path to output .xyz file")
             ("periodic", po::value<bool>( &use_periodic ), "compute with XYZ periodic boundaries")
-            ("trace", po::value< std::string >( &trace_file ), "compute with XYZ periodic boundaries")
+            ("trace", po::value< std::string >( &trace_file ), "save condition on each iteration to file")
         ;
 
         // positional arguments
@@ -36,12 +36,14 @@ int main( int argc, char** argv ) {
 
         po::variables_map vm;
         po::store( po::command_line_parser( argc, argv).options(desc).positional(p).run(), vm );
-        po::notify(vm);
 
         if (vm.count("help")) {
             std::cout << desc << std::endl;
-                return 1;
+            return 1;
         }
+
+        po::notify(vm);
+
 
         std::cout << "input file  = " << input_file_path << std::endl;
         std::cout << "output file = " << output_file_path << std::endl;
