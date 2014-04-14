@@ -7,7 +7,7 @@
 
 namespace po = boost::program_options;
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic );
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace );
 
 int main( int argc, char** argv ) {
     try {
@@ -16,6 +16,7 @@ int main( int argc, char** argv ) {
         std::string  input_file_path;
         std::string  output_file_path;
         bool         use_periodic = false;
+        std::string  trace_file;
 
         // named arguments
         po::options_description desc("Allowed options");
@@ -26,6 +27,7 @@ int main( int argc, char** argv ) {
             ("input,i", po::value< std::string >( &input_file_path )->required(), "path to input .xyz file")
             ("output,o", po::value< std::string >( &output_file_path )->required(), "path to output .xyz file")
             ("periodic", po::value<bool>( &use_periodic ), "compute with XYZ periodic boundaries")
+            ("trace", po::value< std::string >( &trace_file ), "compute with XYZ periodic boundaries")
         ;
 
         // positional arguments
@@ -46,7 +48,7 @@ int main( int argc, char** argv ) {
         std::cout << "iterations  = " << iterations << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
 
-        moldinam_basic( input_file_path, output_file_path, iterations, dt, use_periodic );
+        moldinam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file );
 
     } 
     catch ( boost::program_options::error& po_error ) {
@@ -57,8 +59,15 @@ int main( int argc, char** argv ) {
     }
 }
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic ) {
+void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
+
+    std::ofstream trace;
+    if ( trace_file != "" ) {
+        write_molecules_to_file( molecules, trace_file );
+        trace.open( trace_file.c_str(), std::ofstream::out | std::ofstream::app );
+        trace << std::endl;
+    }
 
     euler_step( molecules, dt );
 
@@ -68,6 +77,13 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
 
         if ( use_periodic ) {
             periodic( molecules, area_size );
+        }
+
+        if ( trace_file != "" ) {
+            for ( auto& mol : molecules ) {
+                trace << std::endl << mol;
+            }
+            trace << std::endl;
         }
     }
 
