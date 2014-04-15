@@ -50,3 +50,84 @@ std::istream& operator>>( std::istream& is,  Molecule& molecule ) {
     return is;
 }
 
+
+trace_read::trace_read() {
+    molecules_num = 0;
+}
+
+trace_read::trace_read( std::string filepath ) {
+    molecules_num = 0;
+    this->open( filepath );
+}
+
+void trace_read::open( std::string filepath ) {
+    file.open( filepath.c_str(), std::ifstream::in );
+    if ( !file.is_open() ) {
+        throw std::runtime_error( "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions." );
+    }
+
+}
+
+std::vector<Molecule> trace_read::initial() {
+    if ( !file.is_open() ) {
+        throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
+    } 
+
+    file.seekg( 0, file.beg );
+    file >> molecules_num;
+
+    std::vector<Molecule> molecules( molecules_num );
+
+    for ( size_t i = 0; i < molecules_num; i++ ) {
+        file >> molecules[i];
+    }
+
+    return std::move( molecules );
+}
+
+std::vector<Molecule> trace_read::next() {
+    if ( !file.is_open() ) {
+        throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
+    } 
+
+    if ( file.tellg() == file.beg ) {
+        return std::move( this->initial() );
+    }
+    else {
+        std::vector<Molecule> molecules( molecules_num );
+
+        for ( size_t i = 0; i < molecules_num; i++ ) {
+            file >> molecules[i];
+        }
+
+        return std::move( molecules );
+    }
+}
+
+std::vector<Molecule> trace_read::final() {
+    if ( !file.is_open() ) {
+        throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
+    } 
+    
+    file.seekg( file.end );
+    size_t length = file.tellg();
+
+    size_t lines_end_num = 0; // counting lines from the end of the file
+                              // once we reach the beginning of last group -- read it
+                              
+    for(int i = length-2; i > 0 || lines_end_num < molecules_num ; i-- ) { 
+        file.seekg(i);
+        char c = file.get();
+        if( c == '\r' || c == '\n' ) { //new line?
+            lines_end_num ++;
+        }
+    }
+
+    std::vector<Molecule> molecules( molecules_num );
+
+    for ( size_t i = 0; i < molecules_num; i++ ) {
+        file >> molecules[i];
+    }
+
+    return std::move( molecules );
+}
