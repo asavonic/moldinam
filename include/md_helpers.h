@@ -6,6 +6,8 @@
 #include <string>
 #include <md_types.h>
 #include <stdexcept>
+#include <random>
+#include <functional>
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath );
 void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
@@ -33,7 +35,7 @@ private:
 
 class trace_write {
 public:
-    // setting active to false will disable all functionality. use with caution.
+    // setting active to false will disable all functionality
     bool active;
 
     trace_write();
@@ -47,4 +49,6 @@ private:
     std::ofstream file;
 };
 
+Molecule generate_random_molecule();
+std::vector<Molecule> generate_random_molecules_vector( size_t );
 #endif

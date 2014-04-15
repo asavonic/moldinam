@@ -187,3 +187,34 @@ void trace_write::next( std::vector<Molecule>& molecules ) {
 
     file << std::endl;
 }
+
+Molecule generate_random_molecule() {
+    std::mt19937 rng_engine;
+    std::uniform_real_distribution<double> dist( 0.0, 5.0 );
+
+    auto rand_double = std::bind(dist, std::ref(rng_engine));
+
+    Molecule mol;
+    mol.pos.x = rand_double();
+    mol.pos.y = rand_double();
+    mol.pos.z = rand_double();
+
+    mol.speed.x = rand_double();
+    mol.speed.y = rand_double();
+    mol.speed.z = rand_double();
+
+    mol.accel.x = rand_double();
+    mol.accel.y = rand_double();
+    mol.accel.z = rand_double();
+
+    return mol;
+}
+std::vector<Molecule> generate_random_molecules_vector( size_t size ) {
+    std::vector<Molecule> molecules( size );
+    for ( size_t i = 0; i < molecules.size(); i++ ) {
+        molecules[i] = generate_random_molecule();
+    }
+
+    return std::move( molecules );
+}
+
