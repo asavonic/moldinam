@@ -18,8 +18,12 @@ public:
     trace_read( std::string filepath );
     void open( std::string filepath );
 
+    // reset file to beginning and read initial molecules state
     std::vector<Molecule> initial();
+
     std::vector<Molecule> next();
+    
+    // read final state of molecules, reset file to the end
     std::vector<Molecule> final();
 
 private:
@@ -29,18 +33,18 @@ private:
 
 class trace_write {
 public:
+    // setting active to false will disable all functionality. use with caution.
+    bool active;
+
     trace_write();
     trace_write( std::string filepath );
     void open( std::string filepath );
 
-    // this will reset trace file to beginning
     void initial( std::vector<Molecule>& );
     void next( std::vector<Molecule>& );
-    void final( std::vector<Molecule>& );
 
 private:
     std::ofstream file;
-    size_t molecules_num;
 };
 
 #endif

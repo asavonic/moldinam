@@ -61,11 +61,16 @@ trace_read::trace_read( std::string filepath ) {
 }
 
 void trace_read::open( std::string filepath ) {
+    if ( file.is_open() ) {
+        file.close();
+    }
+
     file.open( filepath.c_str(), std::ifstream::in );
     if ( !file.is_open() ) {
         throw std::runtime_error( "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions." );
     }
-
+    
+    file >> molecules_num;
 }
 
 std::vector<Molecule> trace_read::initial() {
@@ -130,4 +135,55 @@ std::vector<Molecule> trace_read::final() {
     }
 
     return std::move( molecules );
+}
+
+
+trace_write::trace_write() {
+    active = true;
+}
+
+trace_write::trace_write( std::string filepath ) {
+    active = true;
+    this->open( filepath );
+}
+
+void trace_write::open( std::string filepath ) {
+    if ( file.is_open() ) {
+        file.close();
+    }
+
+    file.open( filepath.c_str(), std::ofstream::out );
+    if ( !file.is_open() ) {
+        throw std::runtime_error( "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions." );
+    }
+}
+
+void trace_write::initial( std::vector<Molecule>& molecules ) {
+    if ( this->active == false ) {
+        return;
+    }
+
+    if ( !file.is_open() ) {
+        throw std::runtime_error( "Cannot write to file: file is not opened" );
+    }
+
+    file << molecules.size() << std::endl;
+
+    for ( size_t i = 0; i < molecules.size(); i++ ) {
+        file << molecules[i] << std::endl;
+    }
+
+    file << std::endl;
+}
+
+void trace_write::next( std::vector<Molecule>& molecules ) {
+    if ( this->active == false ) {
+        return;
+    }
+
+    for ( size_t i = 0; i < molecules.size(); i++ ) {
+        file << molecules[i] << std::endl;
+    }
+
+    file << std::endl;
 }
