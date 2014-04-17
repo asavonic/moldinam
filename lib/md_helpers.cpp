@@ -39,14 +39,23 @@ void write_molecules_to_file( std::vector<Molecule>& molecules, std::string file
 }
 
 std::ostream& operator<<( std::ostream& os, const Molecule molecule ) {
-    os << molecule.pos.x << " " << molecule.pos.y << " " << molecule.pos.z << " " 
-         << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z;
+    os.precision( std::numeric_limits<double>::digits10 ); // need to avoid miscompare when reading and writing
+
+    os << molecule.type << " "
+         << molecule.pos.x << " " << molecule.pos.y << " " << molecule.pos.z << " " 
+         << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z
+         << molecule.accel.x << " " << molecule.accel.y << " " << molecule.accel.z;
 
     return os;
 }
 
 std::istream& operator>>( std::istream& is,  Molecule& molecule ) {
-    is >> molecule.pos.x >> molecule.pos.y >> molecule.pos.z >> molecule.speed.x >> molecule.speed.y >> molecule.speed.z ;
+    is.precision( std::numeric_limits<double>::digits10 ); // need to avoid miscompare when reading and writing
+
+    is >> molecule.type;
+    is >> molecule.pos.x >> molecule.pos.y >> molecule.pos.z;
+    is >> molecule.speed.x >> molecule.speed.y >> molecule.speed.z;
+    is >> molecule.accel.x >> molecule.accel.y >> molecule.accel.z;
     return is;
 }
 
@@ -120,7 +129,7 @@ std::vector<Molecule> trace_read::final() {
     size_t lines_end_num = 0; // counting lines from the end of the file
                               // once we reach the beginning of last group -- read it
                               
-    for(int i = length-2; i > 0 || lines_end_num < molecules_num ; i-- ) { 
+    for(int i = length-2; i > 0 && lines_end_num < molecules_num ; i-- ) { 
         file.seekg(i);
         char c = file.get();
         if( c == '\r' || c == '\n' ) { //new line?
@@ -207,6 +216,9 @@ Molecule generate_random_molecule() {
     mol.accel.y = rand_double();
     mol.accel.z = rand_double();
 
+    mol.type = Molecule_Type::H; // chosen by fair dice roll
+                                 // guaranted to be random
+
     return mol;
 }
 std::vector<Molecule> generate_random_molecules_vector( size_t size ) {
@@ -218,3 +230,37 @@ std::vector<Molecule> generate_random_molecules_vector( size_t size ) {
     return std::move( molecules );
 }
 
+
+std::ostream& operator<<( std::ostream& os, const Molecule_Type type ) {
+    switch ( type )  {
+        case Molecule_Type::H : { os << "H"; break; }
+        case Molecule_Type::O : { os << "O"; break; }
+
+        case Molecule_Type::NO_TYPE : { os << "H"; break; }
+        default : { throw std::runtime_error( "Unexpected molecule type value: " + std::to_string( static_cast<int>( type ) ) ); }
+    }
+    return os;
+}
+
+std::istream& operator>>( std::istream& is,  Molecule_Type& type ) {
+    std::string str_type;
+    is >> str_type;
+
+    if ( str_type == "H" ) {
+        type = Molecule_Type::H;
+        return is;
+    } 
+
+    if ( str_type == "O" ) {
+        type = Molecule_Type::H;
+        return is;
+    } 
+
+    if ( str_type == "NO_TYPE" ) {
+        type = Molecule_Type::H;
+        return is;
+    } 
+
+    throw std::runtime_error( "Unsupported molecule type: " + str_type );
+    return is;
+}

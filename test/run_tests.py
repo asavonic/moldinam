@@ -23,6 +23,10 @@ class MDTestCase(unittest.TestCase):
         self.assertEqual( filecmp.cmp( "test_helpers_write_to_file.xyz", "test_helpers_read_from_file.xyz" ), True )
         os.remove( "test_helpers_write_to_file.xyz" );
 
+    def test_helpers_trace_read_write( self ):
+        test_exe = os.path.join( os.getcwd(), "helpers_test" )
+        self.assertEqual(subprocess.call( [ test_exe, "--gtest_filter=*trace_read_write*" ] ), 0 )
+
 suite = unittest.TestLoader().loadTestsFromTestCase(MDTestCase)
 
 if __name__ == '__main__':

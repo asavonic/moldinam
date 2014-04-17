@@ -2,6 +2,7 @@
 #define __MD_TYPES_H
 
 #include <vector>
+#include <string>
 
 struct double3 {
     double x;
@@ -18,10 +19,13 @@ struct double3 {
     }
 };
 
-enum Molecule_Type {
+bool operator == ( const double3&, const double3& );
+bool operator != ( const double3&, const double3& );
+
+enum class Molecule_Type {
     H,
     O,
-    NONE_TYPE
+    NO_TYPE
 };
 
 struct Molecule {
@@ -31,6 +35,9 @@ struct Molecule {
     double3 accel;
     Molecule_Type type;
 };
+
+bool operator == ( const Molecule&, const Molecule& );
+bool operator != ( const Molecule&, const Molecule& );
 
 struct Molecule_Field  {
     std::vector< Molecule > molecules;

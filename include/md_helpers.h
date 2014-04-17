@@ -11,8 +11,11 @@
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath );
 void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
-std::ostream& operator<<( std::ostream& os, const Molecule );
-std::istream& operator>>( std::istream& is,  Molecule& );
+std::ostream& operator<<( std::ostream&, const Molecule );
+std::istream& operator>>( std::istream&,  Molecule& );
+
+std::ostream& operator<<( std::ostream&, const Molecule_Type );
+std::istream& operator>>( std::istream&,  Molecule_Type& );
 
 class trace_read {
 public:

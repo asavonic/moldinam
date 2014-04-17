@@ -38,3 +38,84 @@ TEST( helpers, write_to_file ) {
 
     write_molecules_to_file( molecules, "test_helpers_write_to_file.xyz" );
 }
+
+bool check_mol_vectors_equal( std::vector<Molecule>& first, std::vector<Molecule>& second ) {
+    size_t first_size = first.size();
+    size_t second_size = second.size();
+    if ( first_size != second_size ) {
+        return false;
+    }
+
+    double tol = 1 / ( 1 << 20 );
+    for ( size_t i = 0; i < first.size(); i++ ) {
+        if ( std::abs( first[i].pos.x - second[i].pos.x ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].pos.y - second[i].pos.y ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].pos.z - second[i].pos.z ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].speed.x - second[i].speed.x ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].speed.y - second[i].speed.y ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].speed.z - second[i].speed.z ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].accel.x - second[i].accel.x ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].accel.y - second[i].accel.y ) > tol ) {
+            return false;
+        }
+        if ( std::abs( first[i].accel.z - second[i].accel.z ) > tol ) {
+            return false;
+        }
+        if ( first[i].type != second[i].type ) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+TEST( helpers, trace_read_write ) {
+    auto molecules_initial_reference = generate_random_molecules_vector( 10 );
+    auto molecules_step1_reference   = generate_random_molecules_vector( 10 );
+    auto molecules_step2_reference   = generate_random_molecules_vector( 10 );
+    auto molecules_step3_reference   = generate_random_molecules_vector( 10 );
+    auto molecules_step4_reference   = generate_random_molecules_vector( 10 );
+    auto molecules_final_reference   = generate_random_molecules_vector( 10 );
+
+    trace_write _trace_write( "trace_test.xyztrace" );
+
+    _trace_write.initial( molecules_initial_reference );
+    _trace_write.next( molecules_step1_reference );
+    _trace_write.next( molecules_step2_reference );
+    _trace_write.next( molecules_step3_reference );
+    _trace_write.next( molecules_step4_reference );
+    _trace_write.next( molecules_final_reference );
+
+    trace_read _trace_read( "trace_test.xyztrace" );
+    auto molecules_initial = _trace_read.initial();
+    auto molecules_step1   = _trace_read.next();
+    auto molecules_step2   = _trace_read.next();
+    auto molecules_step3   = _trace_read.next();
+    auto molecules_step4   = _trace_read.next();
+    auto molecules_final   = _trace_read.next();
+
+    trace_read _trace_read_2 ( "trace_test.xyztrace" );
+    auto molecules_final_2 = _trace_read_2.final();
+    
+    check_mol_vectors_equal( molecules_initial_reference, molecules_initial );
+    check_mol_vectors_equal( molecules_step1_reference, molecules_step1 );
+    check_mol_vectors_equal( molecules_step2_reference, molecules_step2 );
+    check_mol_vectors_equal( molecules_step3_reference, molecules_step3 );
+    check_mol_vectors_equal( molecules_step4_reference, molecules_step4 );
+    check_mol_vectors_equal( molecules_final_reference, molecules_final );
+    check_mol_vectors_equal( molecules_final, molecules_final_2 );
+}
