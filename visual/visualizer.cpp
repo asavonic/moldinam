@@ -69,9 +69,6 @@ void draw_cube() {
 
 void draw_scene() {
     glPushMatrix();
-        //glMatrixMode(GL_MODELVIEW);
-        //glLoadIdentity();
-
         glTranslated(0.5, 0.5, 0.5);
 
         glTranslatef( -0.5, -0.5, -0.5 );
