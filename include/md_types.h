@@ -25,6 +25,8 @@ double3 operator*( const double3&, const float );
 double3 operator/( const double3&, const float );
 double3 operator+( const double3&, const double3& );
 double3 operator-( const double3&, const double3& );
+void operator+=( double3&, const double3& );
+void operator-=( double3&, const double3& );
 
 enum class Molecule_Type {
     H,

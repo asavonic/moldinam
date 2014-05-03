@@ -40,6 +40,17 @@ double3 operator-( const double3& a, const double3& b ) {
     return result;
 }
 
+void operator+=( double3& a, const double3& b ) {
+    a.x = a.x + b.x;
+    a.y = a.y + b.y;
+    a.z = a.z + b.z;
+}
+void operator-=( double3& a, const double3& b ) {
+    a.x = a.x - b.x;
+    a.y = a.y - b.y;
+    a.z = a.z - b.z;
+}
+
 bool operator == ( const Molecule& first, const Molecule& second ) {
     return ( first.pos      == second.pos      && 
              first.pos_prev == second.pos_prev &&

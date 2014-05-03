@@ -12,6 +12,7 @@ void periodic( Molecule& mol, double3 area_size );
 void periodic( std::vector<Molecule>& molecules, double3 area_size );
 double distance( Molecule& mol1, Molecule& mol2 );
 void simple_interact( Molecule& mol1, Molecule& mol2 );
+void periodic3d_interact( Molecule& mol1, Molecule mol2 );
 
 
 void verlet_step( std::vector<Molecule>& molecules, double dt );

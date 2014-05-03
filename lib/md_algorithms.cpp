@@ -81,6 +81,42 @@ void simple_interact( Molecule& mol1, Molecule& mol2 ) {
     mol2.accel.y -= force_vec.y;
     mol2.accel.z -= force_vec.z;
 }
+
+// implementation of 3d periodic boundary interaction
+// NOTE that this function effects only on first molecule and does not change second
+// TODO 
+// does it need to be changed?
+//
+void periodic3d_interact( Molecule& mol1, Molecule mol2 ) {
+    static double3 area_size( 10, 10, 10 );
+
+    double3 total_force_vec;
+
+    for ( double dx = -area_size.x; dx <= area_size.x; dx += area_size.x ) {
+        for ( double dy = -area_size.y; dy <= area_size.y; dy += area_size.y ) {
+            for ( double dz = -area_size.z; dz <= area_size.z; dz += area_size.z ) {
+                mol2.pos.x += dx;
+                mol2.pos.y += dy;
+                mol2.pos.z += dz;
+
+                double r = distance( mol1, mol2 );
+                double force_scalar = 0;
+                double potential = 0;
+                Lennard_Jones( r, 1, 1, force_scalar, potential );
+                
+                double3 force_vec { mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z };
+                force_vec.x = force_vec.x * force_scalar / r;
+                force_vec.y = force_vec.y * force_scalar / r;
+                force_vec.z = force_vec.z * force_scalar / r;
+
+                total_force_vec += force_vec;
+            }
+        }        
+    }
+
+    mol1.accel += total_force_vec;
+}
+
 void verlet_step( std::vector<Molecule>& molecules, double dt ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
