@@ -64,11 +64,13 @@ int main( int argc, char** argv ) {
 void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
-    std::ofstream trace;
+    trace_write trace;
     if ( trace_file != "" ) {
-        write_molecules_to_file( molecules, trace_file );
-        trace.open( trace_file.c_str(), std::ofstream::out | std::ofstream::app );
-        trace << std::endl;
+        trace.open( trace_file );
+        trace.initial( molecules );
+    }
+    else {
+        trace.active = false;
     }
 
     euler_step( molecules, dt );
@@ -80,13 +82,7 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
         if ( use_periodic ) {
             periodic( molecules, area_size );
         }
-
-        if ( trace_file != "" ) {
-            for ( auto& mol : molecules ) {
-                trace << std::endl << mol;
-            }
-            trace << std::endl;
-        }
+        trace.next( molecules );
     }
 
     write_molecules_to_file( molecules, output_file_path );
