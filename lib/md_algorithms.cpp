@@ -87,8 +87,7 @@ void simple_interact( Molecule& mol1, Molecule& mol2 ) {
 // TODO 
 // does it need to be changed?
 //
-void periodic3d_interact( Molecule& mol1, Molecule mol2 ) {
-    static double3 area_size( 10, 10, 10 );
+void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
 
     double3 total_force_vec;
 
@@ -145,5 +144,23 @@ void euler_step( std::vector<Molecule>& molecules, double dt ) {
     
     for ( Molecule& i : molecules ) {
         euler( i, dt );
+    }
+}
+
+void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 area_size ) {
+    for ( Molecule& i : molecules ) {
+        i.accel.x = i.accel.y = i.accel.z = 0;
+    }
+
+    for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
+        for ( unsigned int j = 0; j < molecules.size(); j++ ) {
+            if ( i != j ) {
+                periodic3d_interact( molecules[i], molecules[j], area_size );
+            }
+        }
+    }
+    
+    for ( Molecule& i : molecules ) {
+        verlet( i, dt );
     }
 }
