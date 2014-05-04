@@ -43,7 +43,7 @@ std::ostream& operator<<( std::ostream& os, const Molecule molecule ) {
 
     os << molecule.type << " "
          << molecule.pos.x << " " << molecule.pos.y << " " << molecule.pos.z << " " 
-         << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z
+         << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z << " "
          << molecule.accel.x << " " << molecule.accel.y << " " << molecule.accel.z;
 
     return os;
