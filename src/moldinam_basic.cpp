@@ -77,7 +77,7 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
 
     double3 area_size = { 10, 10, 10 };
     for ( size_t i = 0; i < iterations; i++ ) {
-        verlet_step( molecules, dt );
+        verlet_step_pariodic( molecules, dt, area_size );
 
         if ( use_periodic ) {
             periodic( molecules, area_size );
