@@ -4,8 +4,8 @@ project(${PROJECT_NAME_STR} C CXX)
 
 
 add_executable(moldinam_basic moldinam_basic.cpp)
-target_link_libraries( moldinam_basic ${PROJECT_LIB_NAME} )
-target_link_libraries( moldinam_basic boost_program_options )
+
+target_link_libraries( moldinam_basic ${PROJECT_LIB_NAME} ${BOOST_PROGRAM_OPTIONS} )
 
 #installation of executable files
 INSTALL ( FILES

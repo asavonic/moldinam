@@ -5,6 +5,9 @@ project(${PROJECT_NAME_STR} C CXX)
 if(CMAKE_COMPILER_IS_GNUCXX)
 	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 -O0 )
 endif()
+if( ${CMAKE_C_COMPILER} MATCHES "icc" )
+	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 -O0 )
+endif()
 
 if(MSVC)
 #vc 2012 fix for vararg templates
@@ -29,6 +32,8 @@ add_subdirectory(ext/gtest-1.7.0)
 include_directories(ext/gtest-1.7.0/include)
 
 add_subdirectory(ext/boost)
+include_directories(ext/boost)
+
 #-------------------
 # Test
 #-------------------
