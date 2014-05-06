@@ -9,8 +9,6 @@ __pycache__
 *.exe
 *.out
 *.in
-output.*
-input.*
 *.swp
 *.swo
 
