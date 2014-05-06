@@ -16,3 +16,9 @@ output.*
 input.*
 *.swp
 *.swo
+
+ext/boost/b2
+ext/boost/bin.v2/
+ext/boost/bjam
+ext/boost/bootstrap.log
+ext/boost/project-config.jam
