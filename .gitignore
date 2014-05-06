@@ -1,8 +1,5 @@
 
-bin/
 tmp/
-build/
-builds/
 
 *.tmp
 *.bak
