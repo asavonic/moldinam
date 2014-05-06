@@ -26,7 +26,7 @@ int main( int argc, char** argv ) {
             ("dt", po::value<double>( &dt )->default_value( 0.00001 ), "dt on each step")
             ("input,i", po::value< std::string >( &input_file_path )->required(), "path to input .xyz file")
             ("output,o", po::value< std::string >( &output_file_path )->required(), "path to output .xyz file")
-            ("periodic", po::value<bool>( &use_periodic ), "compute with XYZ periodic boundaries")
+            ("periodic", "compute with XYZ periodic boundaries")
             ("trace", po::value< std::string >( &trace_file ), "save condition on each iteration to file")
         ;
 
@@ -44,10 +44,14 @@ int main( int argc, char** argv ) {
 
         po::notify(vm);
 
+        if ( vm.count("periodic") ) {
+            use_periodic = true;
+        }
 
         std::cout << "input file  = " << input_file_path << std::endl;
         std::cout << "output file = " << output_file_path << std::endl;
         std::cout << "iterations  = " << iterations << std::endl;   
+        std::cout << "periodic    = " << use_periodic << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
 
         moldinam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file );
@@ -76,13 +80,18 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
     euler_step( molecules, dt );
 
     double3 area_size = { 10, 10, 10 };
-    for ( size_t i = 0; i < iterations; i++ ) {
-        verlet_step( molecules, dt );
-
-        if ( use_periodic ) {
-            periodic( molecules, area_size );
+    if ( use_periodic ) {
+        for ( size_t i = 0; i < iterations; i++ ) {
+            verlet_step( molecules, dt );
+            trace.next( molecules );
         }
-        trace.next( molecules );
+    }
+    else {
+        for ( size_t i = 0; i < iterations; i++ ) {
+            verlet_step_pariodic( molecules, dt, area_size );
+            periodic( molecules, area_size );
+            trace.next( molecules );
+        }
     }
 
     write_molecules_to_file( molecules, output_file_path );
