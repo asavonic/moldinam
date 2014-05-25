@@ -68,6 +68,8 @@ int main( int argc, char** argv ) {
 void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
+    LJ_config lj_config("LJ_constants.conf");
+
     trace_write trace;
     if ( trace_file != "" ) {
         trace.open( trace_file );
@@ -77,12 +79,12 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
         trace.active = false;
     }
 
-    euler_step( molecules, dt );
+    euler_step( molecules, dt, lj_config );
 
     double3 area_size = { 10, 10, 10 };
     if ( !use_periodic ) {
         for ( size_t i = 0; i < iterations; i++ ) {
-            verlet_step( molecules, dt );
+            verlet_step( molecules, dt, lj_config );
             if ( i % 100 == 0 ) {
                 trace.next( molecules );
             }

@@ -29,9 +29,9 @@ void operator+=( double3&, const double3& );
 void operator-=( double3&, const double3& );
 
 enum class Molecule_Type {
-    H,
-    O,
-    NO_TYPE
+    NO_TYPE = 0,
+    H = 1 << 0,
+    O = 1 << 1,
 };
 
 struct Molecule {

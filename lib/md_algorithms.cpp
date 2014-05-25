@@ -62,7 +62,7 @@ double distance( Molecule& mol1, Molecule& mol2 ) {
     return sqrt( dx*dx + dy*dy + dz*dz );
 }
 
-void simple_interact( Molecule& mol1, Molecule& mol2 ) {
+void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps ) {
     double r = distance( mol1, mol2 );
     double force_scalar = 0;
     double potential = 0;
@@ -119,14 +119,18 @@ void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
     mol1.accel += total_force_vec;
 }
 
-void verlet_step( std::vector<Molecule>& molecules, double dt ) {
+void verlet_step( std::vector<Molecule>& molecules, double dt, LJ_config& config ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
     }
+    
+    auto constants = config.get_constants( molecules[0].type );
+    double sigma = constants.first;
+    double eps   = constants.second;
 
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
-            simple_interact( molecules[i], molecules[j] );
+            simple_interact( molecules[i], molecules[j], sigma, eps );
         }
     }
     
@@ -134,14 +138,18 @@ void verlet_step( std::vector<Molecule>& molecules, double dt ) {
         verlet( i, dt );
     }
 }
-void euler_step( std::vector<Molecule>& molecules, double dt ) {
+void euler_step( std::vector<Molecule>& molecules, double dt, LJ_config& config ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
     }
 
+    auto constants = config.get_constants( molecules[0].type );
+    double sigma = constants.first;
+    double eps   = constants.second;
+
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
-            simple_interact( molecules[i], molecules[j] );
+            simple_interact( molecules[i], molecules[j], sigma, eps );
         }
     }
     

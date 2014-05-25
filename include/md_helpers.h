@@ -61,4 +61,16 @@ private:
 
 Molecule generate_random_molecule();
 std::vector<Molecule> generate_random_molecules_vector( size_t );
+
+// TODO tests missing
+class LJ_config {
+private:
+    std::vector< std::pair<double, double> > molecule_types_constants;
+
+public:
+    LJ_config( std::string );
+    typename  decltype(molecule_types_constants)::value_type get_constants( Molecule_Type type ) {
+        return molecule_types_constants[ static_cast<int>(type) ];
+    }
+};
 #endif

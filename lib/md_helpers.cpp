@@ -305,15 +305,43 @@ std::istream& operator>>( std::istream& is,  Molecule_Type& type ) {
     } 
 
     if ( str_type == "O" ) {
-        type = Molecule_Type::H;
+        type = Molecule_Type::O;
         return is;
     } 
 
     if ( str_type == "NO_TYPE" ) {
-        type = Molecule_Type::H;
+        type = Molecule_Type::NO_TYPE;
         return is;
     } 
 
     throw std::runtime_error( "Unsupported molecule type: " + str_type );
     return is;
+}
+
+LJ_config::LJ_config( std::string config_path ) {
+    std::ifstream file( config_path.c_str(), std::ifstream::in );
+
+    if ( !file.is_open() ) {
+        throw std::runtime_error( "Error while opening file " + config_path + " for reading! Check if it exist and have correct permissions." );
+    }
+
+    molecule_types_constants.resize( 1000, std::make_pair(0,0) );
+    std::cout << "Loading config..." << std::endl;
+    Molecule_Type type = Molecule_Type::NO_TYPE;
+    double sigma = 0;
+    double eps   = 0;
+
+    std::string line;
+    while( std::getline(file, line) ) {
+        std::istringstream iss(line);
+        if( !(iss >> type >> sigma >> eps) ) {
+            break; 
+        } 
+        molecule_types_constants[ static_cast<int>(type) ] = std::make_pair( sigma, eps );
+
+        std::cout << type << " " << sigma << " " << eps << std::endl;
+    }
+
+    std::cout << "Loading complete" << std::endl;
+    
 }
