@@ -1,4 +1,5 @@
 #include <md_helpers.h>
+#include <regex>
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath ) {
     std::ifstream file( filepath.c_str(), std::ifstream::in );
@@ -62,6 +63,7 @@ std::istream& operator>>( std::istream& is,  Molecule& molecule ) {
 
 trace_read::trace_read() {
     molecules_num = 0;
+    active = false;
 }
 
 trace_read::trace_read( std::string filepath ) {
@@ -79,6 +81,7 @@ void trace_read::open( std::string filepath ) {
         throw std::runtime_error( "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions." );
     }
     
+    active = true;
     file >> molecules_num;
 }
 
@@ -86,6 +89,32 @@ std::vector<Molecule> trace_read::initial() {
     if ( !file.is_open() ) {
         throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
     } 
+
+    file.seekg( 0, file.end );
+    size_t length = file.tellg();
+
+    std::cout << "length = " << length << std::endl;
+    for(int i = length-2; i > 0 ; i-- ) { 
+        file.seekg(i);
+        char c = file.get();
+        if( c == '\r' || c == '\n' ) { //new line?
+            break;
+        }
+    }
+
+    std::string total_steps_str;
+    std::getline( file, total_steps_str );
+
+    std::string substr = "total steps = ";
+    size_t substr_pos = total_steps_str.find( substr );
+    if ( substr_pos != std::string::npos ) {
+        total_steps_str = total_steps_str.substr( substr_pos + substr.length() );
+    }
+    else {
+        throw std::runtime_error( "Total steps number not found in trace file" );
+    }
+
+    total_steps = std::stoi( total_steps_str );
 
     file.seekg( 0, file.beg );
     file >> molecules_num;
@@ -95,6 +124,8 @@ std::vector<Molecule> trace_read::initial() {
     for ( size_t i = 0; i < molecules_num; i++ ) {
         file >> molecules[i];
     }
+
+    steps++;
 
     return std::move( molecules );
 }
@@ -107,11 +138,23 @@ std::vector<Molecule> trace_read::next() {
     if ( file.tellg() == file.beg ) {
         return std::move( this->initial() );
     }
+
+    if ( total_steps == steps ) {
+        std::cout << "trace_read reached end of the file" << std::endl;
+        active = false;
+        return std::vector<Molecule>{};
+    }
     else {
         std::vector<Molecule> molecules( molecules_num );
 
         for ( size_t i = 0; i < molecules_num; i++ ) {
             file >> molecules[i];
+        }
+        steps++;
+
+        if ( total_steps == steps ) {
+            std::cout << "trace_read reached end of the file" << std::endl;
+            active = false;
         }
 
         return std::move( molecules );
@@ -129,7 +172,8 @@ std::vector<Molecule> trace_read::final() {
     size_t lines_end_num = 0; // counting lines from the end of the file
                               // once we reach the beginning of last group -- read it
                               
-    for(int i = length-2; i > 0 && lines_end_num < molecules_num ; i-- ) { 
+                                                /* total steps + empty line*/
+    for(int i = length-2; i > 0 && lines_end_num < molecules_num + 2 ; i-- ) { 
         file.seekg(i);
         char c = file.get();
         if( c == '\r' || c == '\n' ) { //new line?
@@ -176,6 +220,7 @@ void trace_write::initial( std::vector<Molecule>& molecules ) {
         throw std::runtime_error( "Cannot write to file: file is not opened" );
     }
 
+    steps = 0;
     file << molecules.size() << std::endl;
 
     for ( size_t i = 0; i < molecules.size(); i++ ) {
@@ -183,6 +228,7 @@ void trace_write::initial( std::vector<Molecule>& molecules ) {
     }
 
     file << std::endl;
+    steps++;
 }
 
 void trace_write::next( std::vector<Molecule>& molecules ) {
@@ -195,6 +241,13 @@ void trace_write::next( std::vector<Molecule>& molecules ) {
     }
 
     file << std::endl;
+    steps++;
+}
+
+void trace_write::final( std::vector<Molecule>& molecules ) {
+    next( molecules );
+    file << "total steps = " + std::to_string( steps );
+    active = false;
 }
 
 Molecule generate_random_molecule() {

@@ -80,19 +80,24 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
     euler_step( molecules, dt );
 
     double3 area_size = { 10, 10, 10 };
-    if ( use_periodic ) {
+    if ( !use_periodic ) {
         for ( size_t i = 0; i < iterations; i++ ) {
             verlet_step( molecules, dt );
-            trace.next( molecules );
+            if ( i % 100 == 0 ) {
+                trace.next( molecules );
+            }
         }
     }
     else {
         for ( size_t i = 0; i < iterations; i++ ) {
             verlet_step_pariodic( molecules, dt, area_size );
             periodic( molecules, area_size );
-            trace.next( molecules );
+            if ( i % 100  == 0 ) {
+                trace.next( molecules );
+            }
         }
     }
 
+    trace.final( molecules );
     write_molecules_to_file( molecules, output_file_path );
 }

@@ -66,7 +66,8 @@ void simple_interact( Molecule& mol1, Molecule& mol2 ) {
     double r = distance( mol1, mol2 );
     double force_scalar = 0;
     double potential = 0;
-    Lennard_Jones( r, 1, 1, force_scalar, potential );
+    //TODO LJ constants are currently hardcoded
+    Lennard_Jones( r, 0.001, 0.1, force_scalar, potential );
     
     double3 force_vec { mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z };
     force_vec.x = force_vec.x * force_scalar / r;
@@ -87,6 +88,8 @@ void simple_interact( Molecule& mol1, Molecule& mol2 ) {
 // TODO 
 // does it need to be changed?
 //
+// TODO
+// periodic functions are broken
 void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
 
     double3 total_force_vec;

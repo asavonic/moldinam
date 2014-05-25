@@ -19,6 +19,9 @@ std::istream& operator>>( std::istream&,  Molecule_Type& );
 
 class trace_read {
 public:
+
+    bool active; // TODO trace_read becomes deactivated when reaches the end of trace file
+                 // this is temporary solution, must be fixed later   
     trace_read();
     trace_read( std::string filepath );
     void open( std::string filepath );
@@ -34,6 +37,8 @@ public:
 private:
     std::ifstream file;
     size_t molecules_num;
+    size_t steps;
+    size_t total_steps;
 };
 
 class trace_write {
@@ -47,9 +52,11 @@ public:
 
     void initial( std::vector<Molecule>& );
     void next( std::vector<Molecule>& );
+    void final( std::vector<Molecule>& );
 
 private:
     std::ofstream file;
+    size_t steps;
 };
 
 Molecule generate_random_molecule();
