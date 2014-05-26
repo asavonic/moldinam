@@ -66,8 +66,7 @@ void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps )
     double r = distance( mol1, mol2 );
     double force_scalar = 0;
     double potential = 0;
-    //TODO LJ constants are currently hardcoded
-    Lennard_Jones( r, 0.001, 0.1, force_scalar, potential );
+    Lennard_Jones( r, sigma, eps, force_scalar, potential );
     
     double3 force_vec { mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z };
     force_vec.x = force_vec.x * force_scalar / r;
