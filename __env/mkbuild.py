@@ -11,8 +11,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--hash', dest="build_hash", help='Hash of git commit')
 parser.add_argument('--debug', dest="build_type", action='store_const', const="Debug", default="Release", 
                         help='Build debug binaries')
+parser.add_argument('--compiler', dest="compiler", help='available options are gcc, intel')
+
 
 args = parser.parse_args()
+
+if args.compiler not in [ "gcc", "intel" ]:
+    print "Error! Unsupported value for --compiler"
+
+compiler_opt = ""
+if args.compiler == "gcc":
+    compiler_opt = "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
+if args.compiler == "intel":
+    compiler_opt = "-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc"
 
 if not args.build_hash: 
     args.build_hash = "current"
@@ -39,7 +50,8 @@ if args.build_hash != "current":
 os.chdir( tmp_dir )
 
 subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir,
-                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2" ])
+                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2 " + compiler_opt ])
+
 
 subprocess.call( [ "make", "install" ])
 

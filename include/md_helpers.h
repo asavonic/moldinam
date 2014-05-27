@@ -69,7 +69,7 @@ private:
 
 public:
     LJ_config( std::string );
-    typename  decltype(molecule_types_constants)::value_type get_constants( Molecule_Type type ) {
+    std::pair<double, double> get_constants( Molecule_Type type ) {
         return molecule_types_constants[ static_cast<int>(type) ];
     }
 };
