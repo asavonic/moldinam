@@ -1,4 +1,10 @@
+#ifndef _MSC_VER
+#pragma comment( lib, "boost_program_options.lib" )
+#pragma comment( lib, "moldinam.lib" )
+#endif
+
 #include <boost/program_options.hpp>
+#include <boost/throw_exception.hpp>
 #include <iostream>
 #include <vector> 
 #include <string>
@@ -81,7 +87,7 @@ void moldinam_basic( std::string input_file_path, std::string output_file_path, 
 
     euler_step( molecules, dt, lj_config );
 
-    double3 area_size = { 10, 10, 10 };
+    double3 area_size(10, 10, 10);
     if ( !use_periodic ) {
         for ( size_t i = 0; i < iterations; i++ ) {
             verlet_step( molecules, dt, lj_config );

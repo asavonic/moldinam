@@ -1,5 +1,6 @@
 #include <md_helpers.h>
 #include <regex>
+#include <sstream>
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath ) {
     std::ifstream file( filepath.c_str(), std::ifstream::in );
@@ -135,14 +136,14 @@ std::vector<Molecule> trace_read::next() {
         throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
     } 
 
-    if ( file.tellg() == file.beg ) {
+    if ( static_cast<size_t>( file.tellg() ) == file.beg ) {
         return std::move( this->initial() );
     }
 
     if ( total_steps == steps ) {
         std::cout << "trace_read reached end of the file" << std::endl;
         active = false;
-        return std::vector<Molecule>{};
+        return std::vector<Molecule>();
     }
     else {
         std::vector<Molecule> molecules( molecules_num );

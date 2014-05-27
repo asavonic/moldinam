@@ -13,7 +13,10 @@ if ( NOT EXISTS  ${CMAKE_CURRENT_LIST_DIR}/b2 )
                      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 endif()
 
-execute_process( COMMAND  ${CMAKE_CURRENT_LIST_DIR}/b2 --link --layout=system --variant=release --runtime-link=shared --libdir=${PROJECT_BINARY_DIR} install 
+execute_process( COMMAND  ${CMAKE_CURRENT_LIST_DIR}/b2 --link --variant=release --runtime-link=shared --libdir=${PROJECT_BINARY_DIR} install 
                  WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} )
 
+set( BOOST_PROGRAM_OPTIONS_DIR ${PROJECT_BINARY_DIR} PARENT_SCOPE )
+
 set( BOOST_PROGRAM_OPTIONS ${CMAKE_CURRENT_BINARY_DIR}/libboost_program_options.a PARENT_SCOPE )
+

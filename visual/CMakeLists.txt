@@ -6,8 +6,11 @@ project(${PROJECT_NAME_STR} C CXX)
 add_executable(visualizer visualizer.cpp)
 
 include_directories( glm )
-target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${BOOST_PROGRAM_OPTIONS}
-    -lGL -lglut )
+if( NOT WIN32 )
+    target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${BOOST_PROGRAM_OPTIONS} -lGL -lglut )
+else()
+    target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${GLUT_LIB} )
+endif()
 
 #installation of executable files
 INSTALL ( FILES

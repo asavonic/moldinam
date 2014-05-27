@@ -2,10 +2,18 @@ cmake_minimum_required(VERSION 2.8.7)
 set(PROJECT_NAME_STR exec)
 project(${PROJECT_NAME_STR} C CXX)
 
-
 add_executable(moldinam_basic moldinam_basic.cpp)
 
-target_link_libraries( moldinam_basic ${PROJECT_LIB_NAME} ${BOOST_PROGRAM_OPTIONS} )
+target_link_libraries( moldinam_basic ${PROJECT_LIB_NAME} )
+
+if (NOT WIN32)
+    target_link_libraries( moldinam_basic ${BOOST_PROGRAM_OPTIONS})
+else()
+    Message( "BOOST = ${BOOST_PROGRAM_OPTIONS_DIR}" )
+    link_directories( ${BOOST_PROGRAM_OPTIONS_DIR} )
+endif()
+
+include_directories( ${GLUT_INCLUDE} )
 
 #installation of executable files
 INSTALL ( FILES

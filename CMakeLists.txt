@@ -16,7 +16,10 @@ else()
 endif()
 
 if(MSVC)
-#vc 2012 fix for vararg templates
+    if(CMAKE_CXX_FLAGS_DEBUG MATCHES "/RTC1")
+        string(REPLACE "/RTC1" " " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
+    endif()
+    add_definitions(/EHsc)
     set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
 endif() 
 #-------------------
@@ -34,11 +37,14 @@ include_directories(${COMMON_INCLUDES})
 file(GLOB SRC_FILES ${PROJECT_SOURCE_DIR}/lib/*.cpp)
 add_library(${PROJECT_LIB_NAME} ${SRC_FILES})
 
-add_subdirectory(ext/gtest-1.7.0)
 include_directories(ext/gtest-1.7.0/include)
+add_subdirectory(ext/gtest-1.7.0)
 
 add_subdirectory(ext/boost)
 include_directories(ext/boost)
+
+include_directories(ext/freeglut-2.8.1/include)
+add_subdirectory(ext/freeglut-2.8.1)
 
 #-------------------
 # Test

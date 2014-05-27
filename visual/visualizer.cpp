@@ -99,16 +99,15 @@ public:
 
     virtual void draw_cube() {
         
-        std::vector< glm::fvec3 > cube = {   
-            glm::fvec3( 0.0, 0.0, 0.0 ),
-            glm::fvec3( 1.0, 0.0, 0.0 ),
-            glm::fvec3( 1.0, 0.0, 1.0 ),
-            glm::fvec3( 0.0, 0.0, 1.0 ),
-            glm::fvec3( 1.0, 1.0, 0.0 ),
-            glm::fvec3( 1.0, 1.0, 1.0 ),
-            glm::fvec3( 0.0, 1.0, 1.0 ),
-            glm::fvec3( 0.0, 1.0, 0.0 ) 
-        };
+        std::vector< glm::fvec3 > cube;
+		cube.push_back( glm::fvec3( 0.0, 0.0, 0.0 ) );
+        cube.push_back( glm::fvec3( 1.0, 0.0, 0.0 ) );
+        cube.push_back( glm::fvec3( 1.0, 0.0, 1.0 ) );
+        cube.push_back( glm::fvec3( 0.0, 0.0, 1.0 ) );
+        cube.push_back( glm::fvec3( 1.0, 1.0, 0.0 ) );
+        cube.push_back( glm::fvec3( 1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::fvec3( 0.0, 1.0, 1.0 ) );
+        cube.push_back( glm::fvec3( 0.0, 1.0, 0.0 ) ); 
 
         static int faceIndex[6][4] =
         { { 0, 1, 2, 3 },

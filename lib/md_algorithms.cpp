@@ -68,7 +68,7 @@ void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps )
     double potential = 0;
     Lennard_Jones( r, sigma, eps, force_scalar, potential );
     
-    double3 force_vec { mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z };
+    double3 force_vec( mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z );
     force_vec.x = force_vec.x * force_scalar / r;
     force_vec.y = force_vec.y * force_scalar / r;
     force_vec.z = force_vec.z * force_scalar / r;
@@ -105,7 +105,7 @@ void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
                 double potential = 0;
                 Lennard_Jones( r, 1, 1, force_scalar, potential );
                 
-                double3 force_vec { mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z };
+                double3 force_vec( mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z );
                 force_vec.x = force_vec.x * force_scalar / r;
                 force_vec.y = force_vec.y * force_scalar / r;
                 force_vec.z = force_vec.z * force_scalar / r;
