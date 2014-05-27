@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.7)
 set(PROJECT_NAME_STR boost_parts)
 project(${PROJECT_NAME_STR} C CXX)
 
-if ( defined WIN32 ) 
+if ( WIN32 ) 
     set ( BOOST_BOOTSTRAP ${CMAKE_CURRENT_LIST_DIR}/bootstrap.bat )
 else()
     set ( BOOST_BOOTSTRAP ${CMAKE_CURRENT_LIST_DIR}/bootstrap.sh )
