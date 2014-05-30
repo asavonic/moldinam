@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.7)
 set(PROJECT_NAME_STR moldinam)
 project(${PROJECT_NAME_STR} C CXX)
 
-set ( GLUT_LIB_NAME glut )
+set ( GLUT_LIB_NAME freeglut_static )
 set ( GLUT_DIR ${CMAKE_CURRENT_LIST_DIR} )
 
 find_package( OpenGL )
@@ -10,8 +10,11 @@ if( NOT OPENGL_FOUND )
     return()
 endif()
 
-set_property( GLOBAL PROPERTY GLUT_INCLUDE "${${GLUT_DIR}/include}" )
-set_property( GLOBAL PROPERTY GLUT_LIB ${${GLUT_DIR}/include} )
+set( GLUT_INCLUDE "${GLUT_DIR}/include" PARENT_SCOPE )
+set( GLUT_LIB "${GLUT_LIB_NAME}.lib" PARENT_SCOPE )
+set( GLUT_LIB_DIR ${PROJECT_BINARY_DIR} PARENT_SCOPE )
+
+add_definitions( -DFREEGLUT_STATIC )
 
 add_library(
     ${GLUT_LIB_NAME}

@@ -19,4 +19,3 @@ execute_process( COMMAND  ${CMAKE_CURRENT_LIST_DIR}/b2 --link --variant=release 
 set( BOOST_PROGRAM_OPTIONS_DIR ${PROJECT_BINARY_DIR} PARENT_SCOPE )
 
 set( BOOST_PROGRAM_OPTIONS ${CMAKE_CURRENT_BINARY_DIR}/libboost_program_options.a PARENT_SCOPE )
-

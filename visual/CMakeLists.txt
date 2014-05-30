@@ -6,16 +6,15 @@ project(${PROJECT_NAME_STR} C CXX)
 add_executable(visualizer visualizer.cpp)
 
 include_directories( glm )
+include_directories( ${GLUT_INCLUDE} )
+
+# find_library(GLUT_LIBRARY NAMES freeglut.lib freeglut.so freeglut.a libglut.so libglut.a )
+
 if( NOT WIN32 )
-    target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${BOOST_PROGRAM_OPTIONS} -lGL -lglut )
+    target_link_libraries( visualizer -lGL -lglut ${BOOST_PROGRAM_OPTIONS} )
 else()
-    target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${GLUT_LIB} )
+    add_definitions( -DFREEGLUT_STATIC )
+    # target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${GLUT_LIB} )
 endif()
 
-#installation of executable files
-INSTALL ( FILES
-          ${CMAKE_CURRENT_BINARY_DIR}/visualizer 
-
-          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
-          DESTINATION ${CMAKE_INSTALL_PREFIX}
-        )
+target_link_libraries( visualizer ${PROJECT_LIB_NAME} )

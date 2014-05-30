@@ -19,6 +19,9 @@ if(MSVC)
     if(CMAKE_CXX_FLAGS_DEBUG MATCHES "/RTC1")
         string(REPLACE "/RTC1" " " CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}")
     endif()
+    if(CMAKE_CXX_FLAGS_RELEASE MATCHES "/RTC1")
+        string(REPLACE "/RTC1" " " CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE}")
+    endif()
     add_definitions(/EHsc)
     set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
 endif() 
@@ -42,9 +45,11 @@ add_subdirectory(ext/gtest-1.7.0)
 
 add_subdirectory(ext/boost)
 include_directories(ext/boost)
+link_directories( ${BOOST_PROGRAM_OPTIONS_DIR} )
 
 include_directories(ext/freeglut-2.8.1/include)
 add_subdirectory(ext/freeglut-2.8.1)
+link_directories( ${GLUT_LIB_DIR} )
 
 #-------------------
 # Test
