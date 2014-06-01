@@ -10,9 +10,9 @@ Python (optional)
 
 How to get sources
 --------
-`git clone https://github.com/asavonic/moldinam.git`
-`cd moldinam`
-`git submodule update --init --recursive`
+`git clone https://github.com/asavonic/moldinam.git`<br/>
+`cd moldinam`<br/>
+`git submodule update --init --recursive`<br/>
 
 How to build
 --------
