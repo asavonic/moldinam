@@ -30,7 +30,7 @@ or you can build it with python script automatically
 `python $MD_ROOT/__env/mkbuild.py` 
 
 **Windows:** <br />
-MS Visual Studio is the only supported compiler for Windows, at least for now, and you can generate VS Solution automatically:<br/>
+MS Visual Studio is the only supported compiler for Windows, at least for now, and you can generate VS Solution automatically:<br/><br/>
 `set MD_ROOT=<path to moldinam root>`<br/>
-`python %MD_ROOT%\__env\mkbuild.py`<br/>
+`python %MD_ROOT%\__env\mkbuild.py`<br/><br/>
 After that you`ll find moldinam.sln in %MD_ROOT%/tmp
