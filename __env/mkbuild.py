@@ -2,6 +2,7 @@
 
 from md_env import MD_ROOT
 import os
+import platform
 import shutil
 import argparse
 import git
@@ -52,8 +53,10 @@ os.chdir( tmp_dir )
 subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir,
                    "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2 " + compiler_opt ])
 
-
-subprocess.call( [ "make", "install" ])
+if platform.system() == "Windows":
+    print "Now you can open tmp/moldinam.sln in Visual Studio and build whatever you want"
+else:
+    subprocess.call( [ "make", "install" ])
 
 if args.build_hash != "current":
     repo.git.checkout( active_branch )
