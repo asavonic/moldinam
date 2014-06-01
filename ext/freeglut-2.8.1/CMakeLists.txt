@@ -16,6 +16,11 @@ set( GLUT_LIB_DIR ${PROJECT_BINARY_DIR} PARENT_SCOPE )
 
 add_definitions( -DFREEGLUT_STATIC )
 
+if(UNIX)
+    add_definitions( -D__unix__ -DHAVE_FCNTL_H -DTARGET_HOST_POSIX_X11 )
+endif(UNIX)
+
+
 add_library(
     ${GLUT_LIB_NAME}
     STATIC

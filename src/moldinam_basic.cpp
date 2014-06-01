@@ -1,8 +1,3 @@
-#ifndef _MSC_VER
-#pragma comment( lib, "boost_program_options.lib" )
-#pragma comment( lib, "moldinam.lib" )
-#endif
-
 #include <boost/program_options.hpp>
 #include <boost/throw_exception.hpp>
 #include <iostream>

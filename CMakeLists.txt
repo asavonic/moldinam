@@ -3,7 +3,9 @@ set(PROJECT_NAME_STR moldinam)
 project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11)
+    #add_definitions( -std=c++11 )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -pthread")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -E -pthread" )
 endif()
 if( ${CMAKE_C_COMPILER} MATCHES "icc" )
 	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 )
@@ -25,6 +27,7 @@ if(MSVC)
     add_definitions(/EHsc)
     set(MSVC_COMPILER_DEFS "-D_VARIADIC_MAX=10")
 endif() 
+
 #-------------------
 # set common include folder for module
 #-------------------
