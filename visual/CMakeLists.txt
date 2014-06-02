@@ -18,3 +18,10 @@ else()
 endif()
 
 target_link_libraries( visualizer ${PROJECT_LIB_NAME} )
+
+INSTALL ( FILES
+          ${CMAKE_CURRENT_BINARY_DIR}/visualizer 
+
+          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
+          DESTINATION ${CMAKE_INSTALL_PREFIX}
+        )
