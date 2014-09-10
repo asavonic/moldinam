@@ -8,7 +8,7 @@
 
 namespace po = boost::program_options;
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace );
+void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace );
 
 int main( int argc, char** argv ) {
     try {
@@ -55,7 +55,7 @@ int main( int argc, char** argv ) {
         std::cout << "periodic    = " << use_periodic << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
 
-        moldinam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file );
+        moldynam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file );
 
     } 
     catch ( boost::program_options::error& po_error ) {
@@ -66,7 +66,7 @@ int main( int argc, char** argv ) {
     }
 }
 
-void moldinam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
+void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
     LJ_config lj_config("LJ_constants.conf");

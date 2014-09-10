@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.7)
-set(PROJECT_NAME_STR moldinam)
+set(PROJECT_NAME_STR moldynam)
 project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)

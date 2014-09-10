@@ -54,7 +54,7 @@ subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir
                    "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2 " + compiler_opt ])
 
 if platform.system() == "Windows":
-    print "Now you can open tmp/moldinam.sln in Visual Studio and build whatever you want"
+    print "Now you can open tmp/moldynam.sln in Visual Studio and build whatever you want"
 else:
     subprocess.call( [ "make", "install" ])
 

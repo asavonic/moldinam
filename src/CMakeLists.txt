@@ -3,17 +3,17 @@ set(PROJECT_NAME_STR exec)
 project(${PROJECT_NAME_STR} C CXX)
 
 
-add_executable(moldinam_basic moldinam_basic.cpp)
-target_link_libraries( moldinam_basic ${PROJECT_LIB_NAME} )
+add_executable(moldynam_basic moldynam_basic.cpp)
+target_link_libraries( moldynam_basic ${PROJECT_LIB_NAME} )
 
 if (NOT WIN32)
-    target_link_libraries( moldinam_basic ${BOOST_PROGRAM_OPTIONS})
+    target_link_libraries( moldynam_basic ${BOOST_PROGRAM_OPTIONS})
 endif()
 
 
 #installation of executable files
 INSTALL ( FILES
-          ${CMAKE_CURRENT_BINARY_DIR}/moldinam_basic 
+          ${CMAKE_CURRENT_BINARY_DIR}/moldynam_basic 
 
           PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
           DESTINATION ${CMAKE_INSTALL_PREFIX}
