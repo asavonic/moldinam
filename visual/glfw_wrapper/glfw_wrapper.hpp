@@ -62,11 +62,19 @@ namespace glfw {
          * @param width Width of the window, must be greater than zero
          * @param height Height of the window, must be greater than zero
          */
-        window( size_t width, size_t height, std::string title ) {
+        window( size_t width, size_t height, std::string title ) 
+        {
+            glfw_system::instance();
+
             _window =  glfwCreateWindow( width, height, title.c_str(), NULL /* no need fullscreen */, 
                                                                           NULL /* do not share resources with other windows */ );
 
-            glfwGetWindowSize( _window, &_width, &_height );
+            int temp_width = 0;
+            int temp_height = 0;
+            glfwGetWindowSize( _window, &temp_width, &temp_height );
+
+            _width = temp_width;
+            _height = temp_height;
         }
 
         /**
