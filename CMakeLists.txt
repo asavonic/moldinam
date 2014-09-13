@@ -54,6 +54,8 @@ include_directories(ext/freeglut-2.8.1/include)
 add_subdirectory(ext/freeglut-2.8.1)
 link_directories( ${GLUT_LIB_DIR} )
 
+include_directories( ext/glm )
+
 #-------------------
 # Test
 #-------------------

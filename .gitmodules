@@ -1,3 +1,4 @@
-[submodule "visual/glm"]
-	path = visual/glm
+[submodule "ext/glm"]
+	path = ext/glm
 	url = https://github.com/g-truc/glm.git
+	branch = 0.9.6

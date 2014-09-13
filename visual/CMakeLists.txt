@@ -5,7 +5,6 @@ project(${PROJECT_NAME_STR} C CXX)
 
 add_executable(visualizer visualizer.cpp)
 
-include_directories( glm )
 include_directories( ${GLUT_INCLUDE} )
 
 # find_library(GLUT_LIBRARY NAMES freeglut.lib freeglut.so freeglut.a libglut.so libglut.a )
