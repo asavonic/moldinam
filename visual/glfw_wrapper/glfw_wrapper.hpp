@@ -34,7 +34,7 @@ namespace glfw {
 
         glfw_system() 
         {
-            if ( not  !glfwInit() ) {
+            if ( !glfwInit() ) {
                 throw std::runtime_error( "Couldn`t initialize GLFW system" );
             }
         }
@@ -54,7 +54,7 @@ namespace glfw {
         /**
          * @brief Creates windows object with default size 640 x 480
          */
-        window() : window( 640, 480, "GLFW window" ) { };
+        explicit window() : window( 640, 480, "GLFW window" ) { };
 
         /**
          * @brief Creates window object
@@ -62,7 +62,7 @@ namespace glfw {
          * @param width Width of the window, must be greater than zero
          * @param height Height of the window, must be greater than zero
          */
-        window( size_t width, size_t height, std::string title ) 
+        explicit window( size_t width, size_t height, std::string title ) 
         {
             glfw_system::instance();
 
@@ -87,23 +87,41 @@ namespace glfw {
         /**
          * @brief Returns width of the window
          */
-        size_t width() {
+        virtual size_t width() {
             return _width;
         }
 
         /**
          * @brief Returns height of the window
          */
-        size_t height() {
+        virtual size_t height() {
             return _height;
         }
 
         /**
          * @brief This function swaps the front and back buffers of the window. 
          */
-        void swap_buffers() {
+        virtual void swap_buffers() {
             glfwSwapBuffers( _window );
         }
+
+        /**
+         * @brief Starts the window and calls draw() method which must be overloaded
+         */
+        virtual void start() {
+            glfwMakeContextCurrent ( _window );
+            while ( !glfwWindowShouldClose ( _window ) ) {
+                draw();
+
+                glfwSwapBuffers ( _window );
+                glfwPollEvents();
+            }
+        }
+
+        /**
+         * @brief Overload this function to draw something.
+         */
+        virtual void draw() = 0;
 
         private:
         GLFWwindow* _window;

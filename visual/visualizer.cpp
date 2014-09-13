@@ -11,6 +11,31 @@
 
 namespace po = boost::program_options;
 
+class SimpleVisualizer : public glfw::window 
+{
+    using glfw::window::window;
+
+    virtual void draw() override {
+        float ratio = 0;
+        ratio = width()/ ( float ) height();
+        glViewport ( 0, 0, width(), height() );
+        glClear ( GL_COLOR_BUFFER_BIT );
+        glMatrixMode ( GL_PROJECTION );
+        glLoadIdentity();
+        glOrtho ( -ratio, ratio, -1.f, 1.f, 1.f, -1.f );
+        glMatrixMode ( GL_MODELVIEW );
+        glLoadIdentity();
+        glRotatef ( ( float ) glfwGetTime() * 50.f, 0.f, 0.f, 1.f );
+        glBegin ( GL_TRIANGLES );
+        glColor3f ( 1.f, 0.f, 0.f );
+        glVertex3f ( -0.6f, -0.4f, 0.f );
+        glColor3f ( 0.f, 1.f, 0.f );
+        glVertex3f ( 0.6f, -0.4f, 0.f );
+        glColor3f ( 0.f, 0.f, 1.f );
+        glVertex3f ( 0.f, 0.6f, 0.f );
+        glEnd();
+    }
+};
 
 int main( int argc, char** argv ) {
     try {
@@ -41,7 +66,8 @@ int main( int argc, char** argv ) {
 
         po::notify(vm);
 
-        glfw::window window( 1024, 768, "Moldynam test visualizer" );
+        SimpleVisualizer visualizer( 1024, 768, "Moldynam test visualizer" );
+        visualizer.start();            
 
     } 
     catch ( boost::program_options::error& po_error ) {
