@@ -40,7 +40,9 @@ flags = [
 '-I',
 './ext/gtest-1.7.0/include',
 '-I',
-'./visual/glm'
+'./ext/glm',
+'-I',
+'./ext/glfw/include'
 ]
 
 
