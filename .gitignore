@@ -20,3 +20,6 @@ ext/boost/bjam
 ext/boost/bootstrap.log
 ext/boost/project-config.jam
 ext/boost/tools/build/*
+
+docs/html/
+docs/latex/
