@@ -1,7 +1,7 @@
 moldynam
 ========
 
-Molecular dinamic project
+Molecular dynamic project
 
 Requirements
 --------
