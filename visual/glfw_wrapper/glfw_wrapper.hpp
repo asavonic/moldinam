@@ -65,7 +65,7 @@ namespace glfw {
     static void g_resize_callback( GLFWwindow* glfw_window_ptr, int width, int height );
 
     /**
-     * @brief Internal callback for mouse events. Finds window object according to glfw_window_ptr and calls its mouse_callback() method
+     * @brief Internal callback for mouse press event. Finds window object according to glfw_window_ptr and calls its mouse_press_callback() method
      *
      * @param glfw_window_ptr is a pointer to plain GLFW window
      * @param key is the keyboard key that was pressed or released. 
@@ -73,7 +73,16 @@ namespace glfw {
      * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT ( when mouse button held down, repeats on release ). 
      * @param mods Bit field describing which modifier keys were held down. GLFW_MOD_SHIFT, GLFW_MOD_CONTROL, GLFW_MOD_ALT, GLFW_MOD_SUPER
      */
-    static void g_mouse_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods );
+    static void g_mouse_press_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods );
+
+    /**
+     * @brief Internal callback for mouse move event. Finds window object according to glfw_window_ptr and calls its mouse_move_callback() method
+     *
+     * @param glfw_window_ptr
+     * @param new_pos_x
+     * @param new_pos_y
+     */
+    static void g_mouse_move_callback( GLFWwindow* glfw_window_ptr, double new_pos_x , double new_pos_y );
 
 
     /**
@@ -159,6 +168,12 @@ namespace glfw {
          */
         virtual void draw() = 0;
 
+        /**
+         * @brief Resize callback called ufter window resize. Updates _width and _height
+         *
+         * @param width New width of the window
+         * @param height New height of the window
+         */
         virtual void resize_callback( size_t width, size_t height ) {
             _width = width;
             _height = height;
@@ -172,8 +187,18 @@ namespace glfw {
          * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT. 
          * @param mods Bit field describing which modifier keys were held down. GLFW_MOD_SHIFT, GLFW_MOD_CONTROL, GLFW_MOD_ALT, GLFW_MOD_SUPER
          */
-        virtual void mouse_callback( int key, int scancode, int action, int mods ) {
+        virtual void mouse_press_callback( int key, int scancode, int action, int mods ) {
 
+        }
+
+        /**
+         * @brief Called on cursor move. The callback is provided with the position, in screen coordinates, relative to the upper-left corner of the client area of the window.
+         *
+         * @param new_pos_x New position by X
+         * @param new_pos_y New position by Y
+         */
+        virtual void mouse_move_callback( double new_pos_x, double new_pos_y ) {
+            
         }
 
         private:
@@ -206,8 +231,13 @@ namespace glfw {
         win_ptr->resize_callback( width, height );
     }
 
-    static void g_mouse_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods ) {
+    static void g_mouse_press_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods ) {
         window* win_ptr = g_find_window_object( glfw_window_ptr );
-        win_ptr->mouse_callback( key, scancode, action, mods );
+        win_ptr->mouse_press_callback( key, scancode, action, mods );
+    }
+
+    static void g_mouse_move_callback( GLFWwindow* glfw_window_ptr, double new_pos_x , double new_pos_y ) {
+        window* win_ptr = g_find_window_object( glfw_window_ptr );
+        win_ptr->mouse_move_callback( new_pos_x, new_pos_y );
     }
 }
