@@ -16,6 +16,8 @@ class SimpleVisualizer : public glfw::window
     using glfw::window::window;
 
     virtual void draw() override {
+    /* sample draw method */
+    /*
         float ratio = 0;
         ratio = width()/ ( float ) height();
         glViewport ( 0, 0, width(), height() );
@@ -34,7 +36,57 @@ class SimpleVisualizer : public glfw::window
         glColor3f ( 0.f, 0.f, 1.f );
         glVertex3f ( 0.f, 0.6f, 0.f );
         glEnd();
+    */
+        glPushMatrix();
+            glRotatef( angle_y, 1.0, 0.0, 0.0);
+            glRotatef( angle_x, 0.0, 1.0, 0.0);
+            draw_cube();
+        glPopMatrix();
     }
+
+    virtual void draw_cube() 
+    {
+        std::vector< glm::vec3 > cube;
+		cube.push_back( glm::vec3( 0.0, 0.0, 0.0 ) );
+        cube.push_back( glm::vec3( 1.0, 0.0, 0.0 ) );
+        cube.push_back( glm::vec3( 1.0, 0.0, 1.0 ) );
+        cube.push_back( glm::vec3( 0.0, 0.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, 0.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 0.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 0.0, 1.0, 0.0 ) ); 
+
+        static int faceIndex[6][4] =
+        { { 0, 1, 2, 3 },
+          { 1, 4, 5, 2 },
+          { 4, 7, 6, 5 },
+          { 7, 0, 3, 6 },
+          { 3, 2, 5, 6 },
+          { 7, 4, 1, 0 } };
+
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glColor3f(1.0, 1.0, 0.0);
+
+        for ( unsigned int face = 0; face < 6; face++ ) {
+            glBegin(GL_LINE_LOOP);
+                for ( unsigned int line = 0; line < 4; line++  )  {
+                    glVertex3fv( (GLfloat *) &cube[faceIndex[face][line]]);
+                }
+            glEnd();
+        }
+    }
+    
+    public:
+
+    /**
+     * @brief Size of drawable area. All particles position will be scaled to this size.
+     */
+    glm::vec3 dimensions;
 };
 
 int main( int argc, char** argv ) {
