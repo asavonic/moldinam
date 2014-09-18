@@ -37,6 +37,10 @@ class SimpleVisualizer : public glfw::window
         glVertex3f ( 0.f, 0.6f, 0.f );
         glEnd();
     */
+        static float angle_x = 0;
+        static float angle_y = 0;
+        //angle_x += 1;
+        angle_y += 1;
         glPushMatrix();
             glRotatef( angle_y, 1.0, 0.0, 0.0);
             glRotatef( angle_x, 0.0, 1.0, 0.0);
@@ -47,14 +51,14 @@ class SimpleVisualizer : public glfw::window
     virtual void draw_cube() 
     {
         std::vector< glm::vec3 > cube;
-		cube.push_back( glm::vec3( 0.0, 0.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 0.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 0.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 0.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 1.0, 0.0 ) ); 
+		cube.push_back( glm::vec3( -0.5, -0.5, -0.5 ) );
+        cube.push_back( glm::vec3( 0.5, -0.5, -0.5 ) );
+        cube.push_back( glm::vec3( 0.5, -0.5, 0.5 ) );
+        cube.push_back( glm::vec3( -0.5, -0.5, 0.5 ) );
+        cube.push_back( glm::vec3( 0.5, 0.5, -0.5 ) );
+        cube.push_back( glm::vec3( 0.5, 0.5, 0.5 ) );
+        cube.push_back( glm::vec3( -0.5, 0.5, 0.5 ) );
+        cube.push_back( glm::vec3( -0.5, 0.5, -0.5 ) ); 
 
         static int faceIndex[6][4] =
         { { 0, 1, 2, 3 },
@@ -80,6 +84,35 @@ class SimpleVisualizer : public glfw::window
             glEnd();
         }
     }
+
+    class Rotation {
+        Rotation() : active(0), _cur_pos(0), _prev_pos(0), _angle(0) {};
+        void mouse_move( double new_pos_x, double new_pos_y ) {
+            _prev_pos = _cur_pos;
+            _cur_pos.x = new_pos_x;
+            _cur_pos.y = new_pos_y;
+
+            if ( active ) {
+                _angle += _cur_pos - _prev_pos;
+            }
+        }
+
+        void mouse_press_callback( int key, int scancode, int action, int mods ) {
+            if ( key == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_REPEAT ) {
+                active ^= 1;
+            }
+        }
+
+        glm::dvec2 angle() {
+            return _angle;
+        }
+        private:
+        
+        bool active;
+        glm::dvec2 _cur_pos;
+        glm::dvec2 _prev_pos;
+        glm::dvec2 _angle;
+    };
     
     public:
 
@@ -118,7 +151,7 @@ int main( int argc, char** argv ) {
 
         po::notify(vm);
 
-        SimpleVisualizer visualizer( 1024, 768, "Moldynam test visualizer" );
+        SimpleVisualizer visualizer( 1920, 1080, "Moldynam test visualizer" );
         visualizer.start();            
 
     } 
