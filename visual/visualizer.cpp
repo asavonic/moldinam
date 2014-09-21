@@ -6,6 +6,7 @@
 #include <boost/program_options.hpp>
 #include <functional>
 #include <memory>
+#include <GL/glut.h>
 
 #include "glfw_wrapper/glfw_wrapper.hpp"
 
@@ -41,24 +42,42 @@ class SimpleVisualizer : public glfw::window
         static float angle_y = 0;
         //angle_x += 1;
         angle_y += 1;
-        glPushMatrix();
+        glClearColor( 0, 0, 0, 1 );
+        glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+        glMatrixMode( GL_PROJECTION );
+        glLoadIdentity();
+        int w = width();
+        int h = height();
+        gluPerspective( 60, w / h, 0.1, 100 );
+
+        glMatrixMode( GL_MODELVIEW );
+        glLoadIdentity();
+        gluLookAt
+            ( 
+            3, 3, 3, 
+            0, 0, 0,
+            0, 0, 1
+            );
+
+        //glPushMatrix();
             glRotatef( angle_y, 1.0, 0.0, 0.0);
             glRotatef( angle_x, 0.0, 1.0, 0.0);
             draw_cube();
-        glPopMatrix();
+        //glPopMatrix();
     }
 
     virtual void draw_cube() 
     {
         std::vector< glm::vec3 > cube;
-		cube.push_back( glm::vec3( -0.5, -0.5, -0.5 ) );
-        cube.push_back( glm::vec3( 0.5, -0.5, -0.5 ) );
-        cube.push_back( glm::vec3( 0.5, -0.5, 0.5 ) );
-        cube.push_back( glm::vec3( -0.5, -0.5, 0.5 ) );
-        cube.push_back( glm::vec3( 0.5, 0.5, -0.5 ) );
-        cube.push_back( glm::vec3( 0.5, 0.5, 0.5 ) );
-        cube.push_back( glm::vec3( -0.5, 0.5, 0.5 ) );
-        cube.push_back( glm::vec3( -0.5, 0.5, -0.5 ) ); 
+		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
+        cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) ); 
 
         static int faceIndex[6][4] =
         { { 0, 1, 2, 3 },

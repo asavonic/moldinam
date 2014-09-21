@@ -155,7 +155,7 @@ namespace glfw {
             glfwMakeContextCurrent ( _window );
 
             glfwSetFramebufferSizeCallback( _window, g_resize_callback );
-            glfwSetMouseButtonCallback( _window, g_mouse_press_callback );
+            //glfwSetMouseButtonCallback( _window, g_mouse_press_callback );
             glfwSetCursorPosCallback( _window, g_mouse_move_callback );
             while ( !glfwWindowShouldClose ( _window ) ) {
                 draw();
