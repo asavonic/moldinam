@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdexcept>
 #include <string>
@@ -108,6 +109,12 @@ namespace glfw {
 
             _window =  glfwCreateWindow( width, height, title.c_str(), NULL /* no need fullscreen */, 
                                                                           NULL /* do not share resources with other windows */ );
+            glfwMakeContextCurrent(_window);
+
+            auto glew_err = glewInit();
+            if ( glew_err ) {
+                throw std::runtime_error( std::string( "Couldn`t initialize GLEW system - " ) + std::string( (char*)glewGetErrorString( glew_err ) ) );
+            }
 
             g_window_object_list.push_back( std::make_pair( this, _window ) );
 
