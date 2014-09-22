@@ -7,8 +7,10 @@
 
 class cube_window : public glfw::window {
 
+    using parent_t = glfw::window;
+
     public:
-    cube_window() : glfw::window( 1024, 768, "Cube shaders test" ) {
+    cube_window() : glfw::window() {
         init_program();
         init_VBO();
     }
@@ -48,12 +50,6 @@ class cube_window : public glfw::window {
         checkOpenGLerror();
         unif_mvp = glGetUniformLocation( program, "mvp" );
         attrib_vertex = glGetAttribLocation( program, "coord" );
-    }
-
-    virtual void resize_callback( size_t new_width, size_t new_height ) override {
-        _width = new_width;
-        _height = new_height;
-        glViewport(0, 0, new_width, new_height);
     }
 
 void shaderLog(unsigned int shader) 

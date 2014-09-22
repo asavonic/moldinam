@@ -186,6 +186,7 @@ namespace glfw {
         virtual void resize_callback( size_t width, size_t height ) {
             _width = width;
             _height = height;
+            glViewport(0, 0, width, height);
         }
 
         /**
