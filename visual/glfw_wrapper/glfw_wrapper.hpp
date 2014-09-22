@@ -210,7 +210,7 @@ namespace glfw {
             
         }
 
-        private:
+        protected:
         GLFWwindow* _window;
 
         size_t _height;

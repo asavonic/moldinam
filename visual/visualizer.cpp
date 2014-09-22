@@ -2,12 +2,13 @@
 #include "glfw_wrapper/glfw_wrapper.hpp"
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
 class cube_window : public glfw::window {
 
     public:
-    cube_window() : glfw::window() {
+    cube_window() : glfw::window( 1024, 768, "Cube shaders test" ) {
         init_program();
         init_VBO();
     }
@@ -49,6 +50,12 @@ class cube_window : public glfw::window {
         attrib_vertex = glGetAttribLocation( program, "coord" );
     }
 
+    virtual void resize_callback( size_t new_width, size_t new_height ) override {
+        _width = new_width;
+        _height = new_height;
+        glViewport(0, 0, new_width, new_height);
+    }
+
 void shaderLog(unsigned int shader) 
 { 
   int   infologLen   = 0;
@@ -81,10 +88,32 @@ void checkOpenGLerror()
         glGenBuffers(1, &VBO);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         
-		cube.push_back( glm::vec3( -0.5, -0.5, 0 ) );
-        cube.push_back( glm::vec3( 0.5, -0.5, 0 ) );
-        cube.push_back( glm::vec3( 0.5, 0.5, 0 ) );
-        cube.push_back( glm::vec3( -0.5, 0.5, 0 ) );
+		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
+		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
+
+		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
+		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
+		cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
+		cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
+		cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
+		cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
+		cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
+		cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
+
+		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
+        cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
+        cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
+		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
 
         glBufferData(GL_ARRAY_BUFFER, cube.size() * sizeof( glm::vec3 ), glm::value_ptr( cube[0] ), GL_STATIC_DRAW);
     }
@@ -95,13 +124,43 @@ void checkOpenGLerror()
         glClearColor(0, 0, 0, 0);
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(program); 
-        glm::mat4 mvp( 1.0f );
+
+        static float angle = 0;
+        angle++;
+        /* glm::vec3 axis_y(0.0, 1.0, 0.0);
+        glm::vec3 axis_x(1.0, 0.0, 0.0);
+        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), (float)angle, axis_x);
+        //anim = glm::rotate(anim, 40.f, axis_y);
+
+        glm::mat4 view = glm::lookAt(
+            glm::vec3( 0.0, 0.0, 1.0 ),
+            glm::vec3( 0.0, 0.0, 0.0 ),
+            glm::vec3( 0.0, 1.0, 0.0 )
+        );
+
+        glm::mat4 projection = glm::perspective( 90.0f, static_cast<float>( width() / height() ), 0.1f, 200.0f );
+
+
+        glm::mat4 mvp = view * anim * glm::mat4(1.0f);
+
+        */
+
+        glm::vec3 axis_y(0, 1, 0);
+        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), glm::radians(angle), axis_y);
+
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
+
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 projection = glm::perspective(45.0f, 1.0f*width()/height(), 0.1f, 10.0f);
+
+        glm::mat4 mvp = projection * view * model * anim;
+
         glUniformMatrix4fv( unif_mvp, 1, false, glm::value_ptr( mvp ) );
         glEnableVertexAttribArray(attrib_vertex);
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glVertexAttribPointer(attrib_vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDrawArrays( GL_LINE_LOOP, 0, cube.size() );
+        glDrawArrays( GL_LINES, 0, cube.size() );
         checkOpenGLerror();
     }
 
