@@ -9,7 +9,7 @@ include_directories( ${GLUT_INCLUDE} )
 
 
 if( NOT WIN32 )
-    target_link_libraries( visualizer -lGL -lGLU -lGLEW -lglut glfw ${GLFW_LIBRARIES} ${BOOST_PROGRAM_OPTIONS} )
+    target_link_libraries( visualizer -lGL -lGLU -lGLEW  glfw ${GLFW_LIBRARIES} ${BOOST_PROGRAM_OPTIONS} )
 else()
     add_definitions( -DFREEGLUT_STATIC )
 endif()
