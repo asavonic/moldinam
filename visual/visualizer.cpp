@@ -121,8 +121,6 @@ void checkOpenGLerror()
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(program); 
 
-        static float angle = 0;
-        angle++;
         /* glm::vec3 axis_y(0.0, 1.0, 0.0);
         glm::vec3 axis_x(1.0, 0.0, 0.0);
         glm::mat4 anim = glm::rotate(glm::mat4(1.0f), (float)angle, axis_x);
@@ -141,12 +139,15 @@ void checkOpenGLerror()
 
         */
 
+        glm::vec3 axis_x(1, 0, 0);
+        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.x, axis_x);
+
         glm::vec3 axis_y(0, 1, 0);
-        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), glm::radians(angle), axis_y);
+        anim = glm::rotate( anim, angle.y, axis_y);
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
 
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 2.0, 0.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 view = glm::lookAt(glm::vec3(3.0, 0.0, .0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
         glm::mat4 projection = glm::perspective(45.0f, 1.0f*width()/height(), 0.1f, 10.0f);
 
         glm::mat4 mvp = projection * view * model * anim;
@@ -160,12 +161,46 @@ void checkOpenGLerror()
         checkOpenGLerror();
     }
 
+    virtual void mouse_move_callback( double new_x, double new_y ) {
+        static double old_x = new_x;
+        static double old_y = new_y;
+
+        mouse_move.x = old_x - new_x;
+        mouse_move.y = old_y - new_y;
+
+        old_x = new_x;
+        old_y = new_y;
+
+        control();
+    }
+
+    virtual void mouse_press_callback( int button, int action, int mods ) {
+        mouse_button = button;
+        mouse_action = action;
+        std::cout << "button" << std::endl;
+        control();
+    }
+
+    virtual void control() {
+        if ( mouse_action == GLFW_PRESS && mouse_button == GLFW_MOUSE_BUTTON_LEFT ) {
+            angle.x += mouse_move.x / 10 ;
+            angle.y += mouse_move.y / 10 ;
+            std::cout << "move x = " << mouse_move.x << " y = " << mouse_move.y << std::endl;
+        }
+    }
+
+    glm::vec2 mouse_move;
+    int mouse_action;
+    int mouse_button;
+
+
     GLuint program;
     GLuint attrib_vertex;
     GLuint unif_mvp;
     std::vector< glm::vec3 > cube;
 
     GLuint VBO;
+    glm::vec2 angle;
 };
 int main( int argc, char** argv ) {
     cube_window window;

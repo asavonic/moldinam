@@ -69,12 +69,11 @@ namespace glfw {
      * @brief Internal callback for mouse press event. Finds window object according to glfw_window_ptr and calls its mouse_press_callback() method
      *
      * @param glfw_window_ptr is a pointer to plain GLFW window
-     * @param key is the keyboard key that was pressed or released. 
-     * @param scancode The system-specific scancode of the key. 
-     * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT ( when mouse button held down, repeats on release ). 
+     * @param button GLFW_MOUSE_BUTTON_LEFT, GLFW_MOUSE_BUTTON_RIGHT, or GLFW_MOUSE_BUTTON_MIDDLE
+     * @param action GLFW_PRESS or GLFW_RELEASE 
      * @param mods Bit field describing which modifier keys were held down. GLFW_MOD_SHIFT, GLFW_MOD_CONTROL, GLFW_MOD_ALT, GLFW_MOD_SUPER
      */
-    static void g_mouse_press_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods );
+    static void g_mouse_button_callback( GLFWwindow* glfw_window_ptr, int button, int action, int mods );
 
     /**
      * @brief Internal callback for mouse move event. Finds window object according to glfw_window_ptr and calls its mouse_move_callback() method
@@ -162,7 +161,7 @@ namespace glfw {
             glfwMakeContextCurrent ( _window );
 
             glfwSetFramebufferSizeCallback( _window, g_resize_callback );
-            //glfwSetMouseButtonCallback( _window, g_mouse_press_callback );
+            glfwSetMouseButtonCallback( _window, g_mouse_button_callback );
             glfwSetCursorPosCallback( _window, g_mouse_move_callback );
             while ( !glfwWindowShouldClose ( _window ) ) {
                 draw();
@@ -192,12 +191,11 @@ namespace glfw {
         /**
          * @brief Called when some mouse evet occured. Does nothing in glfw::window, but can be overloaded in derived class
          *
-         * @param key Mouse button key: GLFW_MOUSE_BUTTON_LEFT, GLFW_MOUSE_BUTTON_RIGHT, GLFW_MOUSE_BUTTON_MIDDLE
-         * @param scancode The system-specific scancode of the key. 
-         * @param action GLFW_PRESS, GLFW_RELEASE or GLFW_REPEAT. 
+         * @param button GLFW_MOUSE_BUTTON_LEFT, GLFW_MOUSE_BUTTON_RIGHT, or GLFW_MOUSE_BUTTON_MIDDLE
+         * @param action GLFW_PRESS or GLFW_RELEASE 
          * @param mods Bit field describing which modifier keys were held down. GLFW_MOD_SHIFT, GLFW_MOD_CONTROL, GLFW_MOD_ALT, GLFW_MOD_SUPER
          */
-        virtual void mouse_press_callback( int key, int scancode, int action, int mods ) {
+        virtual void mouse_press_callback( int button, int action, int mods ) {
 
         }
 
@@ -241,9 +239,9 @@ namespace glfw {
         win_ptr->resize_callback( width, height );
     }
 
-    static void g_mouse_press_callback( GLFWwindow* glfw_window_ptr, int key, int scancode, int action, int mods ) {
+    static void g_mouse_button_callback( GLFWwindow* glfw_window_ptr, int button, int action, int mods ) {
         window* win_ptr = g_find_window_object( glfw_window_ptr );
-        win_ptr->mouse_press_callback( key, scancode, action, mods );
+        win_ptr->mouse_press_callback( button, action, mods );
     }
 
     static void g_mouse_move_callback( GLFWwindow* glfw_window_ptr, double new_pos_x , double new_pos_y ) {
