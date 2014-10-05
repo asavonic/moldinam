@@ -6,3 +6,7 @@
 	path = ext/glfw
 	url = https://github.com/glfw/glfw
 	branch = latest
+[submodule "ext/oglplus"]
+	path = ext/oglplus
+	url = https://github.com/matus-chochlik/oglplus
+	branch = master
