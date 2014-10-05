@@ -121,33 +121,23 @@ void checkOpenGLerror()
         glClear(GL_COLOR_BUFFER_BIT);
         glUseProgram(program); 
 
-        /* glm::vec3 axis_y(0.0, 1.0, 0.0);
-        glm::vec3 axis_x(1.0, 0.0, 0.0);
-        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), (float)angle, axis_x);
-        //anim = glm::rotate(anim, 40.f, axis_y);
 
-        glm::mat4 view = glm::lookAt(
-            glm::vec3( 0.0, 0.0, 1.0 ),
-            glm::vec3( 0.0, 0.0, 0.0 ),
-            glm::vec3( 0.0, 1.0, 0.0 )
-        );
-
-        glm::mat4 projection = glm::perspective( 90.0f, static_cast<float>( width() / height() ), 0.1f, 200.0f );
-
-
-        glm::mat4 mvp = view * anim * glm::mat4(1.0f);
-
-        */
-
+        /* here goes an ugly hack:
+         *      we`re using angle_y for X rotation
+         *      and angle_x for Y rotation
+         *
+         *      TODO
+         *      this must be fixed
+         */
         glm::vec3 axis_x(1, 0, 0);
-        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.x, axis_x);
+        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.y, axis_x);
 
         glm::vec3 axis_y(0, 1, 0);
-        anim = glm::rotate( anim, angle.y, axis_y);
+        anim = glm::rotate( anim, angle.x, axis_y);
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
 
-        glm::mat4 view = glm::lookAt(glm::vec3(3.0, 0.0, .0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
         glm::mat4 projection = glm::perspective(45.0f, 1.0f*width()/height(), 0.1f, 10.0f);
 
         glm::mat4 mvp = projection * view * model * anim;
@@ -165,8 +155,8 @@ void checkOpenGLerror()
         static double old_x = new_x;
         static double old_y = new_y;
 
-        mouse_move.x = old_x - new_x;
-        mouse_move.y = old_y - new_y;
+        mouse_move.x = new_x - old_x;
+        mouse_move.y = new_y - old_y;
 
         old_x = new_x;
         old_y = new_y;
