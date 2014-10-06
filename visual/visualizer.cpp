@@ -5,6 +5,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
+
+#include "render_particles.h"
+
 class cube_window : public glfw::window {
 
     using parent_t = glfw::window;
@@ -81,74 +84,21 @@ void checkOpenGLerror()
     std::cout << "OpenGl error! - " << gluErrorString(errCode) << std::endl;
 }
     void init_VBO() {
-        glGenBuffers(1, &VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        
-		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
-		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
+		cube.push_back( glm::vec3( .0, .0, .0 ) );
 
-		cube.push_back( glm::vec3( -1.0, -1.0, 1.0 ) );
-		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
-		cube.push_back( glm::vec3( 1.0, -1.0, 1.0 ) );
-		cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
-		cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
-		cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
-		cube.push_back( glm::vec3( -1.0, 1.0, 1.0 ) );
-		cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
-
-		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
-        cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
-        cube.push_back( glm::vec3( 1.0, -1.0, -1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, -1.0 ) );
-        cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
-        cube.push_back( glm::vec3( -1.0, 1.0, -1.0 ) );
-		cube.push_back( glm::vec3( -1.0, -1.0, -1.0 ) );
-
-        glBufferData(GL_ARRAY_BUFFER, cube.size() * sizeof( glm::vec3 ), glm::value_ptr( cube[0] ), GL_STATIC_DRAW);
+        particle_renderer.setPositions( glm::value_ptr( cube[0] ), cube.size() );
+        //particle_renderer.setParticleRadius( 0.02 );
+        particle_renderer.setWindowSize( width(), height() );
+        particle_renderer.setParticleRadius( 0.125f * 0.5f * 0.5f * 0.5f);
+        particle_renderer.setPointSize( 0.125f );
     }
 
 
 
     virtual void draw() {
-        glClearColor(0, 0, 0, 0);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glUseProgram(program); 
 
-
-        /* here goes an ugly hack:
-         *      we`re using angle_y for X rotation
-         *      and angle_x for Y rotation
-         *
-         *      TODO
-         *      this must be fixed
-         */
-        glm::vec3 axis_x(1, 0, 0);
-        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.y, axis_x);
-
-        glm::vec3 axis_y(0, 1, 0);
-        anim = glm::rotate( anim, angle.x, axis_y);
-
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
-
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
-        glm::mat4 projection = glm::perspective(45.0f, 1.0f*width()/height(), 0.1f, 10.0f);
-
-        glm::mat4 mvp = projection * view * model * anim;
-
-        glUniformMatrix4fv( unif_mvp, 1, false, glm::value_ptr( mvp ) );
-        glEnableVertexAttribArray(attrib_vertex);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glVertexAttribPointer(attrib_vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDrawArrays( GL_LINES, 0, cube.size() );
-        checkOpenGLerror();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+        particle_renderer.display();
     }
 
     virtual void mouse_move_callback( double new_x, double new_y ) {
@@ -183,6 +133,7 @@ void checkOpenGLerror()
     int mouse_action;
     int mouse_button;
 
+    ParticleRenderer particle_renderer;
 
     GLuint program;
     GLuint attrib_vertex;
