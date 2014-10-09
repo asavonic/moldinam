@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR visualizer)
 project(${PROJECT_NAME_STR} C CXX)
 
 
-add_executable(visualizer visualizer.cpp)
+add_executable(visualizer visualizer.cpp cube_renderer.cpp)
 
 include_directories( ${GLUT_INCLUDE} )
 
