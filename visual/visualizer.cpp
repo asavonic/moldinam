@@ -57,7 +57,6 @@ class cube_window : public glfw::window {
     virtual void mouse_press_callback( int button, int action, int mods ) {
         mouse_button = button;
         mouse_action = action;
-        std::cout << "button" << std::endl;
         control();
     }
 
@@ -65,7 +64,6 @@ class cube_window : public glfw::window {
         if ( mouse_action == GLFW_PRESS && mouse_button == GLFW_MOUSE_BUTTON_LEFT ) {
             angle.x += mouse_move.x / 10 ;
             angle.y += mouse_move.y / 10 ;
-            std::cout << "move x = " << mouse_move.x << " y = " << mouse_move.y << std::endl;
         }
     }
 
