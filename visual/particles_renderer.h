@@ -20,9 +20,9 @@ public:
     void set_positions( std::vector< glm::vec3 >& );
 
 protected: 
-    void _initGL();
+    void setup_program();
+
     void _drawPoints();
-    GLuint _compileProgram(const char *vsource, const char *fsource);
 
 protected:
     std::vector< glm::vec3 > positions;
@@ -34,8 +34,10 @@ protected:
     GLuint program;
     GLuint VBO;
 
-    static const char *sphereVertexShader;
-    static const char *spherePixelShader;
+    GLuint attrib_vertex;
+
+    static const char *vertex_shader_source;
+    static const char *fragment_shader_source;
 };
 
 #endif

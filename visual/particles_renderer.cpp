@@ -10,7 +10,10 @@ particle_renderer::particle_renderer()
   program(0),
   VBO(0)
 {
-    _initGL();
+    glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_FALSE);
+    glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
+
+    setup_program();
 }
 
 particle_renderer::~particle_renderer()
@@ -20,6 +23,19 @@ particle_renderer::~particle_renderer()
 void particle_renderer::set_positions( std::vector< glm::vec3 >& _positions )
 {
     positions = _positions;
+}
+
+void particle_renderer::setup_program() {
+    GLuint vertex_shader = create_shader( GL_VERTEX_SHADER, vertex_shader_source );
+    GLuint fragment_shader = create_shader( GL_FRAGMENT_SHADER, fragment_shader_source );
+
+    program = glCreateProgram();
+    glAttachShader( program, vertex_shader );
+    glAttachShader( program, fragment_shader );
+    glLinkProgram(program);
+
+    unif_mvp = glGetUniformLocation( program, "mvp" );
+    attrib_vertex = glGetAttribLocation( program, "coord" );
 }
 
 void particle_renderer::_drawPoints()
@@ -52,7 +68,7 @@ void particle_renderer::_drawPoints()
 #define STRINGIFY(A) #A
 
 // vertex shader
-const char * particle_renderer::sphereVertexShader = STRINGIFY(
+const char * particle_renderer::vertex_shader_source = STRINGIFY(
 uniform float pointRadius;  // point size in world space
 uniform float pointScale;   // scale to calculate size in pixels
 uniform float densityScale;
@@ -72,7 +88,7 @@ void main()
 );
 
 // pixel shader for rendering points as shaded spheres
-const char * particle_renderer::spherePixelShader = STRINGIFY(
+const char * particle_renderer::fragment_shader_source = STRINGIFY(
 vec3 lightDir = vec3(0.577, 0.577, 0.577);
 void main()
 {
@@ -109,47 +125,4 @@ void particle_renderer::display()
 
         glUseProgram(0);
         glDisable(GL_POINT_SPRITE_ARB);
-}
-
-GLuint
-particle_renderer::_compileProgram(const char *vsource, const char *fsource)
-{
-    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    glShaderSource(vertexShader, 1, &vsource, 0);
-    glShaderSource(fragmentShader, 1, &fsource, 0);
-    
-    glCompileShader(vertexShader);
-    glCompileShader(fragmentShader);
-
-
-    GLuint program = glCreateProgram();
-
-    glAttachShader(program, vertexShader);
-    glAttachShader(program, fragmentShader);
-
-    glLinkProgram(program);
-
-    // check if program linked
-    GLint success = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, &success);
-
-    if (!success) {
-        char temp[256];
-        glGetProgramInfoLog(program, 256, 0, temp);
-        printf("Failed to link program:\n%s\n", temp);
-        glDeleteProgram(program);
-        program = 0;
-    }
-
-    return program;
-}
-
-void particle_renderer::_initGL()
-{
-    program = _compileProgram(sphereVertexShader, spherePixelShader);
-
-    glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_FALSE);
-    glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
 }
