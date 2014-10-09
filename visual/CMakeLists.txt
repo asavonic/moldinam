@@ -3,7 +3,7 @@ set(PROJECT_NAME_STR visualizer)
 project(${PROJECT_NAME_STR} C CXX)
 
 
-add_executable(visualizer visualizer.cpp render_particles.cpp shaders.cpp )
+add_executable(visualizer visualizer.cpp particles_renderer.cpp shaders.cpp )
 
 include_directories( ${GLUT_INCLUDE} )
 
