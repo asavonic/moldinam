@@ -1,3 +1,6 @@
+#ifndef __PARTICLES_RENDERER_H
+#define __PARTICLES_RENDERER_H
+
 #include <GL/glext.h>
 #include <GL/gl.h>
 #include <vector>
@@ -5,7 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class particle_renderer
+#include "renderer.hpp"
+
+class particle_renderer : public shader_renderer
 {
 public:
     particle_renderer();
@@ -32,3 +37,5 @@ protected:
     static const char *sphereVertexShader;
     static const char *spherePixelShader;
 };
+
+#endif
