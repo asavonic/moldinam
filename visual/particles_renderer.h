@@ -27,6 +27,8 @@ protected:
     int window_w, window_h;
 
     GLuint program;
-
     GLuint VBO;
+
+    static const char *sphereVertexShader;
+    static const char *spherePixelShader;
 };

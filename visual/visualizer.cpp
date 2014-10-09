@@ -6,7 +6,7 @@
 #include <iostream>
 
 
-#include "render_particles.h"
+#include "particles_renderer.h"
 
 class cube_window : public glfw::window {
 
