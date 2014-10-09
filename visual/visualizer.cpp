@@ -1,11 +1,12 @@
 #include <GL/glew.h>
 #include "glfw_wrapper/glfw_wrapper.hpp"
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
 #include "cube_renderer.h"
+#include "particles_renderer.h"
 
 class cube_window : public glfw::window {
 
@@ -13,6 +14,9 @@ class cube_window : public glfw::window {
 
     public:
     cube_window() : glfw::window() {
+        std::vector< glm::vec3 > particles;
+        particles.push_back( glm::vec3( 0.0, 0.0, 0.0 ) );
+        particle_render.set_positions( particles );
     }
 
     virtual void draw() {
@@ -38,6 +42,8 @@ class cube_window : public glfw::window {
         glm::mat4 mvp = projection * view * model * anim;
 
         cube_render.set_mvp( mvp );
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+        particle_render.display();
         cube_render.display();
     }
 
@@ -73,6 +79,9 @@ class cube_window : public glfw::window {
 
     glm::vec2 angle;
 
+    
+
+    particle_renderer particle_render;
     cube_renderer cube_render;
 };
 
