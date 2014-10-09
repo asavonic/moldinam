@@ -1,6 +1,6 @@
 #include <GL/glew.h>
 #include "glfw_wrapper/glfw_wrapper.hpp"
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
@@ -38,59 +38,23 @@ class cube_window : public glfw::window {
         glShaderSource(vShader, 1, &vsSource, NULL);
         glCompileShader(vShader);
 
-        shaderLog( vShader );
-
         fShader = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fShader, 1, &fsSource, NULL);
         glCompileShader(fShader);
 
-        shaderLog( fShader );
         program = glCreateProgram();
         glAttachShader(program, vShader);
         glAttachShader(program, fShader);
         glLinkProgram(program);
 
-        checkOpenGLerror();
         unif_mvp = glGetUniformLocation( program, "mvp" );
         attrib_vertex = glGetAttribLocation( program, "coord" );
     }
 
-void shaderLog(unsigned int shader) 
-{ 
-  int   infologLen   = 0;
-  int   charsWritten = 0;
-  char *infoLog;
-
-  glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infologLen);
-
-  if(infologLen > 1)
-  { 
-    infoLog = new char[infologLen];
-    if(infoLog == NULL)
-    {
-      std::cout<<"ERROR: Could not allocate InfoLog buffer\n";
-       exit(1);
-    }
-    glGetShaderInfoLog(shader, infologLen, &charsWritten, infoLog);
-    std::cout<< "InfoLog: " << infoLog << "\n\n\n";
-    delete[] infoLog;
-  }
-}
-
-void checkOpenGLerror()
-{
-  GLenum errCode;
-  if((errCode=glGetError()) != GL_NO_ERROR)
-    std::cout << "OpenGl error! - " << gluErrorString(errCode) << std::endl;
-}
     void init_VBO() {
 		cube.push_back( glm::vec3( .0, .0, .0 ) );
 
-        particle_renderer.setPositions( glm::value_ptr( cube[0] ), cube.size() );
-        //particle_renderer.setParticleRadius( 0.02 );
-        particle_renderer.setWindowSize( width(), height() );
-        particle_renderer.setParticleRadius( 0.125f * 0.5f * 0.5f * 0.5f);
-        particle_renderer.setPointSize( 0.125f );
+        particle_render.set_positions( cube );
     }
 
 
@@ -98,7 +62,7 @@ void checkOpenGLerror()
     virtual void draw() {
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
-        particle_renderer.display();
+        particle_render.display();
     }
 
     virtual void mouse_move_callback( double new_x, double new_y ) {
@@ -133,7 +97,7 @@ void checkOpenGLerror()
     int mouse_action;
     int mouse_button;
 
-    ParticleRenderer particle_renderer;
+    particle_renderer particle_render;
 
     GLuint program;
     GLuint attrib_vertex;

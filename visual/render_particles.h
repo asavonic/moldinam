@@ -1,40 +1,32 @@
 #include <GL/glext.h>
 #include <GL/gl.h>
+#include <vector>
 
-class ParticleRenderer
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
+class particle_renderer
 {
 public:
-    ParticleRenderer();
-    ~ParticleRenderer();
-
-    void setPositions(float *pos, int numParticles);
-    void setVertexBuffer(unsigned int vbo, int numParticles);
-    void setColorBuffer(unsigned int vbo) { m_colorVBO = vbo; }
+    particle_renderer();
+    ~particle_renderer();
 
     void display();
+    void set_positions( std::vector< glm::vec3 >& );
 
-    void setPointSize(float size)  { m_pointSize = size; }
-    void setParticleRadius(float r) { m_particleRadius = r; }
-    void setFOV(float fov) { m_fov = fov; }
-    void setWindowSize(int w, int h) { m_window_w = w; m_window_h = h; }
-
-protected: // methods
+protected: 
     void _initGL();
     void _drawPoints();
     GLuint _compileProgram(const char *vsource, const char *fsource);
-    void _checkShaderLog( unsigned int shader );
 
-protected: // data
-    float *m_pos;
-    int m_numParticles;
+protected:
+    std::vector< glm::vec3 > positions;
 
-    float m_pointSize;
-    float m_particleRadius;
-    float m_fov;
-    int m_window_w, m_window_h;
+    float pointSize;
+    float particleRadius;
+    int window_w, window_h;
 
-    GLuint m_program;
+    GLuint program;
 
-    GLuint m_vbo;
-    GLuint m_colorVBO;
+    GLuint VBO;
 };
