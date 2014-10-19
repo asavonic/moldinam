@@ -15,12 +15,12 @@ class cube_window : public glfw::window {
     public:
     cube_window() : glfw::window() {
         std::vector< glm::vec3 > particles;
-        particles.push_back( glm::vec3( 0.0, 0.0, 0.0 ) );
+        particles.push_back( glm::vec3( 0.5, 0.0, 0.0 ) );
         particle_render.set_positions( particles );
     }
 
     virtual void draw() {
-        glClearColor(0, 0, 0, 0);
+        glClearColor(0.1, 0.2, 0.5, 0);
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* here goes an ugly hack:
@@ -42,6 +42,8 @@ class cube_window : public glfw::window {
         glm::mat4 mvp = projection * view * model * anim;
 
         cube_render.set_mvp( mvp );
+        particle_render.set_mvp( mvp );
+
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
         particle_render.display();
         cube_render.display();

@@ -73,6 +73,7 @@ uniform float pointRadius;  // point size in world space
 uniform float pointScale;   // scale to calculate size in pixels
 uniform float densityScale;
 uniform float densityOffset;
+uniform mat4 mvp;
 void main()
 {
     // calculate window-space point size
@@ -81,8 +82,7 @@ void main()
     gl_PointSize = 20.0; //pointRadius * (pointScale / dist);
 
     gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_Position = gl_ModelViewProjectionMatrix * vec4(gl_Vertex.xyz, 1.0);
-
+    gl_Position = mvp * vec4(gl_Vertex.xyz, 1.0);
     gl_FrontColor = gl_Color;
 }
 );
@@ -114,7 +114,10 @@ void particle_renderer::display()
         glDepthMask(GL_TRUE);
         glEnable(GL_DEPTH_TEST);
 
+
         glUseProgram(program);
+
+        use_mvp();
         /* glUniform1f( glGetUniformLocation(program, "pointScale"), window_h / tan(fov*0.5*M_PI/180.0) ); */
         /* glUniform1f( glGetUniformLocation(program, "pointRadius"), particleRadius ); */
         glUniform1f( glGetUniformLocation(program, "pointScale"), 0.01f );

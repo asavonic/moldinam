@@ -13,11 +13,15 @@ cube_renderer::~cube_renderer() {
 void cube_renderer::display() {
     glUseProgram(program); 
 
+    use_mvp();
+
     glEnableVertexAttribArray(attrib_vertex);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(attrib_vertex, 3, GL_FLOAT, GL_FALSE, 0, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glDrawArrays( GL_LINES, 0, VBO_size );
+
+    glUseProgram( 0 );
 }
 
 #define STRINGIFY(A) #A

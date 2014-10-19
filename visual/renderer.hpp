@@ -13,12 +13,14 @@ class renderer {
 
 class shader_renderer : public renderer {
     public:
-        void set_mvp( glm::mat4& _mvp );
+        virtual void set_mvp( glm::mat4 _mvp );
 
     protected:
         GLuint create_shader( GLuint shader_type, const GLchar* source );
+        virtual void use_mvp();
 
         GLuint unif_mvp;
+        glm::mat4 mvp;
 };
 
 #endif
