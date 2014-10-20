@@ -4,9 +4,70 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
+#include <memory>
 
 #include "cube_renderer.h"
 #include "particles_renderer.h"
+
+#include <md_types.h>
+#include <md_helpers.h>
+#include <boost/program_options.hpp>
+
+namespace po = boost::program_options;
+
+
+class ParticleDataSource {
+    public:
+
+    ParticleDataSource() : updated_( true ) {};
+    virtual bool updated() { return updated_; };
+    virtual std::vector< Molecule > get_data() = 0;
+
+    protected:
+    bool updated_;
+    
+};
+
+class StateParticleData : public ParticleDataSource {
+    public:
+
+    StateParticleData( std::string _state_file ) : ParticleDataSource() {
+        state_file = _state_file;
+        molecules = read_molecules_from_file( state_file );
+    }
+
+    virtual std::vector< Molecule > get_data() {
+        updated_ = false; // state updated only once
+        return molecules;
+    }
+
+    protected:
+    StateParticleData() {} ;
+
+    std::string state_file;
+    std::vector<Molecule> molecules;
+};
+
+class TraceParticleData : public  ParticleDataSource {
+    public:
+
+    TraceParticleData( std::string trace_file ) : ParticleDataSource() {
+        trace.open( trace_file );
+        molecules = trace.initial();
+    }
+
+    virtual std::vector<Molecule> get_data() {
+        if ( trace.active ) {
+            molecules = trace.next();
+        }
+        return molecules;
+    }
+
+    protected:
+
+    trace_read trace;
+    std::vector<Molecule> molecules;
+};
 
 class cube_window : public glfw::window {
 
@@ -42,6 +103,11 @@ class cube_window : public glfw::window {
         glm::mat4 mvp = projection * view * model * anim;
 
         cube_render.set_mvp( mvp );
+
+        if ( particle_data_source_->updated() ) {
+            particle_render.set_particles_positions( particle_data_source_->get_data() );
+        }
+
         particle_render.set_mvp( mvp );
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
@@ -75,19 +141,71 @@ class cube_window : public glfw::window {
         }
     }
 
+    virtual void set_particle_data_source( std::unique_ptr<ParticleDataSource> _in ) { particle_data_source_ = std::move( _in ); }
+
     glm::vec2 mouse_move;
     int mouse_action;
     int mouse_button;
 
     glm::vec2 angle;
 
-    
-
     particle_renderer particle_render;
     cube_renderer cube_render;
+
+    std::unique_ptr<ParticleDataSource> particle_data_source_;
 };
 
+
 int main( int argc, char** argv ) {
-    cube_window window;
-    window.start();
+    try {
+        std::string  state_file;
+        std::string  trace_file;
+
+        // named arguments
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help", "produce help message")
+            ("state", po::value< std::string >( &state_file ), "view state file (input or output)")
+            ("trace", po::value< std::string >( &trace_file ), "view trace file with animation")
+        ;
+
+        po::variables_map vm;
+        po::store( po::command_line_parser( argc, argv).options(desc).run(), vm );
+
+        if (vm.count("help")) {
+            std::cout << desc << std::endl;
+            return 1;
+        }
+
+        if ( vm.count("state") + vm.count("trace") > 1 ||
+                vm.count( "state" ) + vm.count("trace") == 0 )
+        {
+            throw po::error( "State OR trace file must be specified" );
+        }
+
+        po::notify(vm);
+
+        cube_window window;
+
+        if ( vm.count("state") ) {
+            window.set_particle_data_source( std::unique_ptr<ParticleDataSource>( new StateParticleData( state_file ) ) );
+        } 
+        else {
+            window.set_particle_data_source( std::unique_ptr<ParticleDataSource>( new TraceParticleData( trace_file ) ) );
+        }
+
+        window.start();
+    } 
+    catch ( boost::program_options::error& po_error ) {
+        std::cerr << po_error.what() << std::endl; 
+        return 1;
+    }
+    catch ( std::exception& ex ) {
+        std::cerr << "Unknown exception: " << ex.what() << std::endl;
+        return 1;
+    }
+
+    return 0;
 }
+
+

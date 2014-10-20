@@ -25,6 +25,13 @@ void particle_renderer::set_positions( std::vector< glm::vec3 >& _positions )
     positions = _positions;
 }
 
+
+void particle_renderer::set_particles_positions( std::vector<Molecule> molecules ) {
+    positions.resize( molecules.size() );
+    for ( size_t i = 0; i < molecules.size(); i++ ) {
+        positions[i] = glm::vec3( molecules[i].pos.x, molecules[i].pos.y, molecules[i].pos.z );
+    }
+}
 void particle_renderer::setup_program() {
     GLuint vertex_shader = create_shader( GL_VERTEX_SHADER, vertex_shader_source );
     GLuint fragment_shader = create_shader( GL_FRAGMENT_SHADER, fragment_shader_source );

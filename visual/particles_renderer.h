@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <md_types.h>
+
 #include "renderer.hpp"
 
 class particle_renderer : public shader_renderer
@@ -18,6 +20,8 @@ public:
 
     void display();
     void set_positions( std::vector< glm::vec3 >& );
+
+    void set_particles_positions( std::vector<Molecule> molecules );
 
 protected: 
     void setup_program();
