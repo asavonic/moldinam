@@ -11,12 +11,12 @@
 
 #include "renderer.hpp"
 
-class cube_renderer : public shader_renderer {
+class CubeRenderer : public ShaderRenderer {
     public:
-        cube_renderer();
-        cube_renderer( cube_renderer& ) = delete;
+        CubeRenderer();
+        CubeRenderer( CubeRenderer& ) = delete;
 
-        ~cube_renderer();
+        ~CubeRenderer();
 
         virtual void display();
 

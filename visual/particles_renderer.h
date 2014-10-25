@@ -12,11 +12,11 @@
 
 #include "renderer.hpp"
 
-class particle_renderer : public shader_renderer
+class ParticleRenderer : public ShaderRenderer
 {
 public:
-    particle_renderer();
-    ~particle_renderer();
+    ParticleRenderer();
+    ~ParticleRenderer();
 
     void display();
     void set_positions( std::vector< glm::vec3 >& );

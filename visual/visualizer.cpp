@@ -69,12 +69,12 @@ class TraceParticleData : public  ParticleDataSource {
     std::vector<Molecule> molecules;
 };
 
-class cube_window : public glfw::window {
+class VisualizerWindow : public glfw::window {
 
     using parent_t = glfw::window;
 
     public:
-    cube_window() : glfw::window() {
+    VisualizerWindow() : glfw::window() {
         std::vector< glm::vec3 > particles;
         particles.push_back( glm::vec3( 0.5, 0.0, 0.0 ) );
         particle_render.set_positions( particles );
@@ -149,8 +149,8 @@ class cube_window : public glfw::window {
 
     glm::vec2 angle;
 
-    particle_renderer particle_render;
-    cube_renderer cube_render;
+    ParticleRenderer particle_render;
+    CubeRenderer cube_render;
 
     std::unique_ptr<ParticleDataSource> particle_data_source_;
 };
@@ -185,7 +185,7 @@ int main( int argc, char** argv ) {
 
         po::notify(vm);
 
-        cube_window window;
+        VisualizerWindow window;
 
         if ( vm.count("state") ) {
             window.set_particle_data_source( std::unique_ptr<ParticleDataSource>( new StateParticleData( state_file ) ) );

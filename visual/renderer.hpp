@@ -6,12 +6,12 @@
 
 #include <glm/glm.hpp>
 
-class renderer {
+class Renderer {
     public:
         virtual void display() = 0;
 };
 
-class shader_renderer : public renderer {
+class ShaderRenderer : public Renderer {
     public:
         virtual void set_mvp( glm::mat4 _mvp );
 

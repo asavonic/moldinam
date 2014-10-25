@@ -1,16 +1,16 @@
 #include "cube_renderer.h"
 
-cube_renderer::cube_renderer() {
+CubeRenderer::CubeRenderer() {
     setup_VBO();
     setup_program();
 }
 
-cube_renderer::~cube_renderer() {
+CubeRenderer::~CubeRenderer() {
     //TODO:
     //  add resource handling
 }
 
-void cube_renderer::display() {
+void CubeRenderer::display() {
     glUseProgram(program); 
 
     use_mvp();
@@ -26,7 +26,7 @@ void cube_renderer::display() {
 
 #define STRINGIFY(A) #A
 
-const GLchar* cube_renderer::vsSource = STRINGIFY( 
+const GLchar* CubeRenderer::vsSource = STRINGIFY( 
     attribute vec3 coord;
     uniform mat4 mvp;
     void main() {
@@ -34,7 +34,7 @@ const GLchar* cube_renderer::vsSource = STRINGIFY(
     } 
 );
 
-const GLchar* cube_renderer::fsSource = STRINGIFY( 
+const GLchar* CubeRenderer::fsSource = STRINGIFY( 
     void main() {
         gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     }
@@ -42,7 +42,7 @@ const GLchar* cube_renderer::fsSource = STRINGIFY(
 
 #undef STRINGIFY
 
-void cube_renderer::setup_program() {
+void CubeRenderer::setup_program() {
     GLuint vertex_shader = create_shader( GL_VERTEX_SHADER, vsSource );
     GLuint fragment_shader = create_shader( GL_FRAGMENT_SHADER, fsSource );
 
@@ -55,7 +55,7 @@ void cube_renderer::setup_program() {
     attrib_vertex = glGetAttribLocation( program, "coord" );
 }
 
-void cube_renderer::setup_VBO() {
+void CubeRenderer::setup_VBO() {
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 

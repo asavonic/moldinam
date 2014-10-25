@@ -4,7 +4,7 @@
 #include "particles_renderer.h"
 #include <iostream>
 
-particle_renderer::particle_renderer()
+ParticleRenderer::ParticleRenderer()
 : pointSize(1.0f),
   particleRadius(0.125f * 0.5f),
   program(0),
@@ -16,17 +16,17 @@ particle_renderer::particle_renderer()
     setup_program();
 }
 
-particle_renderer::~particle_renderer()
+ParticleRenderer::~ParticleRenderer()
 {
 }
 
-void particle_renderer::set_positions( std::vector< glm::vec3 >& _positions )
+void ParticleRenderer::set_positions( std::vector< glm::vec3 >& _positions )
 {
     positions = _positions;
 }
 
 
-void particle_renderer::set_particles_positions( std::vector<Molecule> molecules ) {
+void ParticleRenderer::set_particles_positions( std::vector<Molecule> molecules ) {
     positions.resize( molecules.size() );
 
     // TODO remove hardcode
@@ -38,7 +38,7 @@ void particle_renderer::set_particles_positions( std::vector<Molecule> molecules
     }
 }
 
-glm::mat3 particle_renderer::get_particles_scale_matrix( double3 area_size ) {
+glm::mat3 ParticleRenderer::get_particles_scale_matrix( double3 area_size ) {
     glm::mat3 scale_matrix;
     scale_matrix[0][0] = 1 / area_size.x;
     scale_matrix[1][1] = 1 / area_size.y;
@@ -47,7 +47,7 @@ glm::mat3 particle_renderer::get_particles_scale_matrix( double3 area_size ) {
     return scale_matrix;
 }
 
-void particle_renderer::setup_program() {
+void ParticleRenderer::setup_program() {
     GLuint vertex_shader = create_shader( GL_VERTEX_SHADER, vertex_shader_source );
     GLuint fragment_shader = create_shader( GL_FRAGMENT_SHADER, fragment_shader_source );
 
@@ -60,7 +60,7 @@ void particle_renderer::setup_program() {
     attrib_vertex = glGetAttribLocation( program, "coord" );
 }
 
-void particle_renderer::_drawPoints()
+void ParticleRenderer::_drawPoints()
 {
     if (!VBO)
     {
@@ -90,7 +90,7 @@ void particle_renderer::_drawPoints()
 #define STRINGIFY(A) #A
 
 // vertex shader
-const char * particle_renderer::vertex_shader_source = STRINGIFY(
+const char * ParticleRenderer::vertex_shader_source = STRINGIFY(
 uniform float pointRadius;  // point size in world space
 uniform float pointScale;   // scale to calculate size in pixels
 uniform float densityScale;
@@ -110,7 +110,7 @@ void main()
 );
 
 // pixel shader for rendering points as shaded spheres
-const char * particle_renderer::fragment_shader_source = STRINGIFY(
+const char * ParticleRenderer::fragment_shader_source = STRINGIFY(
 vec3 lightDir = vec3(0.577, 0.577, 0.577);
 void main()
 {
@@ -128,7 +128,7 @@ void main()
 }
 );
 
-void particle_renderer::display()
+void ParticleRenderer::display()
 {
         glEnable(GL_POINT_SPRITE_ARB);
         glTexEnvi(GL_POINT_SPRITE_ARB, GL_COORD_REPLACE_ARB, GL_TRUE);

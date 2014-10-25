@@ -5,15 +5,15 @@
 
 #include "renderer.hpp"
 
-void shader_renderer::use_mvp(  ) {
+void ShaderRenderer::use_mvp(  ) {
     glUniformMatrix4fv( unif_mvp, 1, false, glm::value_ptr( mvp ) );
 }
 
-void shader_renderer::set_mvp( glm::mat4 _mvp ) {
+void ShaderRenderer::set_mvp( glm::mat4 _mvp ) {
     mvp = _mvp;
 }
 
-GLuint shader_renderer::create_shader( GLuint shader_type, const GLchar* source ) {
+GLuint ShaderRenderer::create_shader( GLuint shader_type, const GLchar* source ) {
     GLuint shader = glCreateShader( shader_type );
     glShaderSource( shader, 1, &source, NULL );
     glCompileShader( shader );
