@@ -1,180 +1,160 @@
-#include <GL/glut.h>
+#include <GL/glew.h>
+#include "glfw_wrapper/glfw_wrapper.hpp"
 #include <glm/glm.hpp>
-#include <vector>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
+#include <memory>
+
+#include "cube_renderer.h"
+#include "particles_renderer.h"
+
 #include <md_types.h>
 #include <md_helpers.h>
-#include <iostream>
 #include <boost/program_options.hpp>
-#include <functional>
-#include <memory>
 
 namespace po = boost::program_options;
 
-int mouse_x_old  = 0;
-int mouse_y_old  = 0;
-int mouse_x  = 0;
-int mouse_y  = 0;
-int angle_x = 0;
-int angle_y = 0;
-int eye_dist = 0;
 
+class ParticleDataSource {
+    public:
 
-void setMatrix(void) {
-  glMatrixMode(GL_PROJECTION);
-  glLoadIdentity();
-  glOrtho(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-  glMatrixMode(GL_MODELVIEW);
-  glLoadIdentity();
-}
+    ParticleDataSource() : updated_( true ) {};
+    virtual bool updated() { return updated_; };
+    virtual std::vector< Molecule > get_data() = 0;
 
-void resize(int w, int h) {
-  glViewport(0, 0, w, h);
-  setMatrix();
-}
-
-void mouse_callback(int button, int state, int x, int y) {
-	if (state == GLUT_UP) {
-		if (button == 3)
-			eye_dist += 0.2;
-		else if (button == 4) {
-			eye_dist -= 0.2;
-        }
-	}
-    else {
-        mouse_x = x;
-        mouse_y = y;
-        mouse_x_old = mouse_x;
-        mouse_y_old = mouse_y;
-    }
-}
-
-void mousemotion(int x, int y) {
-	mouse_x_old = mouse_x;
-	mouse_y_old = mouse_y;
-    mouse_x = x;
-    mouse_y = y;
+    protected:
+    bool updated_;
     
-    angle_x += mouse_x_old - mouse_x;
-    angle_y += mouse_y_old - mouse_y;
-
-	glutPostRedisplay();
-}
-
-class Display {
-public:
-    virtual void draw_scene() = 0;
-    virtual void update() {};
 };
 
-class State_display : public Display {
-public:
-    State_display( std::string _state_file ) {
+class StateParticleData : public ParticleDataSource {
+    public:
+
+    StateParticleData( std::string _state_file ) : ParticleDataSource() {
         state_file = _state_file;
         molecules = read_molecules_from_file( state_file );
     }
 
-    virtual void draw_scene() {
-        glPushMatrix();
-            glTranslated(0.5, 0.5, 0.5);
-
-            glTranslatef( -0.5, -0.5, -0.5 );
-            glRotatef( angle_y, 1.0, 0.0, 0.0);
-            glRotatef( angle_x, 0.0, 1.0, 0.0);
-
-            glTranslated(-0.5, -0.5, -0.5);
-
-            draw_cube();
-
-        glPopMatrix();
+    virtual std::vector< Molecule > get_data() {
+        updated_ = false; // state updated only once
+        return molecules;
     }
 
-    virtual void draw_molecules() {
-        glColor3f(1.0, 0.0, 0.0);
-        for ( auto& mol : molecules ) {
-            glTranslatef( mol.pos.x, mol.pos.y, mol.pos.z );
-            glutSolidSphere( 0.02, 10, 10);
-            glTranslatef( -mol.pos.x, -mol.pos.y, -mol.pos.z );
-        }
-    }
-
-    virtual void draw_cube() {
-        
-        std::vector< glm::vec3 > cube;
-		cube.push_back( glm::vec3( 0.0, 0.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 0.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 0.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 0.0, 1.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 0.0 ) );
-        cube.push_back( glm::vec3( 1.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 1.0, 1.0 ) );
-        cube.push_back( glm::vec3( 0.0, 1.0, 0.0 ) ); 
-
-        static int faceIndex[6][4] =
-        { { 0, 1, 2, 3 },
-          { 1, 4, 5, 2 },
-          { 4, 7, 6, 5 },
-          { 7, 0, 3, 6 },
-          { 3, 2, 5, 6 },
-          { 7, 4, 1, 0 } };
-
-        glEnable(GL_DEPTH_TEST);
-        glDepthFunc(GL_LEQUAL);
-
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glColor3f(1.0, 1.0, 0.0);
-
-        for ( unsigned int face = 0; face < 6; face++ ) {
-            glBegin(GL_LINE_LOOP);
-                for ( unsigned int line = 0; line < 4; line++  )  {
-                    glVertex3fv( (GLfloat *) &cube[faceIndex[face][line]]);
-                }
-            glEnd();
-        }
-
-        draw_molecules();
-
-        glutSwapBuffers();
-    }
-protected:
-    State_display() {} ;
+    protected:
+    StateParticleData() {} ;
 
     std::string state_file;
     std::vector<Molecule> molecules;
 };
 
-class Trace_display : public State_display {
-public:
-    Trace_display( std::string trace_file ) {
+class TraceParticleData : public  ParticleDataSource {
+    public:
+
+    TraceParticleData( std::string trace_file ) : ParticleDataSource() {
         trace.open( trace_file );
         molecules = trace.initial();
     }
 
-    virtual void draw_scene() {
-        State_display::draw_scene();
-    }
-
-    virtual void update() {
+    virtual std::vector<Molecule> get_data() {
         if ( trace.active ) {
             molecules = trace.next();
         }
+        return molecules;
     }
 
-protected:
+    protected:
+
     trace_read trace;
+    std::vector<Molecule> molecules;
 };
 
-std::shared_ptr<Display> g_display_ptr;
+class cube_window : public glfw::window {
 
-void draw_scene() {
-    g_display_ptr->draw_scene();
-}
+    using parent_t = glfw::window;
 
-void idle() {
-    g_display_ptr->update();
-    glutPostRedisplay();
-}
+    public:
+    cube_window() : glfw::window() {
+        std::vector< glm::vec3 > particles;
+        particles.push_back( glm::vec3( 0.5, 0.0, 0.0 ) );
+        particle_render.set_positions( particles );
+    }
+
+    virtual void draw() {
+        glClearColor(0.1, 0.2, 0.5, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        /* here goes an ugly hack:
+         *      we`re using angle_y for X rotation
+         *      and angle_x for Y rotation
+         *
+         *      TODO
+         *      this must be fixed
+         */
+        glm::vec3 axis_x(1, 0, 0);
+        glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.y, axis_x);
+
+        glm::vec3 axis_y(0, 1, 0);
+        anim = glm::rotate( anim, angle.x, axis_y);
+
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 projection = glm::perspective(45.0f, 1.0f*width()/height(), 0.1f, 10.0f);
+        glm::mat4 mvp = projection * view * model * anim;
+
+        cube_render.set_mvp( mvp );
+
+        if ( particle_data_source_->updated() ) {
+            particle_render.set_particles_positions( particle_data_source_->get_data() );
+        }
+
+        particle_render.set_mvp( mvp );
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+        particle_render.display();
+        cube_render.display();
+    }
+
+    virtual void mouse_move_callback( double new_x, double new_y ) {
+        static double old_x = new_x;
+        static double old_y = new_y;
+
+        mouse_move.x = new_x - old_x;
+        mouse_move.y = new_y - old_y;
+
+        old_x = new_x;
+        old_y = new_y;
+
+        control();
+    }
+
+    virtual void mouse_press_callback( int button, int action, int mods ) {
+        mouse_button = button;
+        mouse_action = action;
+        control();
+    }
+
+    virtual void control() {
+        if ( mouse_action == GLFW_PRESS && mouse_button == GLFW_MOUSE_BUTTON_LEFT ) {
+            angle.x += mouse_move.x / 10 ;
+            angle.y += mouse_move.y / 10 ;
+        }
+    }
+
+    virtual void set_particle_data_source( std::unique_ptr<ParticleDataSource> _in ) { particle_data_source_ = std::move( _in ); }
+
+    glm::vec2 mouse_move;
+    int mouse_action;
+    int mouse_button;
+
+    glm::vec2 angle;
+
+    particle_renderer particle_render;
+    cube_renderer cube_render;
+
+    std::unique_ptr<ParticleDataSource> particle_data_source_;
+};
+
 
 int main( int argc, char** argv ) {
     try {
@@ -205,27 +185,16 @@ int main( int argc, char** argv ) {
 
         po::notify(vm);
 
-        glutInit(&argc, argv);
-
-        glutInitWindowSize(1000, 1000);
-        glutInitDisplayMode(GLUT_RGB | GLUT_STENCIL | GLUT_DOUBLE | GLUT_DEPTH);
-        glutCreateWindow("Moldinam visualizer");
+        cube_window window;
 
         if ( vm.count("state") ) {
-            g_display_ptr.reset( new State_display( state_file ) );
+            window.set_particle_data_source( std::unique_ptr<ParticleDataSource>( new StateParticleData( state_file ) ) );
         } 
         else {
-            g_display_ptr.reset( new Trace_display( trace_file ) );
+            window.set_particle_data_source( std::unique_ptr<ParticleDataSource>( new TraceParticleData( trace_file ) ) );
         }
 
-        glutDisplayFunc( draw_scene );
-        glutReshapeFunc(resize);
-        glutMouseFunc(mouse_callback);
-        glutMotionFunc(mousemotion);
-        glutIdleFunc(idle);
-
-        glutMainLoop();
-
+        window.start();
     } 
     catch ( boost::program_options::error& po_error ) {
         std::cerr << po_error.what() << std::endl; 
@@ -238,4 +207,5 @@ int main( int argc, char** argv ) {
 
     return 0;
 }
+
 

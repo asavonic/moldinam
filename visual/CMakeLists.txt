@@ -3,17 +3,15 @@ set(PROJECT_NAME_STR visualizer)
 project(${PROJECT_NAME_STR} C CXX)
 
 
-add_executable(visualizer visualizer.cpp)
+add_executable(visualizer visualizer.cpp cube_renderer.cpp particles_renderer.cpp renderer.cpp)
 
 include_directories( ${GLUT_INCLUDE} )
 
-# find_library(GLUT_LIBRARY NAMES freeglut.lib freeglut.so freeglut.a libglut.so libglut.a )
 
 if( NOT WIN32 )
-    target_link_libraries( visualizer -lGL -lglut ${BOOST_PROGRAM_OPTIONS} )
+    target_link_libraries( visualizer -lGL -lGLU -lGLEW  glfw ${GLFW_LIBRARIES} ${BOOST_PROGRAM_OPTIONS} )
 else()
     add_definitions( -DFREEGLUT_STATIC )
-    # target_link_libraries( visualizer ${PROJECT_LIB_NAME} ${GLUT_LIB} )
 endif()
 
 target_link_libraries( visualizer ${PROJECT_LIB_NAME} )
