@@ -28,10 +28,25 @@ void particle_renderer::set_positions( std::vector< glm::vec3 >& _positions )
 
 void particle_renderer::set_particles_positions( std::vector<Molecule> molecules ) {
     positions.resize( molecules.size() );
+
+    // TODO remove hardcode
+    double3 area_size = { 10, 10, 10 };
+    glm::mat3 scale_matrix = get_particles_scale_matrix( area_size );
+
     for ( size_t i = 0; i < molecules.size(); i++ ) {
-        positions[i] = glm::vec3( molecules[i].pos.x, molecules[i].pos.y, molecules[i].pos.z );
+        positions[i] = scale_matrix * glm::vec3( molecules[i].pos.x, molecules[i].pos.y, molecules[i].pos.z );
     }
 }
+
+glm::mat3 particle_renderer::get_particles_scale_matrix( double3 area_size ) {
+    glm::mat3 scale_matrix;
+    scale_matrix[0][0] = 1 / area_size.x;
+    scale_matrix[1][1] = 1 / area_size.y;
+    scale_matrix[2][2] = 1 / area_size.z;
+
+    return scale_matrix;
+}
+
 void particle_renderer::setup_program() {
     GLuint vertex_shader = create_shader( GL_VERTEX_SHADER, vertex_shader_source );
     GLuint fragment_shader = create_shader( GL_FRAGMENT_SHADER, fragment_shader_source );

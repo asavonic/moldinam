@@ -22,6 +22,7 @@ public:
     void set_positions( std::vector< glm::vec3 >& );
 
     void set_particles_positions( std::vector<Molecule> molecules );
+    glm::mat3 get_particles_scale_matrix( double3 area_size );
 
 protected: 
     void setup_program();
