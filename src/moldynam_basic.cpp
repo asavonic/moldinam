@@ -93,7 +93,7 @@ void moldynam_basic( std::string input_file_path, std::string output_file_path, 
     }
     else {
         for ( size_t i = 0; i < iterations; i++ ) {
-            verlet_step_pariodic( molecules, dt, area_size );
+            verlet_step_pariodic( molecules, dt, area_size, lj_config );
             periodic( molecules, area_size );
             if ( i % 100  == 0 ) {
                 trace.next( molecules );

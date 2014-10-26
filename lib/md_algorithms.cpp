@@ -89,23 +89,22 @@ void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps )
 //
 // TODO
 // periodic functions are broken
-void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
+void periodic3d_interact( Molecule& mol1, Molecule& mol2, double3 area_size, double sigma, double eps ) {
 
     double3 total_force_vec;
 
     for ( double dx = -area_size.x; dx <= area_size.x; dx += area_size.x ) {
         for ( double dy = -area_size.y; dy <= area_size.y; dy += area_size.y ) {
             for ( double dz = -area_size.z; dz <= area_size.z; dz += area_size.z ) {
-                mol2.pos.x += dx;
-                mol2.pos.y += dy;
-                mol2.pos.z += dz;
-
-                double r = distance( mol1, mol2 );
+                Molecule mol2_periodic = mol2;
+                mol2_periodic.pos += double3( dx, dy, dz );
+                double r = distance( mol1, mol2_periodic );
                 double force_scalar = 0;
                 double potential = 0;
-                Lennard_Jones( r, 1, 1, force_scalar, potential );
+                Lennard_Jones( r, sigma, eps, force_scalar, potential );
+
                 
-                double3 force_vec( mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z );
+                double3 force_vec = mol1.pos - mol2_periodic.pos;
                 force_vec.x = force_vec.x * force_scalar / r;
                 force_vec.y = force_vec.y * force_scalar / r;
                 force_vec.z = force_vec.z * force_scalar / r;
@@ -116,6 +115,7 @@ void periodic3d_interact( Molecule& mol1, Molecule mol2, double3 area_size ) {
     }
 
     mol1.accel += total_force_vec;
+    mol2.accel -= total_force_vec;
 }
 
 void verlet_step( std::vector<Molecule>& molecules, double dt, LJ_config& config ) {
@@ -157,15 +157,19 @@ void euler_step( std::vector<Molecule>& molecules, double dt, LJ_config& config 
     }
 }
 
-void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 area_size ) {
+void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 area_size, LJ_config& config ) {
     for ( Molecule& i : molecules ) {
         i.accel.x = i.accel.y = i.accel.z = 0;
     }
 
+    auto constants = config.get_constants( molecules[0].type );
+    double sigma = constants.first;
+    double eps   = constants.second;
+
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = 0; j < molecules.size(); j++ ) {
             if ( i != j ) {
-                periodic3d_interact( molecules[i], molecules[j], area_size );
+                periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps );
             }
         }
     }
