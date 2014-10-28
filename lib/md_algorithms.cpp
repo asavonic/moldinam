@@ -1,4 +1,5 @@
 #include <md_algorithms.h>
+#include <cassert>
 
 void Lennard_Jones( double r, double epsilon, double sigma, double& force, double& potential ) {
     double ri = 1 / r;
@@ -26,26 +27,39 @@ void euler( Molecule& mol, double dt ) {
 }
 
 void periodic( Molecule& mol, double3 area_size ) {
-    if ( mol.pos.x < 0 ) {
-        mol.pos.x = area_size.x - abs( fmod( mol.pos.x, area_size.x ) );
-    }
-    if ( mol.pos.y < 0 ) {
-        mol.pos.y = area_size.y - abs( fmod( mol.pos.y, area_size.y ) );
-    }
-    if ( mol.pos.z < 0 ) {
-        mol.pos.z = area_size.z - abs( fmod( mol.pos.z, area_size.z ) );
-    }
-
-
     if ( mol.pos.x > area_size.x ) {
-        mol.pos.x = abs( fmod( mol.pos.x, area_size.x ) );
+        mol.pos.x -= area_size.x;
+        mol.pos_prev.x -= area_size.x;
     }
+
     if ( mol.pos.y > area_size.y ) {
-        mol.pos.y = abs( fmod( mol.pos.y, area_size.y ) );
+        mol.pos.y -= area_size.y;
+        mol.pos_prev.y -= area_size.y;
     }
+
     if ( mol.pos.z > area_size.z ) {
-        mol.pos.z = abs( fmod( mol.pos.z, area_size.z ) );
+        mol.pos.z -= area_size.z;
+        mol.pos_prev.z -= area_size.z;
     }
+
+    if ( mol.pos.x < 0 ) {
+        mol.pos.x += area_size.x;
+        mol.pos_prev.x += area_size.x;
+    }
+
+    if ( mol.pos.y < 0 ) {
+        mol.pos.y += area_size.y;
+        mol.pos_prev.y += area_size.y;
+    }
+
+    if ( mol.pos.z < 0 ) {
+        mol.pos.z += area_size.z;
+        mol.pos_prev.z += area_size.z;
+    }
+
+    assert( mol.pos.x < area_size.x && mol.pos.x > 0 );
+    assert( mol.pos.y < area_size.y && mol.pos.y > 0 );
+    assert( mol.pos.z < area_size.z && mol.pos.z > 0 );
 }
 
 void periodic( std::vector<Molecule>& molecules, double3 area_size ) {
