@@ -13,11 +13,15 @@ if( ${CMAKE_C_COMPILER} MATCHES "icc" )
 	add_definitions(-Wall -ansi -Wno-deprecated -pthread -std=c++11 )
 endif()
 
-if (CMAKE_BUILD_TYPE EQUAL Debug)
-    add_definitions(-O0)
-else()
-    add_definitions(-O2)
-endif()
+#if (CMAKE_BUILD_TYPE EQUAL Debug)
+#    add_definitions(-O0)
+#else()
+#    add_definitions(-O2)
+#endif()
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
+
 
 if(MSVC)
     if(CMAKE_CXX_FLAGS_DEBUG MATCHES "/RTC1")
