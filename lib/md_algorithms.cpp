@@ -144,6 +144,7 @@ void verlet_step( std::vector<Molecule>& molecules, double dt, LJ_config& config
     double sigma = constants.first;
     double eps   = constants.second;
 
+#pragma omp parallel for
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
             simple_interact( molecules[i], molecules[j], sigma, eps, true );
@@ -183,6 +184,7 @@ void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 
     double sigma = constants.first;
     double eps   = constants.second;
 
+#pragma omp parallel for
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
             periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps, true );

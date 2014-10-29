@@ -5,7 +5,7 @@ project(${PROJECT_NAME_STR} C CXX)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     #add_definitions( -std=c++11 )
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -pthread -fPIC")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -pthread -fPIC -fopenmp")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -pthread -fPIC" )
     ADD_DEFINITIONS(-fPIC)
 endif()
