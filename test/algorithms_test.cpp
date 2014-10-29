@@ -23,13 +23,15 @@ TEST( algorithms, lennard_jones ) {
     for ( unsigned int i = 0; i < 1000000; i++ ) {
         double force = 0, force_gold = 0;
         double potential = 0, potential_gold = 0;
-        double sigma = 1;
-        double epsilon = 1;
+
+        LennardJonesConstants constants;
+        constants.set_sigma( 1 );
+        constants.set_eps( 1 );
 
         double r = random_range();
 
-        gold_Lennard_Jones( r, epsilon, sigma, force_gold, potential_gold );
-        Lennard_Jones( r, epsilon, sigma, force, potential );
+        gold_Lennard_Jones( r, constants.get_eps(), constants.get_sigma(), force_gold, potential_gold );
+        Lennard_Jones( r, constants, force, potential );
 
         ASSERT_TRUE( std::abs( ( force_gold - force ) / force ) < precision );
         ASSERT_TRUE( std::abs( ( potential_gold - potential ) / potential ) < precision );

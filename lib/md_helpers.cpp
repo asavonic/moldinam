@@ -319,14 +319,13 @@ std::istream& operator>>( std::istream& is,  Molecule_Type& type ) {
     return is;
 }
 
-LJ_config::LJ_config( std::string config_path ) {
+LennardJonesConfig::LennardJonesConfig( std::string config_path ) {
     std::ifstream file( config_path.c_str(), std::ifstream::in );
 
     if ( !file.is_open() ) {
         throw std::runtime_error( "Error while opening file " + config_path + " for reading! Check if it exist and have correct permissions." );
     }
 
-    molecule_types_constants.resize( 1000, std::make_pair(0,0) );
     std::cout << "Loading config..." << std::endl;
     Molecule_Type type = Molecule_Type::NO_TYPE;
     double sigma = 0;
@@ -338,7 +337,9 @@ LJ_config::LJ_config( std::string config_path ) {
         if( !(iss >> type >> sigma >> eps) ) {
             break; 
         } 
-        molecule_types_constants[ static_cast<int>(type) ] = std::make_pair( sigma, eps );
+        type_constants_map[ type ] = LennardJonesConstants();
+        type_constants_map[ type  ].set_sigma( sigma );
+        type_constants_map[ type  ].set_eps( eps );
 
         std::cout << type << " " << sigma << " " << eps << std::endl;
     }
