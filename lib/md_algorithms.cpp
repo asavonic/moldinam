@@ -76,8 +76,13 @@ double distance( Molecule& mol1, Molecule& mol2 ) {
     return sqrt( dx*dx + dy*dy + dz*dz );
 }
 
-void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps ) {
+void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps, bool use_cutoff ) {
     double r = distance( mol1, mol2 );
+
+    if ( use_cutoff && r > 2.5 * sigma ) {
+        return;
+    }
+
     double force_scalar = 0;
     double potential = 0;
     Lennard_Jones( r, sigma, eps, force_scalar, potential );
@@ -96,7 +101,7 @@ void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps )
     mol2.accel.z -= force_vec.z;
 }
 
-void periodic3d_interact( Molecule& mol1, Molecule& mol2, double3 area_size, double sigma, double eps ) {
+void periodic3d_interact( Molecule& mol1, Molecule& mol2, double3 area_size, double sigma, double eps, bool use_cutoff ) {
 
     double3 total_force_vec;
 
@@ -106,6 +111,11 @@ void periodic3d_interact( Molecule& mol1, Molecule& mol2, double3 area_size, dou
                 Molecule mol2_periodic = mol2;
                 mol2_periodic.pos += double3( dx, dy, dz );
                 double r = distance( mol1, mol2_periodic );
+
+                if ( use_cutoff && r > 2.5 * sigma ) {
+                    return;
+                }
+
                 double force_scalar = 0;
                 double potential = 0;
                 Lennard_Jones( r, sigma, eps, force_scalar, potential );
@@ -136,7 +146,7 @@ void verlet_step( std::vector<Molecule>& molecules, double dt, LJ_config& config
 
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
-            simple_interact( molecules[i], molecules[j], sigma, eps );
+            simple_interact( molecules[i], molecules[j], sigma, eps, true );
         }
     }
     
@@ -155,7 +165,7 @@ void euler_step( std::vector<Molecule>& molecules, double dt, LJ_config& config 
 
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
-            simple_interact( molecules[i], molecules[j], sigma, eps );
+            simple_interact( molecules[i], molecules[j], sigma, eps, false );
         }
     }
     
@@ -175,7 +185,7 @@ void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 
 
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
         for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
-            periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps );
+            periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps, true );
         }
     }
     
