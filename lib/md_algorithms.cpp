@@ -96,13 +96,6 @@ void simple_interact( Molecule& mol1, Molecule& mol2, double sigma, double eps )
     mol2.accel.z -= force_vec.z;
 }
 
-// implementation of 3d periodic boundary interaction
-// NOTE that this function effects only on first molecule and does not change second
-// TODO 
-// does it need to be changed?
-//
-// TODO
-// periodic functions are broken
 void periodic3d_interact( Molecule& mol1, Molecule& mol2, double3 area_size, double sigma, double eps ) {
 
     double3 total_force_vec;
@@ -181,10 +174,8 @@ void verlet_step_pariodic( std::vector<Molecule>& molecules, double dt, double3 
     double eps   = constants.second;
 
     for ( unsigned int i = 0; i < molecules.size() - 1; i++ ) {
-        for ( unsigned int j = 0; j < molecules.size(); j++ ) {
-            if ( i != j ) {
-                periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps );
-            }
+        for ( unsigned int j = i + 1; j < molecules.size(); j++ ) {
+            periodic3d_interact( molecules[i], molecules[j], area_size, sigma, eps );
         }
     }
     
