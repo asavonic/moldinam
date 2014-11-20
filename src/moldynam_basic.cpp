@@ -8,7 +8,7 @@
 
 namespace po = boost::program_options;
 
-void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace );
+void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace, std::string lj_config_file );
 
 int main( int argc, char** argv ) {
     try {
@@ -18,6 +18,7 @@ int main( int argc, char** argv ) {
         std::string  output_file_path;
         bool         use_periodic = false;
         std::string  trace_file;
+        std::string  lj_config_file;
 
         // named arguments
         po::options_description desc("Allowed options");
@@ -28,7 +29,8 @@ int main( int argc, char** argv ) {
             ("input,i", po::value< std::string >( &input_file_path )->required(), "path to input .xyz file")
             ("output,o", po::value< std::string >( &output_file_path )->required(), "path to output .xyz file")
             ("periodic", "compute with XYZ periodic boundaries")
-            ("trace", po::value< std::string >( &trace_file ), "save condition on each iteration to file")
+            ("trace", po::value< std::string >( &trace_file ), "save condition on each iteration to a file")
+            ("lj-config", po::value< std::string >( &lj_config_file )->default_value("LJ_constants.conf"), "use Lennard-Jones constants from config file")
         ;
 
         // positional arguments
@@ -55,7 +57,7 @@ int main( int argc, char** argv ) {
         std::cout << "periodic    = " << use_periodic << std::endl;   
         std::cout << "dt          = " << dt << std::endl;   
 
-        moldynam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file );
+        moldynam_basic( input_file_path, output_file_path, iterations, dt, use_periodic, trace_file, lj_config_file );
 
     } 
     catch ( boost::program_options::error& po_error ) {
@@ -66,10 +68,10 @@ int main( int argc, char** argv ) {
     }
 }
 
-void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file ) {
+void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file, std::string lj_config_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
-    LJ_config lj_config("LJ_constants.conf");
+    LJ_config lj_config( lj_config_file );
 
     trace_write trace;
     if ( trace_file != "" ) {
