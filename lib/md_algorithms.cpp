@@ -1,5 +1,6 @@
 #include <md_algorithms.h>
 #include <cassert>
+#include <cmath>
 
 void Lennard_Jones( double r, LennardJonesConstants& constants, double& force, double& potential ) {
     double ri = 1 / r;
@@ -28,38 +29,38 @@ void euler( Molecule& mol, double dt ) {
 
 void periodic( Molecule& mol, double3 area_size ) {
     if ( mol.pos.x > area_size.x ) {
-        mol.pos.x -= area_size.x;
-        mol.pos_prev.x -= area_size.x;
+        mol.pos.x = std::fmod( mol.pos.x, area_size.x );
+        mol.pos_prev.x = std::fmod( mol.pos_prev.x, area_size.x );
     }
 
     if ( mol.pos.y > area_size.y ) {
-        mol.pos.y -= area_size.y;
-        mol.pos_prev.y -= area_size.y;
+        mol.pos.y = std::fmod( mol.pos.y, area_size.y );
+        mol.pos_prev.y = std::fmod( mol.pos_prev.y, area_size.y );
     }
 
     if ( mol.pos.z > area_size.z ) {
-        mol.pos.z -= area_size.z;
-        mol.pos_prev.z -= area_size.z;
+        mol.pos.z = std::fmod( mol.pos.z, area_size.z );
+        mol.pos_prev.z = std::fmod( mol.pos_prev.z, area_size.z );
     }
 
     if ( mol.pos.x < 0 ) {
-        mol.pos.x += area_size.x;
-        mol.pos_prev.x += area_size.x;
+        mol.pos.x = area_size.x + std::fmod( mol.pos.x, area_size.x );
+        mol.pos_prev.x = area_size.x + std::fmod( mol.pos_prev.x, area_size.x );
     }
 
     if ( mol.pos.y < 0 ) {
-        mol.pos.y += area_size.y;
-        mol.pos_prev.y += area_size.y;
+        mol.pos.y = area_size.y + std::fmod( mol.pos.y, area_size.y );
+        mol.pos_prev.y = area_size.y + std::fmod( mol.pos_prev.y, area_size.y );
     }
 
     if ( mol.pos.z < 0 ) {
-        mol.pos.z += area_size.z;
-        mol.pos_prev.z += area_size.z;
+        mol.pos.z = area_size.z + std::fmod( mol.pos.z, area_size.z );
+        mol.pos_prev.z = area_size.z + std::fmod( mol.pos_prev.z, area_size.z );
     }
 
-    //assert( mol.pos.x < area_size.x && mol.pos.x >= 0 );
-    //assert( mol.pos.y < area_size.y && mol.pos.y >= 0 );
-    //assert( mol.pos.z < area_size.z && mol.pos.z >= 0 );
+    assert( mol.pos.x < area_size.x && mol.pos.x >= 0 );
+    assert( mol.pos.y < area_size.y && mol.pos.y >= 0 );
+    assert( mol.pos.z < area_size.z && mol.pos.z >= 0 );
 }
 
 void periodic( std::vector<Molecule>& molecules, double3 area_size ) {
