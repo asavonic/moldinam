@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <GL/glut.h>
 
 #include "particles_renderer.h"
 #include <iostream>
@@ -10,9 +9,6 @@ ParticleRenderer::ParticleRenderer()
   program(0),
   VBO(0)
 {
-    glClampColorARB(GL_CLAMP_VERTEX_COLOR_ARB, GL_FALSE);
-    glClampColorARB(GL_CLAMP_FRAGMENT_COLOR_ARB, GL_FALSE);
-
     setup_program();
 }
 
