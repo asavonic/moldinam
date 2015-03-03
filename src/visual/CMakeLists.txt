@@ -3,18 +3,16 @@ set(PROJECT_NAME_STR visualizer)
 project(${PROJECT_NAME_STR} C CXX)
 
 
+include_directories(${GLFW_INCLUDE_DIR})
 add_executable(visualizer visualizer.cpp cube_renderer.cpp particles_renderer.cpp renderer.cpp)
 
-include_directories( ${GLUT_INCLUDE} )
+get_property(MD_LIB_NAME GLOBAL PROPERTY PROJECT_LIB_NAME)
+target_link_libraries(visualizer ${MD_LIB_NAME})
 
+include_directories(${Boost_INCLUDE_DIRS})
+target_link_libraries(visualizer ${Boost_LIBRARIES})
 
-if( NOT WIN32 )
-    target_link_libraries( visualizer -lGL -lGLU -lGLEW  glfw ${GLFW_LIBRARIES} ${BOOST_PROGRAM_OPTIONS} )
-else()
-    add_definitions( -DFREEGLUT_STATIC )
-endif()
-
-target_link_libraries( visualizer ${PROJECT_LIB_NAME} )
+target_link_libraries(visualizer GLEW glfw ${GLFW_LIBRARIES})
 
 INSTALL ( FILES
           ${CMAKE_CURRENT_BINARY_DIR}/visualizer 
