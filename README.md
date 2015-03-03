@@ -5,7 +5,8 @@ Molecular dynamic project
 
 Requirements
 --------
-C++ compiler with C++11 support<br />
+C++ compiler with C++11 support<br/>
+Boost<br/>
 Python (optional)
 
 How to get sources
