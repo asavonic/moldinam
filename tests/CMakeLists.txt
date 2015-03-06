@@ -20,8 +20,8 @@ function( add_test_executable TEST_NAME TEST_SRC )
 
 endfunction(add_test_executable) 
 
-add_test_executable( algorithms_test algorithms_test.cpp  )
-add_test_executable( helpers_test helpers_test.cpp  )
+add_test_executable( algorithms_test src/algorithms_test.cpp  )
+add_test_executable( helpers_test src/helpers_test.cpp  )
 
 #installation of executable files
 INSTALL ( FILES
