@@ -34,7 +34,12 @@ public:
     // read final state of molecules, reset file to the end
     std::vector<Molecule> final();
 
+    void close();
+
 private:
+
+    size_t read_total_steps();
+
     std::ifstream file;
     size_t molecules_num;
     size_t steps;
@@ -53,6 +58,8 @@ public:
     void initial( std::vector<Molecule>& );
     void next( std::vector<Molecule>& );
     void final( std::vector<Molecule>& );
+
+    void close();
 
 private:
     std::ofstream file;

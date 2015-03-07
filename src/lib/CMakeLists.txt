@@ -1,5 +1,6 @@
 set_property(GLOBAL PROPERTY PROJECT_LIB_NAME moldynam)
 
 get_property(LIB_NAME GLOBAL PROPERTY PROJECT_LIB_NAME)
+
 file(GLOB SRC_FILES *.cpp)
-add_library(${LIB_NAME} ${SRC_FILES})
+add_library(${LIB_NAME} SHARED ${SRC_FILES})

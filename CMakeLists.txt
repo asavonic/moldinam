@@ -12,4 +12,4 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 
 add_subdirectory(ext)
 add_subdirectory(src)
-# add_subdirectory(tests)
+add_subdirectory(tests)

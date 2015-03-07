@@ -2,6 +2,7 @@
 #include <functional>
 #include "gtest/gtest.h"
 #include <md_algorithms.h>
+#include <md_helpers.h>
 
 void gold_Lennard_Jones( double r, double epsilon, double sigma, double& force, double& potential ) {
     double ri = 1 / r;
@@ -37,7 +38,7 @@ TEST( algorithms, lennard_jones ) {
 }
 
 TEST( algorithms, periodic_basic ) {
-    double3 area_size = { };
+    double3 area_size;
     area_size.x = 3.0;
     area_size.y = 3.0;
     area_size.z = 3.0;
@@ -61,9 +62,46 @@ TEST( algorithms, periodic_basic ) {
     periodic( mol_2, area_size );
 
     EXPECT_EQ( 1.0, mol_2.pos.x );
-    EXPECT_EQ( 3.0, mol_2.pos.y );
+    EXPECT_EQ( 0.0, mol_2.pos.y );
     EXPECT_EQ( 2.0, mol_2.pos.z );
 }
 
 TEST( algorithms, periodic_full ) {
+    double3 area_size;
+    area_size.x = 3.0;
+    area_size.y = 3.2;
+    area_size.z = 2.3;
+
+    std::random_device seed;
+    std::mt19937 rand_engine( seed() ); 
+    std::uniform_real_distribution<double> dist( -10.0, 10.0 );
+    auto rand_double = std::bind( dist, std::ref( rand_engine ) );
+
+    for (size_t i = 0; i < 1000000; ++i) {
+        Molecule mol;
+        mol.pos.x = rand_double();
+        mol.pos.y = rand_double();
+        mol.pos.z = rand_double();
+
+        mol.pos_prev.x = rand_double();
+        mol.pos_prev.y = rand_double();
+        mol.pos_prev.z = rand_double();
+
+        periodic(mol, area_size);
+
+        ASSERT_TRUE(mol.pos.x < area_size.x);
+        ASSERT_TRUE(mol.pos.x >= 0);
+        ASSERT_TRUE(mol.pos_prev.x < area_size.x);
+        ASSERT_TRUE(mol.pos_prev.x >= 0);
+
+        ASSERT_TRUE(mol.pos.y < area_size.y);
+        ASSERT_TRUE(mol.pos.y >= 0);
+        ASSERT_TRUE(mol.pos_prev.y < area_size.y);
+        ASSERT_TRUE(mol.pos_prev.y >= 0);
+
+        ASSERT_TRUE(mol.pos.z < area_size.z);
+        ASSERT_TRUE(mol.pos.z >= 0);
+        ASSERT_TRUE(mol.pos_prev.z < area_size.z);
+        ASSERT_TRUE(mol.pos_prev.z >= 0);
+    }
 }
