@@ -6,6 +6,12 @@ project(${PROJECT_NAME_STR} C CXX)
 if(CMAKE_COMPILER_IS_GNUCXX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -pthread -fPIC -fopenmp")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -pthread -fPIC -fopenmp")
+
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
+    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")
+
+    set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2")
+    set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -O0")
 endif()
 
 find_package(Boost REQUIRED COMPONENTS program_options)
