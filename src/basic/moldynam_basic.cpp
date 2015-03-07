@@ -71,7 +71,7 @@ int main( int argc, char** argv ) {
 void moldynam_basic( std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file, std::string lj_config_file ) {
     std::vector<Molecule> molecules = read_molecules_from_file( input_file_path );
 
-    LJ_config lj_config( lj_config_file );
+    LennardJonesConfig lj_config( lj_config_file );
 
     trace_write trace;
     if ( trace_file != "" ) {

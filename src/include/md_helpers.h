@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <random>
 #include <functional>
+#include <map>
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath );
 void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
@@ -69,15 +70,56 @@ private:
 Molecule generate_random_molecule();
 std::vector<Molecule> generate_random_molecules_vector( size_t );
 
-// TODO tests missing
-class LJ_config {
-private:
-    std::vector< std::pair<double, double> > molecule_types_constants;
 
-public:
-    LJ_config( std::string );
-    std::pair<double, double> get_constants( Molecule_Type type ) {
-        return molecule_types_constants[ static_cast<int>(type) ];
+class LennardJonesConstants 
+{
+    public:
+
+    LennardJonesConstants() {
+        sigma = sigma_pow_6 = sigma_pow_12 = 1;
+        eps = eps_pow_6 = eps_pow_12 = 1;
     }
+
+    void set_sigma( double _sigma ) {
+        sigma = _sigma;
+        sigma_pow_6 = std::pow( sigma, 6 );
+        sigma_pow_12 = std::pow( sigma, 12 );
+    }
+
+    void set_eps( double _eps ) {
+        eps = _eps;
+        eps_pow_6 = std::pow( eps, 6 );
+        eps_pow_12 = std::pow( eps, 12 );
+    }
+
+    double get_sigma() { return sigma; }
+    double get_eps() { return eps; }
+    double get_sigma_pow_6() { return sigma_pow_6; }
+    double get_sigma_pow_12() { return sigma_pow_12; }
+
+    private:
+
+    double sigma;
+    double eps;
+
+    // precomputed pow( sigma, N ) used due to performance reasons
+    double sigma_pow_6;
+    double eps_pow_6;
+
+    double sigma_pow_12;
+    double eps_pow_12;
+};
+
+// TODO tests missing
+class LennardJonesConfig 
+{
+    public:
+
+    LennardJonesConfig( std::string );
+    LennardJonesConstants get_constants( Molecule_Type type ) { return type_constants_map[ type ]; }
+
+    private:
+
+    std::map<Molecule_Type, LennardJonesConstants> type_constants_map;
 };
 #endif

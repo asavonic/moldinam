@@ -52,6 +52,9 @@ class AlgorithmsTest(MDTestCase):
     def test_periodic_full(self):
         self.assert_test_ok(self.run_test('periodic_full'))
 
+    def test_distance(self):
+        self.assert_test_ok(self.run_test('distance'))
+
 
 class FileIO(MDTestCase):
     def setUp(self):
