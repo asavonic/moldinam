@@ -142,7 +142,7 @@ std::vector<Molecule> trace_read::initial() {
 
     steps++;
 
-    return std::move( molecules );
+    return molecules;
 }
 
 std::vector<Molecule> trace_read::next() {
@@ -151,7 +151,7 @@ std::vector<Molecule> trace_read::next() {
     } 
 
     if ( static_cast<size_t>( file.tellg() ) == file.beg ) {
-        return std::move( this->initial() );
+        return this->initial();
     }
 
     if ( total_steps == steps ) {
@@ -172,7 +172,7 @@ std::vector<Molecule> trace_read::next() {
             active = false;
         }
 
-        return std::move( molecules );
+        return molecules;
     }
 }
 
@@ -202,7 +202,7 @@ std::vector<Molecule> trace_read::final() {
         file >> molecules[i];
     }
 
-    return std::move( molecules );
+    return molecules;
 }
 
 
@@ -302,7 +302,7 @@ std::vector<Molecule> generate_random_molecules_vector( size_t size ) {
         molecules[i] = generate_random_molecule();
     }
 
-    return std::move( molecules );
+    return molecules;
 }
 
 
