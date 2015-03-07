@@ -6,7 +6,8 @@
 #include <emmintrin.h>
 #endif
 
-void Lennard_Jones(double r, LennardJonesConstants& constants, double& force, double& potential)
+void Lennard_Jones(double r, LennardJonesConstants& constants, double& force,
+                   double& potential)
 {
     double ri = 1 / r;
     double ri3 = ri * ri * ri;
@@ -91,7 +92,8 @@ double distance(Molecule& mol1, Molecule& mol2)
     return result;
 }
 
-void simple_interact(Molecule& mol1, Molecule& mol2, LennardJonesConfig& config, bool use_cutoff)
+void simple_interact(Molecule& mol1, Molecule& mol2, LennardJonesConfig& config,
+                     bool use_cutoff)
 {
     double r = distance(mol1, mol2);
 
@@ -105,7 +107,8 @@ void simple_interact(Molecule& mol1, Molecule& mol2, LennardJonesConfig& config,
     double potential = 0;
     Lennard_Jones(r, lj_constants, force_scalar, potential);
 
-    double3 force_vec(mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y, mol1.pos.z - mol2.pos.z);
+    double3 force_vec(mol1.pos.x - mol2.pos.x, mol1.pos.y - mol2.pos.y,
+                      mol1.pos.z - mol2.pos.z);
     force_vec.x = force_vec.x * force_scalar / r;
     force_vec.y = force_vec.y * force_scalar / r;
     force_vec.z = force_vec.z * force_scalar / r;
@@ -119,7 +122,8 @@ void simple_interact(Molecule& mol1, Molecule& mol2, LennardJonesConfig& config,
     mol2.accel.z -= force_vec.z;
 }
 
-void periodic3d_interact(Molecule& mol1, Molecule& mol2, double3 area_size, LennardJonesConfig& config, bool use_cutoff)
+void periodic3d_interact(Molecule& mol1, Molecule& mol2, double3 area_size,
+                         LennardJonesConfig& config, bool use_cutoff)
 {
 
     double3 total_force_vec;
@@ -156,7 +160,8 @@ void periodic3d_interact(Molecule& mol1, Molecule& mol2, double3 area_size, Lenn
     mol2.accel -= total_force_vec;
 }
 
-void verlet_step(std::vector<Molecule>& molecules, double dt, LennardJonesConfig& config)
+void verlet_step(std::vector<Molecule>& molecules, double dt,
+                 LennardJonesConfig& config)
 {
     for (Molecule& i : molecules) {
         i.accel.x = i.accel.y = i.accel.z = 0;
@@ -173,7 +178,8 @@ void verlet_step(std::vector<Molecule>& molecules, double dt, LennardJonesConfig
         verlet(i, dt);
     }
 }
-void euler_step(std::vector<Molecule>& molecules, double dt, LennardJonesConfig& config)
+void euler_step(std::vector<Molecule>& molecules, double dt,
+                LennardJonesConfig& config)
 {
     for (Molecule& i : molecules) {
         i.accel.x = i.accel.y = i.accel.z = 0;
@@ -190,7 +196,8 @@ void euler_step(std::vector<Molecule>& molecules, double dt, LennardJonesConfig&
     }
 }
 
-void verlet_step_pariodic(std::vector<Molecule>& molecules, double dt, double3 area_size, LennardJonesConfig& config)
+void verlet_step_pariodic(std::vector<Molecule>& molecules, double dt,
+                          double3 area_size, LennardJonesConfig& config)
 {
     for (Molecule& i : molecules) {
         i.accel.x = i.accel.y = i.accel.z = 0;

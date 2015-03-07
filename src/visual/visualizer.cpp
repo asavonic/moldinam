@@ -89,12 +89,12 @@ public:
         glClear(GL_COLOR_BUFFER_BIT);
 
         /* here goes an ugly hack:
-         *      we`re using angle_y for X rotation
-         *      and angle_x for Y rotation
-         *
-         *      TODO
-         *      this must be fixed
-         */
+     *      we`re using angle_y for X rotation
+     *      and angle_x for Y rotation
+     *
+     *      TODO
+     *      this must be fixed
+     */
         glm::vec3 axis_x(1, 0, 0);
         glm::mat4 anim = glm::rotate(glm::mat4(1.0f), angle.y, axis_x);
 
@@ -102,14 +102,16 @@ public:
         anim = glm::rotate(anim, angle.x, axis_y);
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0, 0, -4.0));
-        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, -4.0), glm::vec3(0.0, 1.0, 0.0));
+        glm::mat4 view = glm::lookAt(glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, -4.0),
+                                     glm::vec3(0.0, 1.0, 0.0));
         glm::mat4 projection = glm::perspective(45.0f, 1.0f * width() / height(), 0.1f, 10.0f);
         glm::mat4 mvp = projection * view * model * anim;
 
         cube_render.set_mvp(mvp);
 
         if (particle_data_source_->updated()) {
-            particle_render.set_particles_positions(particle_data_source_->get_data());
+            particle_render.set_particles_positions(
+                particle_data_source_->get_data());
         }
 
         particle_render.set_mvp(mvp);
@@ -148,7 +150,11 @@ public:
         }
     }
 
-    virtual void set_particle_data_source(std::unique_ptr<ParticleDataSource> _in) { particle_data_source_ = std::move(_in); }
+    virtual void
+    set_particle_data_source(std::unique_ptr<ParticleDataSource> _in)
+    {
+        particle_data_source_ = std::move(_in);
+    }
 
     glm::vec2 mouse_move;
     int mouse_action;
@@ -170,7 +176,11 @@ int main(int argc, char** argv)
 
         // named arguments
         po::options_description desc("Allowed options");
-        desc.add_options()("help", "produce help message")("state", po::value<std::string>(&state_file), "view state file (input or output)")("trace", po::value<std::string>(&trace_file), "view trace file with animation");
+        desc.add_options()("help", "produce help message")(
+            "state", po::value<std::string>(&state_file),
+            "view state file (input or output)")(
+            "trace", po::value<std::string>(&trace_file),
+            "view trace file with animation");
 
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
@@ -189,9 +199,11 @@ int main(int argc, char** argv)
         VisualizerWindow window;
 
         if (vm.count("state")) {
-            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(new StateParticleData(state_file)));
+            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(
+                new StateParticleData(state_file)));
         } else {
-            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(new TraceParticleData(trace_file)));
+            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(
+                new TraceParticleData(trace_file)));
         }
 
         window.start();

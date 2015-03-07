@@ -4,7 +4,8 @@
 #include <md_algorithms.h>
 #include <md_helpers.h>
 
-void gold_Lennard_Jones(double r, double epsilon, double sigma, double& force, double& potential)
+void gold_Lennard_Jones(double r, double epsilon, double sigma, double& force,
+                        double& potential)
 {
     double ri = 1 / r;
     double ri3 = ri * ri * ri;
@@ -33,7 +34,8 @@ TEST(algorithms, lennard_jones)
 
         double r = random_range();
 
-        gold_Lennard_Jones(r, constants.get_eps(), constants.get_sigma(), force_gold, potential_gold);
+        gold_Lennard_Jones(r, constants.get_eps(), constants.get_sigma(),
+                           force_gold, potential_gold);
         Lennard_Jones(r, constants, force, potential);
 
         ASSERT_TRUE(std::abs((force_gold - force) / force) < precision);

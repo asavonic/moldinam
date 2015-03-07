@@ -39,7 +39,8 @@ TEST(file_io, state_write)
     write_molecules_to_file(molecules, "test_file_io_write_to_file.xyz");
 }
 
-bool check_mol_vectors_equal(std::vector<Molecule>& first, std::vector<Molecule>& second)
+bool check_mol_vectors_equal(std::vector<Molecule>& first,
+                             std::vector<Molecule>& second)
 {
     size_t first_size = first.size();
     size_t second_size = second.size();
