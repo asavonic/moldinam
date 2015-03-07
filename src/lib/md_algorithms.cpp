@@ -2,6 +2,10 @@
 #include <cassert>
 #include <cmath>
 
+#ifdef __SSE2__
+    #include <emmintrin.h>
+#endif
+
 void Lennard_Jones( double r, LennardJonesConstants& constants, double& force, double& potential ) {
     double ri = 1 / r;
     double ri3 = ri * ri * ri;
@@ -47,11 +51,38 @@ void periodic( std::vector<Molecule>& molecules, double3 area_size ) {
 }
 
 double distance( Molecule& mol1, Molecule& mol2 ) {
+    double result = 0;
+#ifdef __SSE2__
+    __m128d mol1_pos_x = _mm_load_sd(&mol1.pos.x);
+    __m128d mol1_pos_xy = _mm_loadh_pd(mol1_pos_x, &mol1.pos.y);
+    __m128d mol1_pos_z = _mm_load_sd(&mol1.pos.z);
+
+    __m128d mol2_pos_x = _mm_load_sd(&mol2.pos.x);
+    __m128d mol2_pos_xy = _mm_loadh_pd(mol2_pos_x, &mol2.pos.y);
+    __m128d mol2_pos_z = _mm_load_sd(&mol2.pos.z);
+
+    __m128d dxdy = _mm_sub_pd(mol1_pos_xy, mol2_pos_xy);
+    __m128d dz = _mm_sub_pd(mol1_pos_z, mol2_pos_z);
+
+    __m128d dxdy_sqr = _mm_mul_pd(dxdy, dxdy);
+    __m128d dz_sqr = _mm_mul_pd(dz, dz);
+
+    __m128d dxdy_sum = _mm_add_pd(dxdy_sqr, _mm_shuffle_pd(dxdy_sqr, dxdy_sqr, 1 << 1));
+    __m128d dxdydz_sum = _mm_add_pd(dxdy_sum, dz_sqr);
+
+    __m128d result_sse2 = _mm_sqrt_pd(dxdydz_sum);
+
+    _mm_storel_pd(&result, result_sse2);
+    return result;
+#else // SSE2
     double dx = mol1.pos.x - mol2.pos.x;
     double dy = mol1.pos.y - mol2.pos.y;
     double dz = mol1.pos.z - mol2.pos.z;
 
-    return sqrt( dx*dx + dy*dy + dz*dz );
+    result = sqrt( dx*dx + dy*dy + dz*dz );
+#endif // SSE2
+
+    return result;
 }
 
 void simple_interact( Molecule& mol1, Molecule& mol2, LennardJonesConfig& config, bool use_cutoff ) {
