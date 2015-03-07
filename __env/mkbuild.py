@@ -10,8 +10,8 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--hash', dest="build_hash", help='Hash of git commit')
-parser.add_argument('--debug', dest="build_type", action='store_const', const="Debug", default="Release", 
-                        help='Build debug binaries')
+parser.add_argument('--debug', dest="build_type", action='store_const', const="Debug", default="Release", help='Build debug binaries')
+parser.add_argument('--rel-with-dbg', dest="build_type", action='store_const', const="RelWithDebInfo", help='Build relase binaries with debug info')
 parser.add_argument('--compiler', dest="compiler", default="gcc", help='available options are gcc, intel')
 
 
