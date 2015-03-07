@@ -7,20 +7,20 @@
 #include <glm/glm.hpp>
 
 class Renderer {
-    public:
-        virtual void display() = 0;
+public:
+    virtual void display() = 0;
 };
 
 class ShaderRenderer : public Renderer {
-    public:
-        virtual void set_mvp( glm::mat4 _mvp );
+public:
+    virtual void set_mvp(glm::mat4 _mvp);
 
-    protected:
-        GLuint create_shader( GLuint shader_type, const GLchar* source );
-        virtual void use_mvp();
+protected:
+    GLuint create_shader(GLuint shader_type, const GLchar* source);
+    virtual void use_mvp();
 
-        GLuint unif_mvp;
-        glm::mat4 mvp;
+    GLuint unif_mvp;
+    glm::mat4 mvp;
 };
 
 #endif

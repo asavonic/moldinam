@@ -12,26 +12,26 @@
 #include "renderer.hpp"
 
 class CubeRenderer : public ShaderRenderer {
-    public:
-        CubeRenderer();
-        CubeRenderer( CubeRenderer& ) = delete;
+public:
+    CubeRenderer();
+    CubeRenderer(CubeRenderer&) = delete;
 
-        ~CubeRenderer();
+    ~CubeRenderer();
 
-        virtual void display();
+    virtual void display();
 
-    protected:
-        void setup_VBO();
-        void setup_program();
+protected:
+    void setup_VBO();
+    void setup_program();
 
-        GLuint VBO;
-        GLint VBO_size;
+    GLuint VBO;
+    GLint VBO_size;
 
-        GLuint program;
-        GLuint attrib_vertex;
+    GLuint program;
+    GLuint attrib_vertex;
 
-        static const GLchar* vsSource;
-        static const GLchar* fsSource;
+    static const GLchar* vsSource;
+    static const GLchar* fsSource;
 };
 
 #endif

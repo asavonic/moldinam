@@ -9,24 +9,26 @@ struct double3 {
     double y;
     double z;
 
-    double3() {
+    double3()
+    {
         x = y = z = 0;
-    } 
-    double3( double _x, double _y, double _z ) {
+    }
+    double3(double _x, double _y, double _z)
+    {
         x = _x;
         y = _y;
         z = _z;
     }
 };
 
-bool operator == ( const double3&, const double3& );
-bool operator != ( const double3&, const double3& );
-double3 operator*( const double3&, const float );
-double3 operator/( const double3&, const float );
-double3 operator+( const double3&, const double3& );
-double3 operator-( const double3&, const double3& );
-void operator+=( double3&, const double3& );
-void operator-=( double3&, const double3& );
+bool operator==(const double3&, const double3&);
+bool operator!=(const double3&, const double3&);
+double3 operator*(const double3&, const float);
+double3 operator/(const double3&, const float);
+double3 operator+(const double3&, const double3&);
+double3 operator-(const double3&, const double3&);
+void operator+=(double3&, const double3&);
+void operator-=(double3&, const double3&);
 
 enum class Molecule_Type {
     NO_TYPE = 0,
@@ -42,11 +44,11 @@ struct Molecule {
     Molecule_Type type;
 };
 
-bool operator == ( const Molecule&, const Molecule& );
-bool operator != ( const Molecule&, const Molecule& );
+bool operator==(const Molecule&, const Molecule&);
+bool operator!=(const Molecule&, const Molecule&);
 
-struct Molecule_Field  {
-    std::vector< Molecule > molecules;
+struct Molecule_Field {
+    std::vector<Molecule> molecules;
 };
 
 #endif
