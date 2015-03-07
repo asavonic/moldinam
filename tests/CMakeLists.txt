@@ -21,7 +21,7 @@ function( add_test_executable TEST_NAME TEST_SRC )
 endfunction(add_test_executable) 
 
 add_test_executable( algorithms_test src/algorithms_test.cpp  )
-add_test_executable( helpers_test src/helpers_test.cpp  )
+add_test_executable( file_io_test src/file_io_test.cpp  )
 
 #installation of executable files
 INSTALL ( FILES
@@ -34,7 +34,7 @@ INSTALL ( FILES
 #installation for other files
 INSTALL ( FILES
 
-          testfiles/test_helpers_read_from_file.xyz
+          testfiles/test_file_io_read_from_file.xyz
 
           PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ
           DESTINATION tests COMPONENT tests  OPTIONAL

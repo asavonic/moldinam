@@ -61,23 +61,14 @@ class FileIO(MDTestCase):
 
         self.exe_name = os.path.abspath(os.path.join(os.path.curdir, self.exe_name))
 
-    def test_trace_read(self):
-        self.assert_test_ok(self.run_test('trace_read'))
-
-    def test_trace_write(self):
-        self.assert_test_ok(self.run_test('trace_write'))
-
     def test_trace_read_write(self):
-        self.assert_test_ok(self.run_test('test_read_write'))
+        self.assert_test_ok(self.run_test('trace_read_write'))
 
     def test_state_read(self):
         self.assert_test_ok(self.run_test('state_read'))
 
     def test_state_write(self):
         self.assert_test_ok(self.run_test('state_write'))
-
-    def test_state_read_write(self):
-        self.assert_test_ok(self.run_test('state_read_write'))
 
 algorithms = AlgorithmsTest()
 file_io = FileIO()

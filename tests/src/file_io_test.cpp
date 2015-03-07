@@ -4,8 +4,8 @@
 
 std::vector<Molecule> read_molecules_from_file( std::string filepath );
 
-TEST( helpers, read_from_file ) {
-    std::vector<Molecule>  molecules = read_molecules_from_file( "test_helpers_read_from_file.xyz" ); 
+TEST( file_io, state_read ) {
+    std::vector<Molecule>  molecules = read_molecules_from_file( "test_file_io_read_from_file.xyz" ); 
 
     unsigned int required_size = 5;
     ASSERT_EQ( required_size, molecules.size() );
@@ -22,7 +22,7 @@ TEST( helpers, read_from_file ) {
 }
 
 
-TEST( helpers, write_to_file ) {
+TEST( file_io, state_write ) {
     std::vector<Molecule>  molecules;
     molecules.resize( 5 );
 
@@ -36,7 +36,7 @@ TEST( helpers, write_to_file ) {
          molecules[i].speed.z = i + 0.6;
     }
 
-    write_molecules_to_file( molecules, "test_helpers_write_to_file.xyz" );
+    write_molecules_to_file( molecules, "test_file_io_write_to_file.xyz" );
 }
 
 bool check_mol_vectors_equal( std::vector<Molecule>& first, std::vector<Molecule>& second ) {
@@ -83,7 +83,7 @@ bool check_mol_vectors_equal( std::vector<Molecule>& first, std::vector<Molecule
     return true;
 }
 
-TEST( helpers, trace_read_write ) {
+TEST( file_io, trace_read_write ) {
     auto molecules_initial_reference = generate_random_molecules_vector( 10 );
     auto molecules_step1_reference   = generate_random_molecules_vector( 10 );
     auto molecules_step2_reference   = generate_random_molecules_vector( 10 );
