@@ -27,39 +27,18 @@ void euler( Molecule& mol, double dt ) {
 }
 
 void periodic( Molecule& mol, double3 area_size ) {
-    if ( mol.pos.x > area_size.x ) {
-        mol.pos.x -= area_size.x;
-        mol.pos_prev.x -= area_size.x;
-    }
+    mol.pos.x -= area_size.x * std::floor(mol.pos.x / area_size.x);
+    mol.pos_prev.x -= area_size.x * std::floor(mol.pos_prev.x / area_size.x);
 
-    if ( mol.pos.y > area_size.y ) {
-        mol.pos.y -= area_size.y;
-        mol.pos_prev.y -= area_size.y;
-    }
+    mol.pos.y -= area_size.y * std::floor(mol.pos.y / area_size.y);
+    mol.pos_prev.y -= area_size.y * std::floor(mol.pos_prev.y / area_size.y);
 
-    if ( mol.pos.z > area_size.z ) {
-        mol.pos.z -= area_size.z;
-        mol.pos_prev.z -= area_size.z;
-    }
+    mol.pos.z -= area_size.z * std::floor(mol.pos.z / area_size.z);
+    mol.pos_prev.z -= area_size.z * std::floor(mol.pos_prev.z / area_size.z);
 
-    if ( mol.pos.x < 0 ) {
-        mol.pos.x += area_size.x;
-        mol.pos_prev.x += area_size.x;
-    }
-
-    if ( mol.pos.y < 0 ) {
-        mol.pos.y += area_size.y;
-        mol.pos_prev.y += area_size.y;
-    }
-
-    if ( mol.pos.z < 0 ) {
-        mol.pos.z += area_size.z;
-        mol.pos_prev.z += area_size.z;
-    }
-
-    assert( mol.pos.x < area_size.x && mol.pos.x > 0 );
-    assert( mol.pos.y < area_size.y && mol.pos.y > 0 );
-    assert( mol.pos.z < area_size.z && mol.pos.z > 0 );
+    assert( mol.pos.x < area_size.x && mol.pos.x >= 0 );
+    assert( mol.pos.y < area_size.y && mol.pos.y >= 0 );
+    assert( mol.pos.z < area_size.z && mol.pos.z >= 0 );
 }
 
 void periodic( std::vector<Molecule>& molecules, double3 area_size ) {
