@@ -5,7 +5,8 @@ Molecular dynamic project
 
 Requirements
 --------
-C++ compiler with C++11 support<br />
+C++ compiler with C++11 support<br/>
+Boost<br/>
 Python (optional)
 
 How to get sources
@@ -17,7 +18,11 @@ How to get sources
 How to build
 --------
 
-**Linux:**  
+**Linux:**<br/>
+Debian:
+`apt-get install g++ cmake libglew-dev libxrandr-dev libxi-dev libxxf86vm-dev`
+
+
 `cd moldynam`  
 `mkdir build`  
 `cd build`  
