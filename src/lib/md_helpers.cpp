@@ -72,6 +72,13 @@ trace_read::trace_read( std::string filepath ) {
     this->open( filepath );
 }
 
+void trace_read::close()
+{
+    if ( file.is_open() ) {
+        file.close();
+    }
+}
+
 void trace_read::open( std::string filepath ) {
     if ( file.is_open() ) {
         file.close();
@@ -84,17 +91,20 @@ void trace_read::open( std::string filepath ) {
     
     active = true;
     file >> molecules_num;
+    total_steps = read_total_steps();
 }
 
-std::vector<Molecule> trace_read::initial() {
+size_t trace_read::read_total_steps()
+{
     if ( !file.is_open() ) {
-        throw std::logic_error( std::string( "Cannot read file which is not opened at " ) + std::string( __FILE__ ) + ":" + std::to_string( __LINE__ ) );
+        throw std::logic_error(std::string( "Cannot read file which was not opened" ));
     } 
+
+    size_t initial_pos = file.tellg();
 
     file.seekg( 0, file.end );
     size_t length = file.tellg();
 
-    std::cout << "length = " << length << std::endl;
     for(int i = length-2; i > 0 ; i-- ) { 
         file.seekg(i);
         char c = file.get();
@@ -115,7 +125,11 @@ std::vector<Molecule> trace_read::initial() {
         throw std::runtime_error( "Total steps number not found in trace file" );
     }
 
-    total_steps = std::stoi( total_steps_str );
+    file.seekg(initial_pos);
+    return std::stoi( total_steps_str );
+}
+
+std::vector<Molecule> trace_read::initial() {
 
     file.seekg( 0, file.beg );
     file >> molecules_num;
@@ -201,6 +215,13 @@ trace_write::trace_write( std::string filepath ) {
     this->open( filepath );
 }
 
+void trace_write::close()
+{
+    if ( file.is_open() ) {
+        file.close();
+    }
+}
+
 void trace_write::open( std::string filepath ) {
     if ( file.is_open() ) {
         file.close();
@@ -247,7 +268,7 @@ void trace_write::next( std::vector<Molecule>& molecules ) {
 
 void trace_write::final( std::vector<Molecule>& molecules ) {
     next( molecules );
-    file << "total steps = " + std::to_string( steps );
+    file << "total steps = " + std::to_string( steps ) << std::endl;
     active = false;
 }
 

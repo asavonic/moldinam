@@ -98,7 +98,8 @@ TEST( file_io, trace_read_write ) {
     _trace_write.next( molecules_step2_reference );
     _trace_write.next( molecules_step3_reference );
     _trace_write.next( molecules_step4_reference );
-    _trace_write.next( molecules_final_reference );
+    _trace_write.final( molecules_final_reference );
+    _trace_write.close();
 
     trace_read _trace_read( "trace_test.xyztrace" );
     auto molecules_initial = _trace_read.initial();
@@ -108,8 +109,11 @@ TEST( file_io, trace_read_write ) {
     auto molecules_step4   = _trace_read.next();
     auto molecules_final   = _trace_read.next();
 
+    _trace_read.close(); 
+
     trace_read _trace_read_2 ( "trace_test.xyztrace" );
     auto molecules_final_2 = _trace_read_2.final();
+    _trace_read_2.close();
     
     check_mol_vectors_equal( molecules_initial_reference, molecules_initial );
     check_mol_vectors_equal( molecules_step1_reference, molecules_step1 );
