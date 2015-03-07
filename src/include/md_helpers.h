@@ -20,7 +20,7 @@ std::istream& operator>>(std::istream&, Molecule_Type&);
 class trace_read {
 public:
     bool active; // TODO trace_read becomes deactivated when reaches the end of trace file
-                 // this is temporary solution, must be fixed later   
+    // this is temporary solution, must be fixed later
     trace_read();
     trace_read(std::string filepath);
     void open(std::string filepath);

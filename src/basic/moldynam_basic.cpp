@@ -13,13 +13,13 @@ void moldynam_basic(std::string input_file_path, std::string output_file_path, s
 int main(int argc, char** argv)
 {
     try {
-        int          iterations = 0;
-        double       dt = 0;
-        std::string  input_file_path;
-        std::string  output_file_path;
-        bool         use_periodic = false;
-        std::string  trace_file;
-        std::string  lj_config_file;
+        int iterations = 0;
+        double dt = 0;
+        std::string input_file_path;
+        std::string output_file_path;
+        bool use_periodic = false;
+        std::string trace_file;
+        std::string lj_config_file;
 
         // named arguments
         po::options_description desc("Allowed options");
