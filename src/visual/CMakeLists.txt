@@ -17,9 +17,7 @@ include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(visualizer ${Boost_LIBRARIES})
 
 target_link_libraries(visualizer glfw ${GLFW_LIBRARIES})
-if (WIN32)
-	target_link_libraries(visualizer ${GLEW_LIBRARY})
-endif()
+target_link_libraries(visualizer ${GLEW_LIBRARY})
 
 INSTALL(TARGETS visualizer
 	RUNTIME DESTINATION "bin"
