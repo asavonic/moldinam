@@ -3,7 +3,25 @@ set(EXT_DIR ${CMAKE_CURRENT_LIST_DIR})
 add_subdirectory(gtest-1.7.0)
 set(GTEST_INCLUDE_DIR ${EXT_DIR}/gtest-1.7.0/include PARENT_SCOPE)
 
+if (USE_STATIC_CRT)
+    set(USE_MSVC_RUNTIME_LIBRARY_DLL OFF)
+endif()
+set(GLFW_BUILD_EXAMPLES OFF)
+set(GLFW_BUILD_TESTS OFF)
+set(GLFW_BUILD_DOCS OFF)
 add_subdirectory(glfw)
 set(GLFW_INCLUDE_DIR ${EXT_DIR}/glfw/include PARENT_SCOPE)
 
 set(GLM_INCLUDE_DIR ${EXT_DIR}/glm PARENT_SCOPE)
+if (WIN32)
+    set(GLEW_INCLUDE_DIR ${EXT_DIR}/glew/include PARENT_SCOPE)
+    INSTALL(FILES ${EXT_DIR}/glew/bin/Release/Win32/glew32.dll
+	    DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
+endif()
+
+set(GLEXT_INCLUDE_DIR ${EXT_DIR}/glext PARENT_SCOPE)
+
+if (WIN32)
+	FIND_LIBRARY(GLEW_LIBRARY glew32 ${EXT_DIR}/glew/lib/Release/Win32)
+	set(GLEW_LIBRARY ${GLEW_LIBRARY} PARENT_SCOPE)
+endif()

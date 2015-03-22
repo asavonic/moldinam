@@ -12,9 +12,6 @@ target_link_libraries(moldynam_basic ${LIB_NAME} )
 target_link_libraries(moldynam_basic ${Boost_LIBRARIES})
 
 #installation of executable files
-INSTALL ( FILES
-          ${CMAKE_CURRENT_BINARY_DIR}/moldynam_basic 
-
-          PERMISSIONS OWNER_EXECUTE OWNER_WRITE OWNER_READ GROUP_READ GROUP_EXECUTE
-          DESTINATION ${CMAKE_INSTALL_PREFIX}
-        )
+INSTALL(TARGETS moldynam_basic
+	RUNTIME DESTINATION "bin"
+)

@@ -72,7 +72,7 @@ protected:
 
 class VisualizerWindow : public glfw::window {
 
-    using parent_t = glfw::window;
+    typedef glfw::window parent_t;
 
 public:
     VisualizerWindow()

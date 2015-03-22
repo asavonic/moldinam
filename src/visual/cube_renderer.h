@@ -14,7 +14,7 @@
 class CubeRenderer : public ShaderRenderer {
     public:
         CubeRenderer();
-        CubeRenderer( CubeRenderer& ) = delete;
+
 
         ~CubeRenderer();
 
@@ -32,6 +32,9 @@ class CubeRenderer : public ShaderRenderer {
 
         static const GLchar* vsSource;
         static const GLchar* fsSource;
+
+private:
+	CubeRenderer( CubeRenderer& ) {};
 };
 
 #endif

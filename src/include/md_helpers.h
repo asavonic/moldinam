@@ -10,15 +10,17 @@
 #include <functional>
 #include <map>
 
-std::vector<Molecule> read_molecules_from_file( std::string filepath );
-void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
-std::ostream& operator<<( std::ostream&, const Molecule );
-std::istream& operator>>( std::istream&,  Molecule& );
+#include "dll_defines.h"
 
-std::ostream& operator<<( std::ostream&, const Molecule_Type );
-std::istream& operator>>( std::istream&,  Molecule_Type& );
+MOLDINAM_EXPORT std::vector<Molecule> read_molecules_from_file( std::string filepath );
+MOLDINAM_EXPORT void write_molecules_to_file( std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode = std::ios::trunc );
+MOLDINAM_EXPORT std::ostream& operator<<( std::ostream&, const Molecule );
+MOLDINAM_EXPORT std::istream& operator>>( std::istream&,  Molecule& );
 
-class trace_read {
+MOLDINAM_EXPORT std::ostream& operator<<( std::ostream&, const Molecule_Type );
+MOLDINAM_EXPORT std::istream& operator>>( std::istream&,  Molecule_Type& );
+
+class MOLDINAM_EXPORT trace_read {
 public:
 
     bool active; // TODO trace_read becomes deactivated when reaches the end of trace file
@@ -47,7 +49,7 @@ private:
     size_t total_steps;
 };
 
-class trace_write {
+class MOLDINAM_EXPORT trace_write {
 public:
     // setting active to false will disable all functionality
     bool active;
@@ -67,11 +69,11 @@ private:
     size_t steps;
 };
 
-Molecule generate_random_molecule();
-std::vector<Molecule> generate_random_molecules_vector( size_t );
+MOLDINAM_EXPORT Molecule generate_random_molecule();
+MOLDINAM_EXPORT std::vector<Molecule> generate_random_molecules_vector( size_t );
 
 
-class LennardJonesConstants 
+class MOLDINAM_EXPORT LennardJonesConstants 
 {
     public:
 
@@ -111,7 +113,7 @@ class LennardJonesConstants
 };
 
 // TODO tests missing
-class LennardJonesConfig 
+class MOLDINAM_EXPORT LennardJonesConfig 
 {
     public:
 
