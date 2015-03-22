@@ -12,27 +12,27 @@ ParticleRenderer::ParticleRenderer()
     setup_program();
 }
 
-ParticleRenderer::~ParticleRenderer()
-{
-}
+ParticleRenderer::~ParticleRenderer() {}
 
 void ParticleRenderer::set_positions(std::vector<glm::vec3>& _positions)
 {
     positions = _positions;
 }
 
-void ParticleRenderer::set_particles_positions(std::vector<Molecule> molecules)
+void
+ParticleRenderer::set_particles_positions(std::vector<Molecule> molecules)
 {
     positions.resize(molecules.size());
 
     // TODO remove hardcode
-    double3 area_size = { 10, 10, 10 };
+    double3 area_size(10, 10, 10);
     glm::mat3 scale_matrix = get_particles_scale_matrix(area_size);
 
-    // positions are scaling to the range [0, 2] and then shifted to the range [-1, 1]
+    // positions are scaling to the range [0, 2] and then shifted to the range
+    // [-1, 1]
     for (size_t i = 0; i < molecules.size(); i++) {
-        positions[i] = scale_matrix * glm::vec3(molecules[i].pos.x, molecules[i].pos.y, molecules[i].pos.z)
-                       + glm::vec3(-1.0, -1.0, -1.0);
+        positions[i] = scale_matrix * glm::vec3(molecules[i].pos.x, molecules[i].pos.y,
+                                                molecules[i].pos.z) + glm::vec3(-1.0, -1.0, -1.0);
     }
 }
 
@@ -86,39 +86,35 @@ void ParticleRenderer::_drawPoints()
 #define STRINGIFY(A) #A
 
 // vertex shader
-const char* ParticleRenderer::vertex_shader_source = STRINGIFY(
-    uniform float pointRadius; // point size in world space
-    uniform float pointScale; // scale to calculate size in pixels
-    uniform float densityScale;
-    uniform float densityOffset;
-    uniform mat4 mvp;
-    void main() {
-    // calculate window-space point size
-    vec3 posEye = vec3(gl_ModelViewMatrix * vec4(gl_Vertex.xyz, 1.0));
-    float dist = length(posEye);
-    gl_PointSize = 20.0; //pointRadius * (pointScale / dist);
+const char* ParticleRenderer::vertex_shader_source = STRINGIFY(uniform float pointRadius; // point size in world space
+                                                               uniform float pointScale; // scale to calculate size in pixels
+                                                               uniform float densityScale; uniform float densityOffset;
+                                                               uniform mat4 mvp; void main() {
+      // calculate window-space point size
+      vec3 posEye = vec3(gl_ModelViewMatrix * vec4(gl_Vertex.xyz, 1.0));
+      float dist = length(posEye);
+      gl_PointSize = 20.0; // pointRadius * (pointScale / dist);
 
-    gl_TexCoord[0] = gl_MultiTexCoord0;
-    gl_Position = mvp * vec4(gl_Vertex.xyz, 1.0);
-    gl_FrontColor = gl_Color;
-    });
+      gl_TexCoord[0] = gl_MultiTexCoord0;
+      gl_Position = mvp * vec4(gl_Vertex.xyz, 1.0);
+      gl_FrontColor = gl_Color;
+});
 
 // pixel shader for rendering points as shaded spheres
-const char* ParticleRenderer::fragment_shader_source = STRINGIFY(
-    vec3 lightDir = vec3(0.577, 0.577, 0.577);
-    void main() {
-    // calculate normal from texture coordinates
-    vec3 N;
-    N.xy = gl_TexCoord[0].xy*vec2(2.0, -2.0) + vec2(-1.0, 1.0);
-    float mag = dot(N.xy, N.xy);
-    if (mag > 1.0) discard;   // kill pixels outside circle
-    N.z = sqrt(1.0-mag);
+const char* ParticleRenderer::fragment_shader_source = STRINGIFY(vec3 lightDir = vec3(0.577, 0.577, 0.577); void main() {
+      // calculate normal from texture coordinates
+      vec3 N;
+      N.xy = gl_TexCoord[0].xy * vec2(2.0, -2.0) + vec2(-1.0, 1.0);
+      float mag = dot(N.xy, N.xy);
+      if (mag > 1.0)
+        discard; // kill pixels outside circle
+      N.z = sqrt(1.0 - mag);
 
-    // calculate lighting
-    float diffuse = max(0.05, dot(lightDir, N));
+      // calculate lighting
+      float diffuse = max(0.05, dot(lightDir, N));
 
-    gl_FragColor = gl_Color * diffuse;
-    });
+      gl_FragColor = gl_Color * diffuse;
+});
 
 void ParticleRenderer::display()
 {
@@ -131,8 +127,10 @@ void ParticleRenderer::display()
     glUseProgram(program);
 
     use_mvp();
-    /* glUniform1f( glGetUniformLocation(program, "pointScale"), window_h / tan(fov*0.5*M_PI/180.0) ); */
-    /* glUniform1f( glGetUniformLocation(program, "pointRadius"), particleRadius ); */
+    /* glUniform1f( glGetUniformLocation(program, "pointScale"), window_h /
+   * tan(fov*0.5*M_PI/180.0) ); */
+    /* glUniform1f( glGetUniformLocation(program, "pointRadius"), particleRadius
+   * ); */
     glUniform1f(glGetUniformLocation(program, "pointScale"), 0.01f);
     glUniform1f(glGetUniformLocation(program, "pointRadius"), 0.0001);
 

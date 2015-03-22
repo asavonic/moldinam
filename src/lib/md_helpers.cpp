@@ -7,7 +7,8 @@ std::vector<Molecule> read_molecules_from_file(std::string filepath)
     std::ifstream file(filepath.c_str(), std::ifstream::in);
 
     if (!file.is_open()) {
-        throw std::runtime_error("Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
+        throw std::runtime_error(
+            "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
     }
 
     std::string line;
@@ -27,12 +28,14 @@ std::vector<Molecule> read_molecules_from_file(std::string filepath)
     return molecules;
 }
 
-void write_molecules_to_file(std::vector<Molecule>& molecules, std::string filepath, std::ios::openmode mode)
+void write_molecules_to_file(std::vector<Molecule>& molecules,
+                             std::string filepath, std::ios::openmode mode)
 {
     std::ofstream file(filepath.c_str(), std::ifstream::out | mode);
 
     if (!file.is_open()) {
-        throw std::runtime_error("Error while opening file " + filepath + " for writing! Check if it exist and have correct permissions.");
+        throw std::runtime_error(
+            "Error while opening file " + filepath + " for writing! Check if it exist and have correct permissions.");
     }
 
     file << molecules.size() << std::endl;
@@ -46,10 +49,10 @@ std::ostream& operator<<(std::ostream& os, const Molecule molecule)
 {
     os.precision(std::numeric_limits<double>::digits10); // need to avoid miscompare when reading and writing
 
-    os << molecule.type << " "
-       << molecule.pos.x << " " << molecule.pos.y << " " << molecule.pos.z << " "
-       << molecule.speed.x << " " << molecule.speed.y << " " << molecule.speed.z << " "
-       << molecule.accel.x << " " << molecule.accel.y << " " << molecule.accel.z;
+    os << molecule.type << " " << molecule.pos.x << " " << molecule.pos.y << " "
+       << molecule.pos.z << " " << molecule.speed.x << " " << molecule.speed.y
+       << " " << molecule.speed.z << " " << molecule.accel.x << " "
+       << molecule.accel.y << " " << molecule.accel.z;
 
     return os;
 }
@@ -92,7 +95,8 @@ void trace_read::open(std::string filepath)
 
     file.open(filepath.c_str(), std::ifstream::in);
     if (!file.is_open()) {
-        throw std::runtime_error("Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
+        throw std::runtime_error(
+            "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
     }
 
     active = true;
@@ -103,7 +107,8 @@ void trace_read::open(std::string filepath)
 size_t trace_read::read_total_steps()
 {
     if (!file.is_open()) {
-        throw std::logic_error(std::string("Cannot read file which was not opened"));
+        throw std::logic_error(
+            std::string("Cannot read file which was not opened"));
     }
 
     size_t initial_pos = file.tellg();
@@ -114,7 +119,7 @@ size_t trace_read::read_total_steps()
     for (int i = length - 2; i > 0; i--) {
         file.seekg(i);
         char c = file.get();
-        if (c == '\r' || c == '\n') { //new line?
+        if (c == '\r' || c == '\n') { // new line?
             break;
         }
     }
@@ -148,17 +153,18 @@ std::vector<Molecule> trace_read::initial()
 
     steps++;
 
-    return std::move(molecules);
+    return molecules;
 }
 
 std::vector<Molecule> trace_read::next()
 {
     if (!file.is_open()) {
-        throw std::logic_error(std::string("Cannot read file which is not opened at ") + std::string(__FILE__) + ":" + std::to_string(__LINE__));
+        throw std::logic_error(
+            std::string("Cannot read file which is not opened at ") + std::string(__FILE__) + ":" + std::to_string(__LINE__));
     }
 
     if (static_cast<size_t>(file.tellg()) == file.beg) {
-        return std::move(this->initial());
+        return this->initial();
     }
 
     if (total_steps == steps) {
@@ -178,14 +184,15 @@ std::vector<Molecule> trace_read::next()
             active = false;
         }
 
-        return std::move(molecules);
+        return molecules;
     }
 }
 
 std::vector<Molecule> trace_read::final()
 {
     if (!file.is_open()) {
-        throw std::logic_error(std::string("Cannot read file which is not opened at ") + std::string(__FILE__) + ":" + std::to_string(__LINE__));
+        throw std::logic_error(
+            std::string("Cannot read file which is not opened at ") + std::string(__FILE__) + ":" + std::to_string(__LINE__));
     }
 
     file.seekg(file.end);
@@ -198,7 +205,7 @@ std::vector<Molecule> trace_read::final()
     for (int i = length - 2; i > 0 && lines_end_num < molecules_num + 2; i--) {
         file.seekg(i);
         char c = file.get();
-        if (c == '\r' || c == '\n') { //new line?
+        if (c == '\r' || c == '\n') { // new line?
             lines_end_num++;
         }
     }
@@ -209,13 +216,10 @@ std::vector<Molecule> trace_read::final()
         file >> molecules[i];
     }
 
-    return std::move(molecules);
+    return molecules;
 }
 
-trace_write::trace_write()
-{
-    active = true;
-}
+trace_write::trace_write() { active = true; }
 
 trace_write::trace_write(std::string filepath)
 {
@@ -238,7 +242,8 @@ void trace_write::open(std::string filepath)
 
     file.open(filepath.c_str(), std::ofstream::out);
     if (!file.is_open()) {
-        throw std::runtime_error("Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
+        throw std::runtime_error(
+            "Error while opening file " + filepath + " for reading! Check if it exist and have correct permissions.");
     }
 }
 
@@ -316,7 +321,7 @@ std::vector<Molecule> generate_random_molecules_vector(size_t size)
         molecules[i] = generate_random_molecule();
     }
 
-    return std::move(molecules);
+    return molecules;
 }
 
 std::ostream& operator<<(std::ostream& os, const Molecule_Type type)
@@ -371,7 +376,8 @@ LJ_config::LJ_config(std::string config_path)
     std::ifstream file(config_path.c_str(), std::ifstream::in);
 
     if (!file.is_open()) {
-        throw std::runtime_error("Error while opening file " + config_path + " for reading! Check if it exist and have correct permissions.");
+        throw std::runtime_error(
+            "Error while opening file " + config_path + " for reading! Check if it exist and have correct permissions.");
     }
 
     molecule_types_constants.resize(1000, std::make_pair(0, 0));

@@ -1,5 +1,6 @@
 #include <md_algorithms.h>
 #include <cassert>
+#include <cmath>
 
 void Lennard_Jones(double r, double epsilon, double sigma, double& force, double& potential)
 {
@@ -33,10 +34,8 @@ void periodic(Molecule& mol, double3 area_size)
 {
     mol.pos.x -= area_size.x * std::floor(mol.pos.x / area_size.x);
     mol.pos_prev.x -= area_size.x * std::floor(mol.pos_prev.x / area_size.x);
-
     mol.pos.y -= area_size.y * std::floor(mol.pos.y / area_size.y);
     mol.pos_prev.y -= area_size.y * std::floor(mol.pos_prev.y / area_size.y);
-
     mol.pos.z -= area_size.z * std::floor(mol.pos.z / area_size.z);
     mol.pos_prev.z -= area_size.z * std::floor(mol.pos_prev.z / area_size.z);
 

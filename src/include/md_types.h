@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "dll_defines.h"
+
 struct double3 {
     double x;
     double y;
@@ -21,14 +23,14 @@ struct double3 {
     }
 };
 
-bool operator==(const double3&, const double3&);
-bool operator!=(const double3&, const double3&);
-double3 operator*(const double3&, const float);
-double3 operator/(const double3&, const float);
-double3 operator+(const double3&, const double3&);
-double3 operator-(const double3&, const double3&);
-void operator+=(double3&, const double3&);
-void operator-=(double3&, const double3&);
+MOLDINAM_EXPORT bool operator == ( const double3&, const double3& );
+MOLDINAM_EXPORT bool operator != ( const double3&, const double3& );
+MOLDINAM_EXPORT double3 operator*( const double3&, const float );
+MOLDINAM_EXPORT double3 operator/( const double3&, const float );
+MOLDINAM_EXPORT double3 operator+( const double3&, const double3& );
+MOLDINAM_EXPORT double3 operator-( const double3&, const double3& );
+MOLDINAM_EXPORT void operator+=( double3&, const double3& );
+MOLDINAM_EXPORT void operator-=( double3&, const double3& );
 
 enum class Molecule_Type {
     NO_TYPE = 0,
@@ -44,8 +46,8 @@ struct Molecule {
     Molecule_Type type;
 };
 
-bool operator==(const Molecule&, const Molecule&);
-bool operator!=(const Molecule&, const Molecule&);
+MOLDINAM_EXPORT bool operator == ( const Molecule&, const Molecule& );
+MOLDINAM_EXPORT bool operator != ( const Molecule&, const Molecule& );
 
 struct Molecule_Field {
     std::vector<Molecule> molecules;

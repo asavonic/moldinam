@@ -10,10 +10,7 @@ void ShaderRenderer::use_mvp()
     glUniformMatrix4fv(unif_mvp, 1, false, glm::value_ptr(mvp));
 }
 
-void ShaderRenderer::set_mvp(glm::mat4 _mvp)
-{
-    mvp = _mvp;
-}
+void ShaderRenderer::set_mvp(glm::mat4 _mvp) { mvp = _mvp; }
 
 GLuint ShaderRenderer::create_shader(GLuint shader_type, const GLchar* source)
 {
@@ -30,7 +27,8 @@ GLuint ShaderRenderer::create_shader(GLuint shader_type, const GLchar* source)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
     if (!success) {
-        std::cerr << "Shader build failed -- build log:" << std::endl << log << std::endl;
+        std::cerr << "Shader build failed -- build log:\n" << std::endl;
+		std::cerr << log.c_str() << std::endl;
         throw std::runtime_error("glCompileShader failed");
     }
 

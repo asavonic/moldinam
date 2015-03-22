@@ -4,7 +4,8 @@
 #include <md_algorithms.h>
 #include <md_helpers.h>
 
-void gold_Lennard_Jones(double r, double epsilon, double sigma, double& force, double& potential)
+void gold_Lennard_Jones(double r, double epsilon, double sigma, double& force,
+                        double& potential)
 {
     double ri = 1 / r;
     double ri3 = ri * ri * ri;
@@ -26,6 +27,7 @@ TEST(algorithms, lennard_jones)
     for (unsigned int i = 0; i < 1000000; i++) {
         double force = 0, force_gold = 0;
         double potential = 0, potential_gold = 0;
+
         double sigma = 1;
         double epsilon = 1;
 
@@ -108,4 +110,20 @@ TEST(algorithms, periodic_full)
         ASSERT_TRUE(mol.pos_prev.z < area_size.z);
         ASSERT_TRUE(mol.pos_prev.z >= 0);
     }
+}
+
+TEST(algorithms, distance)
+{
+    Molecule mol1 = generate_random_molecule();
+    Molecule mol2 = generate_random_molecule();
+
+    double r = distance(mol1, mol2);
+
+    double dx = mol1.pos.x - mol2.pos.x;
+    double dy = mol1.pos.y - mol2.pos.y;
+    double dz = mol1.pos.z - mol2.pos.z;
+
+    double r_ref = sqrt(dx * dx + dy * dy + dz * dz);
+
+    ASSERT_EQ(r_ref, r);
 }

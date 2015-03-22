@@ -12,9 +12,9 @@
 #include "renderer.hpp"
 
 class CubeRenderer : public ShaderRenderer {
-public:
-    CubeRenderer();
-    CubeRenderer(CubeRenderer&) = delete;
+    public:
+        CubeRenderer();
+
 
     ~CubeRenderer();
 
@@ -30,8 +30,11 @@ protected:
     GLuint program;
     GLuint attrib_vertex;
 
-    static const GLchar* vsSource;
-    static const GLchar* fsSource;
+        static const GLchar* vsSource;
+        static const GLchar* fsSource;
+
+private:
+	CubeRenderer( CubeRenderer& ) {};
 };
 
 #endif

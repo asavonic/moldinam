@@ -8,7 +8,9 @@
 
 namespace po = boost::program_options;
 
-void moldynam_basic(std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string use_trace, std::string lj_config_file);
+void moldynam_basic(std::string input_file_path, std::string output_file_path,
+                    size_t iterations, double dt, bool use_periodic,
+                    std::string use_trace, std::string lj_config_file);
 
 int main(int argc, char** argv)
 {
@@ -39,7 +41,9 @@ int main(int argc, char** argv)
         p.add("input", -1);
 
         po::variables_map vm;
-        po::store(po::command_line_parser(argc, argv).options(desc).positional(p).run(), vm);
+        po::store(
+            po::command_line_parser(argc, argv).options(desc).positional(p).run(),
+            vm);
 
         if (vm.count("help")) {
             std::cout << desc << std::endl;
@@ -58,7 +62,8 @@ int main(int argc, char** argv)
         std::cout << "periodic    = " << use_periodic << std::endl;
         std::cout << "dt          = " << dt << std::endl;
 
-        moldynam_basic(input_file_path, output_file_path, iterations, dt, use_periodic, trace_file, lj_config_file);
+        moldynam_basic(input_file_path, output_file_path, iterations, dt,
+                       use_periodic, trace_file, lj_config_file);
     }
     catch (boost::program_options::error& po_error) {
         std::cerr << po_error.what() << std::endl;
@@ -68,7 +73,9 @@ int main(int argc, char** argv)
     }
 }
 
-void moldynam_basic(std::string input_file_path, std::string output_file_path, size_t iterations, double dt, bool use_periodic, std::string trace_file, std::string lj_config_file)
+void moldynam_basic(std::string input_file_path, std::string output_file_path,
+                    size_t iterations, double dt, bool use_periodic,
+                    std::string trace_file, std::string lj_config_file)
 {
     std::vector<Molecule> molecules = read_molecules_from_file(input_file_path);
 
