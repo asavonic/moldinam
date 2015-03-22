@@ -27,8 +27,8 @@ GLuint ShaderRenderer::create_shader(GLuint shader_type, const GLchar* source)
     glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 
     if (!success) {
-        std::cerr << "Shader build failed -- build log:" << std::endl << log
-                  << std::endl;
+        std::cerr << "Shader build failed -- build log:\n" << std::endl;
+		std::cerr << log.c_str() << std::endl;
         throw std::runtime_error("glCompileShader failed");
     }
 

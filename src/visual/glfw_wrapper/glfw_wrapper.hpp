@@ -32,8 +32,8 @@ public:
     }
 
 private:
-    glfw_system(const glfw_system&) = delete;
-    void operator=(const glfw_system&) = delete;
+	glfw_system(const glfw_system&) {};
+	void operator=(const glfw_system&){};
 
     glfw_system()
     {
@@ -88,18 +88,12 @@ static void g_mouse_move_callback(GLFWwindow* glfw_window_ptr, double new_pos_x,
 class window {
 public:
     /**
-         * @brief Creates windows object with default size 640 x 480
-         */
-    explicit window()
-        : window(640, 480, "GLFW window"){};
-
-    /**
-         * @brief Creates window object
+         * @brief Initializes window object
          *
          * @param width Width of the window, must be greater than zero
          * @param height Height of the window, must be greater than zero
          */
-    explicit window(size_t width, size_t height, std::string title)
+    void Init(size_t width, size_t height, std::string title)
     {
         glfw_system::instance();
 
@@ -121,6 +115,19 @@ public:
         _width = temp_width;
         _height = temp_height;
     }
+
+	window(size_t width, size_t height, std::string title)
+	{
+		Init(width, height, title);
+	}
+
+	/**
+    * @brief Creates windows object with default size 640 x 480
+    */
+    explicit window() 
+	{
+		Init(640, 480, "GLFW window");
+	};
 
     /**
          * @brief Destroys window object

@@ -55,7 +55,7 @@ void CubeRenderer::setup_VBO()
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    std::vector<glm::vec3> cube = {
+    glm::vec3 cube[] = {
         glm::vec3(-1.0, -1.0, 1.0), glm::vec3(1.0, -1.0, 1.0),
         glm::vec3(1.0, -1.0, 1.0), glm::vec3(1.0, 1.0, 1.0),
         glm::vec3(1.0, 1.0, 1.0), glm::vec3(-1.0, 1.0, 1.0),
@@ -72,7 +72,8 @@ void CubeRenderer::setup_VBO()
         glm::vec3(-1.0, 1.0, -1.0), glm::vec3(-1.0, -1.0, -1.0)
     };
 
-    VBO_size = cube.size();
+    VBO_size = sizeof(cube) / sizeof(glm::vec3);
+
     glBufferData(GL_ARRAY_BUFFER, VBO_size * sizeof(glm::vec3),
                  glm::value_ptr(cube[0]), GL_STATIC_DRAW);
 }

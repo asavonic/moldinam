@@ -35,7 +35,14 @@ or you can build it with python script automatically
 `python $MD_ROOT/__env/mkbuild.py` 
 
 **Windows:** <br />
-MS Visual Studio is the only supported compiler for Windows, at least for now, and you can generate VS Solution automatically:<br/><br/>
-`set MD_ROOT=<path to moldynam root>`<br/>
-`python %MD_ROOT%\__env\mkbuild.py`<br/><br/>
-After that you`ll find moldynam.sln in %MD_ROOT%/tmp
+MSVS2012 or higher required for build.
+
+If you already have Boost installed then specify path to it in BOOST_ROOT variable for CMake<br/>
+If not, see *Build Boost on Windows* section<br/>
+
+Build Boost on Windows
+--------
+Download and unpack the latest version: http://www.boost.org/users/download/ <br/>
+Go to this unpacked directory and run:<br/>
+`bootstrap`<br/>
+`b2 variant=release,debug link=static runtime-link=static stage`<br/>

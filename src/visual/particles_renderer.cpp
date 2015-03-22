@@ -25,7 +25,7 @@ ParticleRenderer::set_particles_positions(std::vector<Molecule> molecules)
     positions.resize(molecules.size());
 
     // TODO remove hardcode
-    double3 area_size = { 10, 10, 10 };
+    double3 area_size(10, 10, 10);
     glm::mat3 scale_matrix = get_particles_scale_matrix(area_size);
 
     // positions are scaling to the range [0, 2] and then shifted to the range
