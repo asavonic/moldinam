@@ -43,6 +43,6 @@ If not, see *Build Boost on Windows* section<br/>
 Build Boost on Windows
 --------
 Download and unpack the latest version: http://www.boost.org/users/download/ <br/>
-Go to this unpacked directory and run:
+Go to this unpacked directory and run:<br/>
 `bootstrap`
 `b2 variant=release,debug link=static runtime-link=static stage`
