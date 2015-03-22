@@ -16,8 +16,7 @@ target_link_libraries(visualizer ${MD_LIB_NAME})
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(visualizer ${Boost_LIBRARIES})
 
-target_link_libraries(visualizer glfw ${GLFW_LIBRARIES})
-target_link_libraries(visualizer ${GLEW_LIBRARY})
+target_link_libraries(visualizer glfw ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
 
 INSTALL(TARGETS visualizer
 	RUNTIME DESTINATION "bin"

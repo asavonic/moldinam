@@ -10,7 +10,6 @@ function( add_test_executable TEST_NAME TEST_SRC )
     include_directories(${MD_INCLUDE_DIR})
 
     add_executable(${TEST_NAME} ${TEST_SRC})
-    add_dependencies(${TEST_NAME} googletest)
 
     target_link_libraries(${TEST_NAME} ${MD_LIB_NAME} gtest_main )
 
