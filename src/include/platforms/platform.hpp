@@ -42,8 +42,8 @@ public:
     {
     }
 
-    virtual void ApplyVerletIntegration() = 0;
-    virtual void ApplyEulerIntegration() = 0;
+    virtual void applyVerletIntegration() = 0;
+    virtual void applyEulerIntegration() = 0;
 };
 
 #endif // __PLATFORM_H

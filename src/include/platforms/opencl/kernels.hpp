@@ -29,7 +29,7 @@ public:
         // TODO Implement common solution like cl::KernelFunctor from newest cl.hpp
         // with arguments binding to avoid copy/paste this init stuff
 
-        OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().GetDeviceFor(*this);
+        OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
         cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
 
@@ -61,7 +61,7 @@ public:
 
     virtual void execute()
     {
-        OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().GetDeviceFor(*this);
+        OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
         cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
 

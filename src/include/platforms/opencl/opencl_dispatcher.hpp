@@ -17,7 +17,7 @@ public:
     }
 
     template<class Kernel>
-    DevicePtr GetDeviceFor(Kernel& kernel)
+    DevicePtr getDeviceFor(Kernel& kernel)
     {
         // TODO Device selection based on heuristic
         return m_device;

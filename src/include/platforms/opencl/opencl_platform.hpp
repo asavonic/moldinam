@@ -16,7 +16,7 @@ public:
     {
     }
 
-    virtual void ApplyVerletIntegration()
+    virtual void applyVerletIntegration()
     {
         OpenCLManager& ocl = OpenCLManager::Instance();
         OpenCLContext context = ocl.GetContext();
@@ -24,7 +24,7 @@ public:
         kernel.execute();
     }
 
-    virtual void ApplyEulerIntegration()
+    virtual void applyEulerIntegration()
     {
     }
 
