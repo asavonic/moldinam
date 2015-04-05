@@ -2,6 +2,8 @@
 #define __OPENCL_HELPERS_HPP
 
 #include <memory>
+
+#define __CL_ENABLE_EXCEPTIONS
 #include <CL/cl.hpp>
 
 class OpenCLContext {

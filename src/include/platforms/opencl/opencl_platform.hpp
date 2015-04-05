@@ -4,7 +4,6 @@
 #include <platforms/platform.hpp>
 #include <platforms/opencl/opencl_helpers.hpp>
 #include <platforms/opencl/kernels.hpp>
-#include <CL/cl.hpp>
 
 
 class OpenCLParticleSystem : public ParticleSystem {
