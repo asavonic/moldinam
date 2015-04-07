@@ -2,35 +2,8 @@
 #define __PLATFORM_H
 
 #include <string>
-
-#include "md_helpers.h"
-
-typedef double3 AreaSize;
-
-class ParticleSystemConfig {
-public:
-    ParticleSystemConfig() : m_periodic(false)
-    {
-    }
-
-    explicit ParticleSystemConfig(std::string filename) : m_conf_filename(filename)
-    {
-        LoadConfig();
-    }
-
-protected:
-    std::string m_conf_filename;
-
-    bool m_periodic;
-    // TODO: LennardJonesConfig m_lj_config;
-    AreaSize m_area_size;
-
-protected:
-    void LoadConfig()
-    {
-        // TODO: use m_filename to load config from file
-    }
-};
+#include <config.hpp>
+#include <platforms/native/types.hpp>
 
 class ParticleSystem {
 public:

@@ -3,6 +3,10 @@
 
 
 #include <platforms/platform.hpp>
+#include <config.hpp>
+#include <platforms/native/types.hpp>
+
+using namespace md;
 
 class NativeParticleSystem : public ParticleSystem {
 public:
@@ -17,8 +21,7 @@ public:
     virtual void applyPeriodicConditions()
     {
         for (size_t i = 0; i < m_pos.size(); i++) {
-            // TODO Implement std::floor for vector types
-            float3 shift = m_area_size * std::floor(pos[i] / area_size);
+            float3 shift = m_area_size * floor(m_pos[i] / m_area_size);
             m_pos[i] -= shift;
             m_pos_prev[i] -= shift;
         }
@@ -29,11 +32,11 @@ public:
         // TODO add config variable for verlet dt
         float dt = 0.00005;
         for (size_t i = 0; i < m_pos.size(); i++) {
-            m_pos_prev[i] = 2 * m_pos[i] - m_pos_prev[i] + m_accel[i] * dt * dt;
+            m_pos_prev[i] = 2.0f * m_pos[i] - m_pos_prev[i] + m_accel[i] * dt * dt;
         }
 
         // TODO add periodic config variable
-        bool periodic = true;
+        bool periodic = false;
         if (periodic) {
             applyPeriodicConditions();
         }
@@ -49,6 +52,7 @@ public:
             m_pos[i] = m_pos[i] + m_vel[i] * dt;
         }
 
+        bool periodic = false;
         if (periodic) {
             applyPeriodicConditions();
         }
@@ -57,12 +61,17 @@ public:
 
     virtual void applyLennardJonesInteraction()
     {
+        bool periodic = false;
         if (periodic) {
             periodicLennardJonesInteraction();
         }
 
-        // 
-        
+        for (int i = 0; i < m_pos.size() - 1; i++) {
+            for (int j = i + 1; j < m_pos.size(); j++) {
+                doubleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], m_accel[j]);
+            }
+        }
+
     }
 protected:
     void periodicLennardJonesInteraction()
@@ -75,11 +84,12 @@ protected:
     // e.g. when using distributed memory
     inline void singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos, float3& target_accel)
     {
-        // TODO implement float3 distance
-        double r = distance(target_pos, other_pos);
+        float r = distance(target_pos, other_pos);
 
-        auto lj_constants = config.get_constants(mol1.type);
+        auto lj_constants = m_lj_config.getConstants();
 
+        // TODO add use_cutoff config
+        bool use_cutoff = false;
         if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
             return;
         }
@@ -89,7 +99,7 @@ protected:
         computeLennardJonesForcePotential(r, lj_constants, force_scalar, potential);
 
         float3 force_direction = (target_pos - other_pos) / r;
-        float3 force_vec = force_direction * force_scalar;
+        float3 force_vec = force_direction * (float)force_scalar;
 
         target_accel += force_vec;
     }
@@ -100,11 +110,12 @@ protected:
     inline void doubleLennardJonesInteraction(const float3& first_pos, const float3& second_pos,
                                               float3& first_accel, float3& second_accel)
     {
-        // TODO implement float3 distance
-        double r = distance(first_pos, second_pos);
+        float r = distance(first_pos, second_pos);
 
-        auto lj_constants = config.get_constants(mol1.type);
+        auto lj_constants = m_lj_config.getConstants();
 
+        // TODO add use_cutoff config
+        bool use_cutoff = false;
         if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
             return;
         }
@@ -114,7 +125,7 @@ protected:
         computeLennardJonesForcePotential(r, lj_constants, force_scalar, potential);
 
         float3 force_direction = (first_pos - second_pos) / r;
-        float3 force_vec = force_direction * force_scalar;
+        float3 force_vec = force_direction * (float)force_scalar;
 
         first_accel += force_vec;
         second_accel -= force_vec;
@@ -127,8 +138,8 @@ protected:
         double ri3 = ri * ri * ri;
         double ri6 = ri3 * ri3;
 
-        force = 48 * constants.get_eps() * (constants.get_sigma_pow_12() * ri6 - constants.get_sigma_pow_6() / 2) * ri6 * ri * ri;
-        potential = 4 * constants.get_eps() * ri6 * (ri6 * constants.get_sigma_pow_12() - constants.get_sigma_pow_6());
+        force = 48 * constants.get_eps<float>() * (constants.get_sigma_pow_12<float>() * ri6 - constants.get_sigma_pow_6<float>() / 2) * ri6 * ri * ri;
+        potential = 4 * constants.get_eps<float>() * ri6 * (ri6 * constants.get_sigma_pow_12<float>() - constants.get_sigma_pow_6<float>());
     }
 
 
@@ -139,6 +150,8 @@ protected:
     float3vec m_accel;
 
     float3 m_area_size;
+
+    LennardJonesConfig m_lj_config;
 };
 
 #endif /* __NATIVE_PLATFORM_HPP */
