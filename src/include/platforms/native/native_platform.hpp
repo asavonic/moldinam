@@ -29,14 +29,12 @@ public:
 
     virtual void applyVerletIntegration()
     {
-        // TODO add config variable for verlet dt
-        float dt = 0.00005;
+        float dt = m_config.dt;
         for (size_t i = 0; i < m_pos.size(); i++) {
             m_pos_prev[i] = 2.0f * m_pos[i] - m_pos_prev[i] + m_accel[i] * dt * dt;
         }
 
-        // TODO add periodic config variable
-        bool periodic = false;
+        bool periodic = m_config.periodic;
         if (periodic) {
             applyPeriodicConditions();
         }
@@ -46,8 +44,7 @@ public:
 
     virtual void applyEulerIntegration()
     {
-        // TODO add config variable
-        float dt = 0.00005;
+        float dt = m_config.dt;
         for (size_t i = 0; i < m_pos.size(); i++) {
             m_pos[i] = m_pos[i] + m_vel[i] * dt;
         }
@@ -88,8 +85,7 @@ protected:
 
         auto lj_constants = m_lj_config.getConstants();
 
-        // TODO add use_cutoff config
-        bool use_cutoff = false;
+        bool use_cutoff = m_config.use_cutoff;
         if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
             return;
         }
@@ -114,8 +110,7 @@ protected:
 
         auto lj_constants = m_lj_config.getConstants();
 
-        // TODO add use_cutoff config
-        bool use_cutoff = false;
+        bool use_cutoff = m_config.use_cutoff;
         if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
             return;
         }

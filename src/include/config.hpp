@@ -88,28 +88,74 @@ private:
 };
 
 class ParticleSystemConfig {
+
+    template<typename T>
+    class ConfigEntry {
+    public:
+        ConfigEntry() {}
+        ConfigEntry(T val, std::string name)
+        {
+            value_name_pair = std::make_pair(val, name);
+        }
+
+        operator T()
+        {
+            return value_name_pair.first;
+        }
+
+        ConfigEntry<T>& operator=(const T value) {
+            value_name_pair.first = value;
+            return *this;
+        }
+
+        ConfigEntry<T>& operator=(const ConfigEntry<T> &rhs) {
+            if (this == &rhs)
+                return *this;
+
+            value_name_pair = rhs.value_name_pair;
+
+            return *this;
+        }
+
+        std::string& name() { return value_name_pair.second; }
+        T& value() { return value_name_pair.first; }
+    private:
+        std::pair<T, std::string> value_name_pair;
+    };
+
 public:
-    ParticleSystemConfig() : m_periodic(false), m_area_size(md::float3(0,0,0)),
-                             dt(0.000005)
+    ParticleSystemConfig()
     {
+        loadDefault();
     }
 
     explicit ParticleSystemConfig(std::string filename)
     {
-        loadConfig(filename);
+        loadDefault();
+        loadFromFile(filename);
     }
 
-    void loadConfig(std::string filename)
+    void loadDefault()
+    {
+        periodic = ConfigEntry<bool>(false, "use_periodic");
+        use_cutoff = ConfigEntry<bool>(false, "use_cutoff");
+        area_size = ConfigEntry<md::float3>(md::float3(0), "area_size");
+        dt = ConfigEntry<float>(0.000005, "dt");
+    }
+
+    void loadFromFile(std::string filename)
     {
         m_conf_filename = filename;
     }
 
+    // made all config variables public to avoid function number explosion
+    ConfigEntry<bool> periodic;
+    ConfigEntry<bool> use_cutoff;
+    ConfigEntry<md::float3> area_size;
+    ConfigEntry<float> dt;
+
 protected:
     std::string m_conf_filename;
-
-    bool m_periodic;
-    md::float3 m_area_size;
-    float dt;
 };
 
 class ConfigManager {

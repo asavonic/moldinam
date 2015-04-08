@@ -11,12 +11,14 @@ public:
     {
     }
 
-    explicit ParticleSystem(ParticleSystemConfig conf)
+    explicit ParticleSystem(ParticleSystemConfig conf) : m_config(conf)
     {
     }
 
     virtual void applyVerletIntegration() = 0;
     virtual void applyEulerIntegration() = 0;
+protected:
+    ParticleSystemConfig m_config;
 };
 
 #endif // __PLATFORM_H
