@@ -35,8 +35,15 @@ build_dir = os.path.join( MD_ROOT, "builds", args.build_hash )
 if not os.path.isdir( build_dir ):
     os.makedirs( build_dir )
 else:
-    shutil.rmtree( build_dir )
-    os.makedirs( build_dir )
+    # remove all files (leaving empty dirs)
+    for root, dirs, files in os.walk(build_dir):
+        for file in files:
+            os.remove(os.path.join(root, file))
+
+    try:
+        os.makedirs(build_dir)
+    except OSError as e:
+        print("Warning: make dir failed %s" % e)
 
 tmp_dir = os.path.join( MD_ROOT, "tmp" )
 
