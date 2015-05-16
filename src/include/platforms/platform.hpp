@@ -18,7 +18,7 @@ public:
     virtual void applyVerletIntegration() = 0;
     virtual void applyEulerIntegration() = 0;
 
-    ParticleSystemConfig& config() { return m_config; }
+    const ParticleSystemConfig& config() const { return m_config; }
 protected:
     ParticleSystemConfig m_config;
 };

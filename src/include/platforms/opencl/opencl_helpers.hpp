@@ -79,16 +79,18 @@ namespace cl {
         }
 
         template <class IteratorTy>
-        vector(cl::Context context, IteratorTy begin, IteratorTy end) :
-            m_buffer(context, begin, end, /*read only*/ false)
+        vector(cl::Context context, IteratorTy begin, IteratorTy end, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
+            m_buffer(context, std::distance(begin, end), mem_flags)
         {
+            cl::copy(begin, end, m_buffer);
         }
 
         template <class IteratorTy>
-        vector(IteratorTy begin, IteratorTy end) :
-            m_buffer(OpenCLManager::Instance().getContext().context(), begin, end, /*read only*/ false),
+        vector(IteratorTy begin, IteratorTy end, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
+            m_buffer(OpenCLManager::Instance().getContext().context(), std::distance(begin, end), mem_flags),
             m_size(std::distance(begin, end))
         {
+            cl::copy(begin, end, m_buffer);
         }
 
         ~vector()

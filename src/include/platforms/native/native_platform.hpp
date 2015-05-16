@@ -29,8 +29,9 @@ public:
 
     virtual void applyPeriodicConditions()
     {
+        float3 area_size = m_config.area_size;
         for (size_t i = 0; i < m_pos.size(); i++) {
-            float3 shift = m_area_size * floor(m_pos[i] / m_area_size);
+            float3 shift = area_size * floor(m_pos[i] / area_size);
             m_pos[i] -= shift;
             m_pos_prev[i] -= shift;
         }
@@ -79,6 +80,12 @@ public:
         }
 
     }
+
+    const float3vec& pos() const { return m_pos; }
+    const float3vec& pos_prev() const { return m_pos_prev; }
+    const float3vec& vel() const { return m_vel; }
+    const float3vec& accel() const { return m_accel; }
+
 protected:
     void periodicLennardJonesInteraction()
     {
@@ -152,8 +159,6 @@ protected:
     float3vec m_pos_prev;
     float3vec m_vel;
     float3vec m_accel;
-
-    float3 m_area_size;
 
     LennardJonesConfig m_lj_config;
 };

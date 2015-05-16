@@ -61,6 +61,5 @@ void VerletIntegrationKernel::execute()
     cl::Event event;
     device->get_queue().enqueueNDRangeKernel(kernel, cl::NDRange(0),
                                             cl::NDRange(4,4), cl::NDRange(2,2), NULL, &event);
-
     event.wait();
 }
