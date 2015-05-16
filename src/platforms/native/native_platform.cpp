@@ -17,6 +17,20 @@ void NativeParticleSystem::loadParticles(float3vec&& pos, float3vec&& pos_prev,
     m_accel = accel;
 }
 
+void NativeParticleSystem::loadParticles(std::istream& is, size_t num)
+{
+    m_pos.resize(num);
+    m_pos_prev.resize(num);
+    m_vel.resize(num);
+    m_accel.resize(num);
+
+    for (size_t i = 0; i < num; i++) {
+        is >> m_pos[i].x >> m_pos[i].y >> m_pos[i].z;
+        is >> m_vel[i].x >> m_vel[i].y >> m_vel[i].z;
+        is >> m_accel[i].x >> m_accel[i].y >> m_accel[i].z;
+    }
+}
+
 void NativeParticleSystem::applyPeriodicConditions()
 {
     float3 area_size = m_config.area_size;

@@ -6,6 +6,8 @@
 #include <config.hpp>
 #include <platforms/native/types.hpp>
 
+#include <istream>
+
 using namespace md;
 
 class NativeParticleSystem : public ParticleSystem {
@@ -16,6 +18,8 @@ public:
 
     virtual void loadParticles(float3vec&& pos, float3vec&& pos_prev, float3vec&& vel,
                                float3vec&& accel);
+
+    virtual void loadParticles(std::istream& is, size_t num);
 
     virtual void applyPeriodicConditions();
     virtual void applyVerletIntegration();
