@@ -4,6 +4,8 @@
 #include <platforms/opencl/opencl_dispatcher.hpp>
 #include <platforms/opencl/opencl_helpers.hpp>
 
+#include "utils.hpp"
+
 TEST(opencl_platform, system)
 {
     OpenCLParticleSystem sys;
@@ -15,17 +17,6 @@ TEST(opencl_platform, hello_world_kernel)
     kernel.execute();
 }
 
-template <class T1, class T2>
-void EXPECT_CONTAINERS_EQUAL(const T1& lhs, const T2& rhs)
-{
-    ASSERT_EQ(lhs.size(), rhs.size());
-
-    for (size_t i = 0; i < lhs.size(); i++) {
-        EXPECT_EQ(lhs[i], rhs[i]);
-    }
-}
-
-
 TEST(opencl_platform, buffer_cl_to_native_conversion_simple)
 {
     md::float3vec native_vec = { float3(0,0,0), float3(1,1,1), float3(2, 2, 3) };
@@ -35,7 +26,6 @@ TEST(opencl_platform, buffer_cl_to_native_conversion_simple)
 
     EXPECT_CONTAINERS_EQUAL(native_vec, converted);
 }
-
 
 
 TEST(opencl_platform, native_to_cl_system_conversion_simple)
