@@ -18,6 +18,15 @@ public:
     {
     }
 
+    virtual void loadParticles(float3vec&& pos, float3vec&& pos_prev, float3vec&& vel,
+                               float3vec&& accel)
+    {
+        m_pos = pos;
+        m_pos_prev = pos_prev;
+        m_vel = vel;
+        m_accel = accel;
+    }
+
     virtual void applyPeriodicConditions()
     {
         for (size_t i = 0; i < m_pos.size(); i++) {

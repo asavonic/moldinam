@@ -1,9 +1,13 @@
 #ifndef __OPENCL_PLATFORM_HPP
 #define __OPENCL_PLATFORM_HPP
 
+#include <CL/cl.hpp>
+
 #include <platforms/platform.hpp>
 #include <platforms/opencl/opencl_helpers.hpp>
 #include <platforms/opencl/kernels.hpp>
+
+#include <platforms/native/native_platform.hpp>
 
 
 class OpenCLParticleSystem : public ParticleSystem {
@@ -16,10 +20,20 @@ public:
     {
     }
 
+    NativeParticleSystem convertToNative()
+    {
+        NativeParticleSystem native(m_config);
+
+        native.loadParticles(m_pos.to_native(), m_pos_prev.to_native(),
+                             m_vel.to_native(), m_accel.to_native());
+
+        return native;
+    }
+
     virtual void applyVerletIntegration()
     {
         OpenCLManager& ocl = OpenCLManager::Instance();
-        OpenCLContext context = ocl.GetContext();
+        OpenCLContext context = ocl.getContext();
         VerletIntegrationKernel kernel = context.GetKernel<VerletIntegrationKernel>();
         kernel.execute();
     }
