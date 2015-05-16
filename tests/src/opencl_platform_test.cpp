@@ -4,6 +4,9 @@
 #include <platforms/opencl/opencl_dispatcher.hpp>
 #include <platforms/opencl/opencl_helpers.hpp>
 
+#include <md_types.h>
+#include <md_algorithms.h>
+
 #include "utils.hpp"
 
 TEST(opencl_platform, system)
@@ -49,4 +52,44 @@ TEST(opencl_platform, native_to_cl_system_conversion_simple)
     EXPECT_CONTAINERS_EQUAL(native.pos_prev(), converted_native.pos_prev());
     EXPECT_CONTAINERS_EQUAL(native.vel(), converted_native.vel());
     EXPECT_CONTAINERS_EQUAL(native.accel(), converted_native.accel());
+}
+
+void verlet_reference_bruteforce(size_t num)
+{
+    std::vector<Molecule> ref_mol = generate_random_molecules_vector(num);
+
+    ParticleSystemConfig conf;
+    conf.dt = 0.5;
+
+    NativeParticleSystem native = md::legacy::convertToNativeSystem(ref_mol, conf);
+    OpenCLParticleSystem cl_sys;
+    cl_sys.fromNative(native);
+
+    for (size_t i = 0; i < num; i++) {
+        verlet(ref_mol[i], conf.dt);
+    }
+
+    cl_sys.applyVerletIntegration();
+
+    NativeParticleSystem converted_native = cl_sys.convertToNative();
+
+    for (size_t i = 0; i < num; i++) {
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.x, converted_native.pos()[i].x) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.y, converted_native.pos()[i].y) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.z, converted_native.pos()[i].z) << "on step " << i;
+
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.x, converted_native.pos_prev()[i].x) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.y, converted_native.pos_prev()[i].y) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.z, converted_native.pos_prev()[i].z) << "on step " << i;
+    }
+}
+
+TEST(opencl_platform, verlet_reference_bruteforce_light)
+{
+    verlet_reference_bruteforce(1024);
+}
+
+TEST(opencl_platform, verlet_reference_bruteforce_heavy)
+{
+    verlet_reference_bruteforce(1024 * 1024);
 }
