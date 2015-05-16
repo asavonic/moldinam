@@ -7,6 +7,7 @@
 #include <CL/cl.hpp>
 
 #include <platforms/native/types.hpp>
+#include <iostream>
 
 class OpenCLContext {
 public:
@@ -67,28 +68,32 @@ namespace cl {
     public:
         using value_type = T;
         using native_value_type = cl_native_type_t<T>;
+        static const ::size_t default_size = 256;
 
-        vector(::size_t size = 0, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
-            m_buffer(OpenCLManager::Instance().getContext().context(), size, mem_flags)
+        vector(::size_t size = default_size, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
+            m_size(size),
+            m_buffer(OpenCLManager::Instance().getContext().context(), mem_flags, sizeof(value_type) * m_size)
         {
         }
 
-        vector(cl::Context context, ::size_t size = 0, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
-            m_buffer(context, size, mem_flags)
+        vector(cl::Context context, ::size_t size = default_size, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
+            m_size(size),
+            m_buffer(context, mem_flags, sizeof(value_type) * m_size)
         {
         }
 
         template <class IteratorTy>
         vector(cl::Context context, IteratorTy begin, IteratorTy end, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
-            m_buffer(context, std::distance(begin, end), mem_flags)
+            m_size(std::distance(begin, end)),
+            m_buffer(context, mem_flags, sizeof(value_type) * m_size)
         {
             cl::copy(begin, end, m_buffer);
         }
 
         template <class IteratorTy>
         vector(IteratorTy begin, IteratorTy end, cl_mem_flags mem_flags = CL_MEM_READ_WRITE) :
-            m_buffer(OpenCLManager::Instance().getContext().context(), std::distance(begin, end), mem_flags),
-            m_size(std::distance(begin, end))
+            m_size(std::distance(begin, end)),
+            m_buffer(OpenCLManager::Instance().getContext().context(), mem_flags, sizeof(value_type) * m_size)
         {
             cl::copy(begin, end, m_buffer);
         }

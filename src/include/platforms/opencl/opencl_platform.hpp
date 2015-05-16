@@ -1,8 +1,6 @@
 #ifndef __OPENCL_PLATFORM_HPP
 #define __OPENCL_PLATFORM_HPP
 
-#include <CL/cl.hpp>
-
 #include <platforms/platform.hpp>
 #include <platforms/opencl/opencl_helpers.hpp>
 #include <platforms/opencl/kernels.hpp>
