@@ -48,12 +48,12 @@ void NativeParticleSystem::applyVerletIntegration()
         m_pos_prev[i] = 2.0f * m_pos[i] - m_pos_prev[i] + m_accel[i] * dt * dt;
     }
 
+    std::swap(m_pos, m_pos_prev);
+
     bool periodic = m_config.periodic;
     if (periodic) {
         applyPeriodicConditions();
     }
-
-    std::swap(m_pos, m_pos_prev);
 }
 
 void NativeParticleSystem::applyEulerIntegration()
@@ -76,8 +76,8 @@ void NativeParticleSystem::applyLennardJonesInteraction()
         periodicLennardJonesInteraction();
     }
 
-    for (int i = 0; i < m_pos.size() - 1; i++) {
-        for (int j = i + 1; j < m_pos.size(); j++) {
+    for (int i = 0; i < (int)m_pos.size() - 1; i++) {
+        for (int j = i + 1; j < (int)m_pos.size(); j++) {
             doubleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], m_accel[j]);
         }
     }
