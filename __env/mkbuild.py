@@ -27,6 +27,11 @@ if args.compiler == "gcc":
 if args.compiler == "intel":
     compiler_opt = "-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc"
 
+if args.build_type == "Debug":
+    compiler_opt += " -O0 -g"
+else:
+    compiler_opt = " -O2"
+
 if not args.build_hash: 
     args.build_hash = "current"
 
@@ -59,7 +64,7 @@ if args.build_hash != "current":
 os.chdir( tmp_dir )
 
 subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir,
-                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2 " + compiler_opt,
+                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + compiler_opt,
                    "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"])
 
 if platform.system() == "Windows":
