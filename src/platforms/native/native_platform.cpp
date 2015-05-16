@@ -156,3 +156,41 @@ NativeParticleSystem::computeLennardJonesForcePotential(double r, const LennardJ
     potential = 4 * constants.get_eps<float>() * ri6 *
         (ri6 * constants.get_sigma_pow_12<float>() - constants.get_sigma_pow_6<float>());
 }
+
+
+NativeParticleSystem
+md::legacy::convertToNativeSystem(const std::vector<Molecule>& legacy_mol_vec,
+                                  ParticleSystemConfig conf)
+{
+    NativeParticleSystem native(conf);
+    
+    size_t num = legacy_mol_vec.size();
+
+    float3vec pos(num);
+    float3vec pos_prev(num);
+    float3vec vel(num);
+    float3vec accel(num);
+
+    for (size_t i = 0; i < num; i++) {
+        pos[i].x = legacy_mol_vec[i].pos.x;
+        pos[i].y = legacy_mol_vec[i].pos.y;
+        pos[i].z = legacy_mol_vec[i].pos.z;
+
+        pos_prev[i].x = legacy_mol_vec[i].pos_prev.x;
+        pos_prev[i].y = legacy_mol_vec[i].pos_prev.y;
+        pos_prev[i].z = legacy_mol_vec[i].pos_prev.z;
+
+        vel[i].x = legacy_mol_vec[i].speed.x;
+        vel[i].y = legacy_mol_vec[i].speed.y;
+        vel[i].z = legacy_mol_vec[i].speed.z;
+
+        accel[i].x = legacy_mol_vec[i].accel.x;
+        accel[i].y = legacy_mol_vec[i].accel.y;
+        accel[i].z = legacy_mol_vec[i].accel.z;
+    }
+
+    native.loadParticles(std::move(pos), std::move(pos_prev),
+                         std::move(vel), std::move(accel));
+
+    return native;
+}

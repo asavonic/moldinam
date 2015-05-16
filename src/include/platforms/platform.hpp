@@ -5,6 +5,8 @@
 #include <config.hpp>
 #include <platforms/native/types.hpp>
 
+using namespace md;
+
 class ParticleSystem {
 public:
     ParticleSystem()

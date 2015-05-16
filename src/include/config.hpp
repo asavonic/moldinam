@@ -10,6 +10,8 @@
 
 #include <platforms/native/types.hpp>
 
+namespace md {
+
 class LennardJonesConstants 
 {
     public:
@@ -177,5 +179,8 @@ private:
     ParticleSystemConfig m_part_system_config;
     LennardJonesConfig m_lennard_jones_config;
 };
+
+    
+} // namespace md
 
 #endif /* __CONFIG_HPP */

@@ -6,6 +6,8 @@
 #include <config.hpp>
 #include <platforms/native/types.hpp>
 
+#include <md_types.h> // legacy support
+
 #include <istream>
 
 using namespace md;
@@ -60,5 +62,11 @@ protected:
 
     LennardJonesConfig m_lj_config;
 };
+
+namespace md {
+namespace legacy {
+    NativeParticleSystem convertToNativeSystem(const std::vector<Molecule>&, ParticleSystemConfig conf);
+} // namespace legacy
+} // namespace md
 
 #endif /* __NATIVE_PLATFORM_HPP */
