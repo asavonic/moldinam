@@ -60,6 +60,7 @@ private:
 };
 
 
+
 namespace cl {
 
     template <typename T>
@@ -69,10 +70,105 @@ namespace cl {
     template <>
     struct cl_type_traits<cl_float3> {
         typedef md::float3 native_type;
+        typedef cl_float3 cl_type;
+    };
+
+    template <>
+    struct cl_type_traits<md::float3> {
+        typedef cl_float3 cl_type;
     };
 
     template <typename T>
     using cl_native_type_t = typename cl_type_traits<T>::native_type;
+
+    template <typename T>
+    using cl_type_t = typename cl_type_traits<T>::cl_type;
+
+
+    cl_type_t<md::float3> convert_to_cl(const md::float3& rhs );
+
+    template <typename T, typename CLType>
+    T convert_to(const CLType& rhs);
+
+    /**
+    * Blocking copy operation between iterators and a buffer.
+    * Performs conversions to apropriate type before copy using cl_type_traits.
+    * Host to Device.
+    * Uses specified queue.
+    */
+    template< typename IteratorType >
+    inline cl_int conv_copy( const CommandQueue &queue, IteratorType startIterator, IteratorType endIterator, cl::Buffer &buffer )
+    {
+        typedef typename std::iterator_traits<IteratorType>::value_type iter_data_type;
+        typedef cl_type_t<iter_data_type> data_type;
+
+        cl_int error;
+
+        ::size_t length = endIterator-startIterator;
+        ::size_t byteLength = length*sizeof(data_type);
+
+        data_type* pointer = 
+            static_cast<data_type*>(queue.enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_WRITE, 0, byteLength, 0, 0, &error));
+        // if exceptions enabled, enqueueMapBuffer will throw
+        if( error != CL_SUCCESS ) {
+            return error;
+        }
+
+        // perform copy with convertion
+        data_type* dest = pointer;
+        while (startIterator != endIterator) {
+            *dest++ = convert_to_cl(*startIterator++);
+        }
+
+        Event endEvent;
+        error = queue.enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
+        // if exceptions enabled, enqueueUnmapMemObject will throw
+        if( error != CL_SUCCESS ) { 
+            return error;
+        }
+        endEvent.wait();
+        return CL_SUCCESS;
+    }
+
+    /**
+    * Blocking copy operation between iterators and a buffer.
+    * Performs conversions to apropriate type before copy using cl_type_traits.
+    * Device to Host.
+    * Uses specified queue.
+    */
+    template< typename IteratorType >
+    inline cl_int conv_copy( const CommandQueue &queue, cl::Buffer &buffer, IteratorType startIterator, IteratorType endIterator)
+    {
+        typedef typename std::iterator_traits<IteratorType>::value_type iter_data_type;
+        typedef cl_type_t<iter_data_type> data_type;
+
+        cl_int error;
+
+        ::size_t length = endIterator-startIterator;
+        ::size_t byteLength = length*sizeof(data_type);
+
+        data_type* pointer = 
+            static_cast<data_type*>(queue.enqueueMapBuffer(buffer, CL_TRUE, CL_MAP_WRITE, 0, byteLength, 0, 0, &error));
+        // if exceptions enabled, enqueueMapBuffer will throw
+        if( error != CL_SUCCESS ) {
+            return error;
+        }
+
+        // perform copy with convertion
+        data_type* dest = pointer;
+        while (startIterator != endIterator) {
+            *startIterator++ = convert_to<iter_data_type>(*dest++);
+        }
+
+        Event endEvent;
+        error = queue.enqueueUnmapMemObject(buffer, pointer, 0, &endEvent);
+        // if exceptions enabled, enqueueUnmapMemObject will throw
+        if( error != CL_SUCCESS ) { 
+            return error;
+        }
+        endEvent.wait();
+        return CL_SUCCESS;
+    }
 
 
     // TODO: implement cl::vector
@@ -118,7 +214,7 @@ namespace cl {
             m_buffer(OpenCLManager::Instance().getContext().context(),
                      mem_flags, sizeof(value_type) * m_size)
         {
-            cl::copy(m_queue, begin, end, m_buffer);
+            cl::conv_copy(m_queue, begin, end, m_buffer);
         }
 
         ~vector()
@@ -131,7 +227,7 @@ namespace cl {
         md::float3vec to_native()
         {
             md::float3vec result(m_size);
-            cl::copy(m_queue, m_buffer, result.begin(), result.end());
+            cl::conv_copy(m_queue, m_buffer, result.begin(), result.end());
             return result;
         }
     protected:
