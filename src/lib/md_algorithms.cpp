@@ -30,9 +30,9 @@ void euler(Molecule& mol, double dt)
 {
     std::swap(mol.pos_prev, mol.pos);
 
-    mol.pos.x = mol.pos_prev.x + mol.speed.x * dt;
-    mol.pos.y = mol.pos_prev.y + mol.speed.y * dt;
-    mol.pos.z = mol.pos_prev.z + mol.speed.z * dt;
+    mol.pos.x = mol.pos_prev.x + mol.speed.x * dt + mol.accel.x * dt * dt;
+    mol.pos.y = mol.pos_prev.y + mol.speed.y * dt + mol.accel.y * dt * dt;
+    mol.pos.z = mol.pos_prev.z + mol.speed.z * dt + mol.accel.z * dt * dt;
 }
 
 void periodic(Molecule& mol, double3 area_size)
