@@ -60,8 +60,10 @@ void NativeParticleSystem::applyEulerIntegration()
 {
     float dt = m_config.dt;
     for (size_t i = 0; i < m_pos.size(); i++) {
-        m_pos[i] = m_pos[i] + m_vel[i] * dt;
+        m_pos_prev[i] = m_pos[i] + m_vel[i] * dt + m_accel[i] * dt * dt;
     }
+
+    std::swap(m_pos, m_pos_prev);
 
     bool periodic = false;
     if (periodic) {
