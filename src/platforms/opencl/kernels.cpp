@@ -34,12 +34,6 @@ VerletIntegrationKernel::VerletIntegrationKernel() : m_sys(NULL)
                                         __global float3* accel, float dt)
         {
             int gid = get_global_id(0);
-            if (gid == 0) {
-                printf("pos[0].x = %f\n", pos[0].x);
-                printf("pos[0].y = %f\n", pos[0].y);
-                printf("pos[1].x = %f\n", pos[1].x);
-                printf("pos[1].y = %f\n", pos[1].y);
-            }
             pos_prev[gid] = 2 * pos[gid] - pos_prev[gid] + accel[gid] * dt * dt;
         }
     )";
@@ -68,8 +62,10 @@ void VerletIntegrationKernel::execute()
     cl_float dt = (float) m_sys->config().dt;
     kernel.setArg(3, dt);
 
+    size_t size = m_sys->pos().size();
+
     cl::Event event;
     device->get_queue().enqueueNDRangeKernel(kernel, cl::NDRange(0),
-                                            cl::NDRange(4), cl::NDRange(2), NULL, &event);
+                                            cl::NDRange(size), cl::NDRange(), NULL, &event);
     event.wait();
 }

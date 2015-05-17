@@ -7,8 +7,6 @@
 #include <md_types.h>
 #include <md_algorithms.h>
 
-#include <iostream>
-
 #include "utils.hpp"
 
 TEST(opencl_platform, system)
@@ -63,11 +61,6 @@ void verlet_reference_bruteforce(size_t num)
     ParticleSystemConfig conf;
     conf.dt = 0.5;
 
-    std::cerr << "host pos[0].x = " << ref_mol[0].pos.x << std::endl;
-    std::cerr << "host pos[0].y = " << ref_mol[0].pos.y << std::endl;
-    std::cerr << "host pos[1].x = " << ref_mol[1].pos.x << std::endl;
-    std::cerr << "host pos[1].y = " << ref_mol[1].pos.y << std::endl;
-
     NativeParticleSystem native = md::legacy::convertToNativeSystem(ref_mol, conf);
     OpenCLParticleSystem cl_sys;
     cl_sys.fromNative(native);
@@ -96,7 +89,12 @@ TEST(opencl_platform, verlet_reference_bruteforce_light)
     verlet_reference_bruteforce(1024);
 }
 
-// TEST(opencl_platform, verlet_reference_bruteforce_heavy)
-// {
-//     verlet_reference_bruteforce(1024 * 1024);
-// }
+TEST(opencl_platform, verlet_reference_bruteforce_normal)
+{
+    verlet_reference_bruteforce(32 * 1024);
+}
+
+TEST(opencl_platform, verlet_reference_bruteforce_heavy)
+{
+    verlet_reference_bruteforce(1024 * 1024);
+}
