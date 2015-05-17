@@ -98,3 +98,49 @@ TEST(opencl_platform, verlet_reference_bruteforce_heavy)
 {
     verlet_reference_bruteforce(1024 * 1024);
 }
+
+
+void euler_reference_bruteforce(size_t num)
+{
+    std::vector<Molecule> ref_mol = generate_random_molecules_vector(num);
+
+    ParticleSystemConfig conf;
+    conf.dt = 0.5;
+
+    NativeParticleSystem native = md::legacy::convertToNativeSystem(ref_mol, conf);
+    OpenCLParticleSystem cl_sys;
+    cl_sys.fromNative(native);
+
+    for (size_t i = 0; i < num; i++) {
+        euler(ref_mol[i], conf.dt);
+    }
+
+    cl_sys.applyEulerIntegration();
+
+    NativeParticleSystem converted_native = cl_sys.convertToNative();
+
+    for (size_t i = 0; i < num; i++) {
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.x, converted_native.pos()[i].x) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.y, converted_native.pos()[i].y) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos.z, converted_native.pos()[i].z) << "on step " << i;
+
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.x, converted_native.pos_prev()[i].x) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.y, converted_native.pos_prev()[i].y) << "on step " << i;
+        ASSERT_FLOAT_EQ(ref_mol[i].pos_prev.z, converted_native.pos_prev()[i].z) << "on step " << i;
+    }
+}
+
+TEST(opencl_platform, euler_reference_bruteforce_light)
+{
+    euler_reference_bruteforce(1024);
+}
+
+TEST(opencl_platform, euler_reference_bruteforce_normal)
+{
+    euler_reference_bruteforce(32 * 1024);
+}
+
+TEST(opencl_platform, euler_reference_bruteforce_heavy)
+{
+    euler_reference_bruteforce(1024 * 1024);
+}

@@ -42,4 +42,13 @@ void OpenCLParticleSystem::applyVerletIntegration()
 
 void OpenCLParticleSystem::applyEulerIntegration()
 {
+    OpenCLManager& ocl = OpenCLManager::Instance();
+    OpenCLContext context = ocl.getContext();
+    EulerIntegrationKernel kernel = context.GetKernel<EulerIntegrationKernel>();
+
+    kernel.set_system(this);
+
+    kernel.execute();
+
+    std::swap(m_pos, m_pos_prev);
 }

@@ -10,10 +10,17 @@ class OpenCLKernel {
 public:
     virtual void execute() = 0;
 
-    std::string get_source() { return m_source; }
+    virtual std::string get_source() { return m_source; }
 
 protected:
     std::string m_source;
+};
+
+class OpenCLParticleSystemKernel : public OpenCLKernel {
+public:
+    void set_system(OpenCLParticleSystem* sys) { m_sys = sys; }
+protected:
+    OpenCLParticleSystem* m_sys;
 };
 
 class HelloWorldKernel : public OpenCLKernel {
@@ -22,16 +29,16 @@ public:
     virtual void execute();
 };
 
-class VerletIntegrationKernel : public OpenCLKernel {
+class VerletIntegrationKernel : public OpenCLParticleSystemKernel {
 public:
     VerletIntegrationKernel();
     virtual void execute();
+};
 
-    std::string get_source() { return m_source; }
-    void set_system(OpenCLParticleSystem* sys) { m_sys = sys; }
-
-private:
-    OpenCLParticleSystem* m_sys;
+class EulerIntegrationKernel : public OpenCLParticleSystemKernel {
+public:
+    EulerIntegrationKernel();
+    virtual void execute();
 };
 
 #endif // __OPENCL_KERNELS_HPP
