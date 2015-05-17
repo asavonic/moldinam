@@ -10,7 +10,7 @@ public:
     explicit OpenCLDevice(cl_device_type device_type)
     {
         cl_int err = CL_SUCCESS;
-        m_context = cl::Context(device_type, 0, NULL, NULL, &err); 
+        m_context = OpenCLManager::Instance().getContext().context();
         m_devices = m_context.getInfo<CL_CONTEXT_DEVICES>();
         m_queue = cl::CommandQueue(m_context, m_devices[0], 0, &err);
     }
