@@ -34,7 +34,13 @@ VerletIntegrationKernel::VerletIntegrationKernel() : m_sys(NULL)
                                         __global float3* accel, float dt)
         {
             int gid = get_global_id(0);
-            pos_prev[gid].x = 2 * pos[gid].x - pos_prev[gid].x + accel[gid].x * dt * dt;
+            if (gid == 0) {
+                printf("pos[0].x = %f\n", pos[0].x);
+                printf("pos[0].y = %f\n", pos[0].y);
+                printf("pos[1].x = %f\n", pos[1].x);
+                printf("pos[1].y = %f\n", pos[1].y);
+            }
+            pos_prev[gid] = 2 * pos[gid] - pos_prev[gid] + accel[gid] * dt * dt;
         }
     )";
 }
@@ -52,14 +58,18 @@ void VerletIntegrationKernel::execute()
     cl::Program program = device->CreateProgram(src);
     cl::Kernel kernel(program, "VerletIntegration");
 
-    kernel.setArg(0, m_sys->pos());
-    kernel.setArg(1, m_sys->pos_prev());
-    kernel.setArg(2, m_sys->accel());
+    cl::Context ctx = m_sys->pos().buffer().getInfo<CL_MEM_CONTEXT>();
+    cl::Context ctx_default = OpenCLManager::Instance().getContext().context();
 
-    kernel.setArg(3, m_sys->config().dt);
+    kernel.setArg(0, m_sys->pos().buffer()());
+    kernel.setArg(1, m_sys->pos_prev().buffer()());
+    kernel.setArg(2, m_sys->accel().buffer()());
+
+    cl_float dt = (float) m_sys->config().dt;
+    kernel.setArg(3, dt);
 
     cl::Event event;
     device->get_queue().enqueueNDRangeKernel(kernel, cl::NDRange(0),
-                                            cl::NDRange(4,4), cl::NDRange(2,2), NULL, &event);
+                                            cl::NDRange(4), cl::NDRange(2), NULL, &event);
     event.wait();
 }

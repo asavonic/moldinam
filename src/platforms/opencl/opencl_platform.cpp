@@ -36,6 +36,8 @@ void OpenCLParticleSystem::applyVerletIntegration()
     kernel.set_system(this);
 
     kernel.execute();
+
+    std::swap(m_pos, m_pos_prev);
 }
 
 void OpenCLParticleSystem::applyEulerIntegration()

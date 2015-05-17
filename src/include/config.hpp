@@ -100,7 +100,7 @@ class ParticleSystemConfig {
             value_name_pair = std::make_pair(val, name);
         }
 
-        operator T()
+        operator T() const
         {
             return value_name_pair.first;
         }

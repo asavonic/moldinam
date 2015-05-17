@@ -19,10 +19,10 @@ public:
     virtual void applyVerletIntegration();
     virtual void applyEulerIntegration();
 
-    const cl::float3vec& pos() { return m_pos; }
-    const cl::float3vec& pos_prev() { return m_pos_prev; }
-    const cl::float3vec& vel() { return m_vel; }
-    const cl::float3vec& accel() { return m_accel; }
+    cl::float3vec& pos() { return m_pos; }
+    cl::float3vec& pos_prev() { return m_pos_prev; }
+    cl::float3vec& vel() { return m_vel; }
+    cl::float3vec& accel() { return m_accel; }
 
 protected:
     cl::float3vec m_pos;
