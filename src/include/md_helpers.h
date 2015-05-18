@@ -118,10 +118,10 @@ class MOLDINAM_EXPORT LennardJonesConfig
     public:
 
     LennardJonesConfig( std::string );
-    LennardJonesConstants get_constants( Molecule_Type type ) { return type_constants_map[ type ]; }
+    ::LennardJonesConstants get_constants( Molecule_Type type ) { return type_constants_map[ type ]; }
 
     private:
 
-    std::map<Molecule_Type, LennardJonesConstants> type_constants_map;
+    std::map<Molecule_Type, ::LennardJonesConstants> type_constants_map;
 };
 #endif

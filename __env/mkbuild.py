@@ -27,6 +27,11 @@ if args.compiler == "gcc":
 if args.compiler == "intel":
     compiler_opt = "-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc"
 
+if args.build_type == "Debug":
+    compiler_opt += " -O0 -g"
+else:
+    compiler_opt = " -O2"
+
 if not args.build_hash: 
     args.build_hash = "current"
 
@@ -35,8 +40,15 @@ build_dir = os.path.join( MD_ROOT, "builds", args.build_hash )
 if not os.path.isdir( build_dir ):
     os.makedirs( build_dir )
 else:
-    shutil.rmtree( build_dir )
-    os.makedirs( build_dir )
+    # remove all files (leaving empty dirs)
+    for root, dirs, files in os.walk(build_dir):
+        for file in files:
+            os.remove(os.path.join(root, file))
+
+    try:
+        os.makedirs(build_dir)
+    except OSError as e:
+        print("Warning: make dir failed %s" % e)
 
 tmp_dir = os.path.join( MD_ROOT, "tmp" )
 
@@ -52,7 +64,8 @@ if args.build_hash != "current":
 os.chdir( tmp_dir )
 
 subprocess.call( [ "cmake" , MD_ROOT, "-DCMAKE_INSTALL_PREFIX:PATH=" + build_dir,
-                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + "-O2 " + compiler_opt ])
+                   "-DCMAKE_BUILD_TYPE=" + args.build_type, "-DCMAKE_CXX_FLAGS=" + compiler_opt,
+                   "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"])
 
 if platform.system() == "Windows":
     print( "Now you can open tmp/moldynam.sln in Visual Studio and build whatever you want" )
