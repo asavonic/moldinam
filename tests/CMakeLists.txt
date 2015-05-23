@@ -51,6 +51,8 @@ INSTALL ( FILES
 
           testfiles/test_file_io_read_from_file.xyz
           testfiles/config_test.conf
+          testfiles/config_test_neg1.conf
+          testfiles/config_test_neg2.conf
 
           PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ
           DESTINATION tests COMPONENT tests  OPTIONAL

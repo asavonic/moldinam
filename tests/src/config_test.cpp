@@ -1,10 +1,11 @@
 #include "gtest/gtest.h"
 
-#include <config.hpp>
+#include <stdexcept>
 
+#include <config.hpp>
 #include "utils.hpp"
 
-TEST(native_platform, system)
+TEST(config, lj_psys)
 {
     md::ConfigManager& conf_man = md::ConfigManager::Instance();
     conf_man.loadFromFile("config_test.conf");
@@ -19,4 +20,22 @@ TEST(native_platform, system)
 
     ASSERT_FLOAT_EQ(0.2, lj_const.get_sigma());
     ASSERT_FLOAT_EQ(0.001, lj_const.get_eps());
+}
+
+TEST(config, neg_not_exist)
+{
+    md::ConfigManager& conf_man = md::ConfigManager::Instance();
+    ASSERT_THROW(conf_man.loadFromFile("foobar.conf"), std::runtime_error);
+}
+
+TEST(config, neg1)
+{
+    md::ConfigManager& conf_man = md::ConfigManager::Instance();
+    ASSERT_THROW(conf_man.loadFromFile("config_test_neg1.conf"), md::ConfigError);
+}
+
+TEST(config, neg2)
+{
+    md::ConfigManager& conf_man = md::ConfigManager::Instance();
+    ASSERT_THROW(conf_man.loadFromFile("config_test_neg2.conf"), md::ConfigError);
 }
