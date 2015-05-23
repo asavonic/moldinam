@@ -48,8 +48,7 @@ class LennardJonesConstants
     template<typename T = double>
     T get_sigma_pow_12() const { return sigma_pow_12; }
 
-    private:
-
+private:
     double sigma;
     double eps;
 
@@ -59,6 +58,10 @@ class LennardJonesConstants
 
     double sigma_pow_12;
     double eps_pow_12;
+};
+
+class ConfigError : public std::runtime_error {
+    using std::runtime_error::runtime_error;
 };
 
 class IConfigEntry {
@@ -88,14 +91,7 @@ public:
     {
     }
 
-    virtual ~ConfigEntry()
-    {
-    }
-
-    operator T() const
-    {
-        return m_value;
-    }
+    virtual ~ConfigEntry() {}
 
     ConfigEntry<T>& operator=(const T value) {
         m_value = value;
@@ -113,7 +109,9 @@ public:
         return *this;
     }
 
+    operator T() const { return m_value; }
     virtual T& value() { return m_value; }
+    virtual const T& value() const { return m_value; }
 
     virtual void readValueFromStream(std::istream& is)
     {
@@ -126,55 +124,7 @@ private:
 class IConfig {
 public:
     virtual void loadDefault() = 0;
-
-    virtual void loadFromStream(std::istream& is)
-    {
-        loadDefault();
-        std::string entry_name;
-        bool read = true;
-        while (read) {
-            while (char c = is.get()) {
-                if (!is.good()) {
-                    read = false;
-                    break;
-                }
-
-                // trim spaces at the beginning
-                if (c == ' ' || c == '\n' || c == '\r') {
-                    continue;
-                }
-
-                // skip comment line
-                if (c == '#') {
-                    is.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    continue;
-                }
-
-                // next config header, finish parsing
-                if (c == '[') {
-                    read = false;
-                }
-
-                is.unget();
-                break;
-            }
-
-            if (!read) {
-                break;
-            }
-
-            is >> entry_name;
-
-            if (m_strEntryMap.count(entry_name)) {
-                m_strEntryMap[entry_name]->readValueFromStream(is);
-            } else {
-                std::cerr << "Unrecognized config entry: " << entry_name << std::endl;;
-            }
-        }
-
-        onLoad();
-    }
-
+    virtual void loadFromStream(std::istream& is);
     virtual std::string name() { return m_config_name; }
 
 protected:
@@ -269,28 +219,7 @@ public:
     ParticleSystemConfig getParticleSystemConfig() { return m_part_system_config; }
     LennardJonesConfig getLennardJonesConfig() { return m_lennard_jones_config; }
 
-    void loadFromFile(std::string filename)
-    {
-        std::ifstream ifs(filename); 
-
-        for (std::string line; std::getline(ifs, line); ) {
-            size_t open_bracket = line.find('[');
-            size_t close_bracket = line.find(']', open_bracket);
-
-            if (open_bracket == std::string::npos ||
-                close_bracket == std::string::npos)
-            {
-                throw std::runtime_error("Unexpected content: " + line);
-            }
-
-            std::string config_name = line.substr(open_bracket + 1, close_bracket - 1);
-            if (m_strConfMap.count(config_name)) {
-                m_strConfMap[config_name]->loadFromStream(ifs);
-            } else {
-                throw std::runtime_error("Unknown config: " + config_name);
-            }
-        }
-    }
+    void loadFromFile(std::string filename);
 
 private:
     std::map<std::string, IConfig*> m_strConfMap;
