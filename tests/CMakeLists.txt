@@ -56,6 +56,8 @@ INSTALL ( FILES
           testfiles/config_test_neg1.conf
           testfiles/config_test_neg2.conf
           testfiles/config_test_trace.conf
+          testfiles/config_test_init_file.conf
+          testfiles/config_test_init_file.data
 
           PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ
           DESTINATION tests COMPONENT tests  OPTIONAL

@@ -6,6 +6,20 @@ NativeParticleSystem::NativeParticleSystem()
 
 NativeParticleSystem::NativeParticleSystem(ParticleSystemConfig conf) : ParticleSystem(conf)
 {
+    size_t particles_num = m_config.particles_num;
+    std::string init_file = m_config.init_file;
+    if (init_file != "") {
+        if (particles_num == 0) {
+            throw std::runtime_error("particles_num is not defined in config file!");
+        }
+
+        std::ifstream ifs(init_file);
+        if (!ifs.good()) {
+            throw std::runtime_error("Unable to open file: " + init_file);
+        }
+
+        loadParticles(ifs, particles_num);
+    }
 }
 
 void NativeParticleSystem::loadParticles(float3vec&& pos, float3vec&& pos_prev,
