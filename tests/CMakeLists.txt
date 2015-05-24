@@ -35,7 +35,9 @@ add_test_executable( algorithms_test src/algorithms_test.cpp  )
 add_test_executable( file_io_test src/file_io_test.cpp  )
 
 add_native_test_executable( config_test src/config_test.cpp  )
+add_native_test_executable( trace_test src/trace_test.cpp  )
 add_native_test_executable( native_platform_test src/native_platform_test.cpp  )
+
 add_opencl_test_executable( opencl_platform_test src/opencl_platform_test.cpp  )
 
 #installation of executable files
