@@ -17,7 +17,7 @@ void ConfigManager::loadFromFile(std::string filename)
             throw ConfigError("Unexpected content: " + line);
         }
 
-        std::string config_name = line.substr(open_bracket + 1, close_bracket - 1);
+        std::string config_name = line.substr(open_bracket + 1, close_bracket - open_bracket - 1);
         if (m_strConfMap.count(config_name)) {
             m_strConfMap[config_name]->loadFromStream(ifs);
         } else {

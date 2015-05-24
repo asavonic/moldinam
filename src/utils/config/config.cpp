@@ -7,10 +7,10 @@ void ConfigEntry<std::string>::readValueFromStream(std::istream& is)
     std::getline(is, line);
 
     size_t open_quote = line.find('"');
-    size_t close_quote = line.find('"', open_quote + 1);
+    size_t close_quote = line.rfind('"');
 
     if (open_quote != std::string::npos && close_quote != std::string::npos) {
-        m_value = line.substr(open_quote + 1, close_quote - 1);
+        m_value = line.substr(open_quote + 1, close_quote - open_quote - 1);
     } else {
         throw ConfigError("Unable to find quoted string in :" + line);
     }
