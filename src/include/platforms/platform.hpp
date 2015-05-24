@@ -5,7 +5,7 @@
 #include <vector>
 #include <functional>
 
-#include <config.hpp>
+#include <utils/config/particle_system_config.hpp>
 #include <platforms/native/types.hpp>
 
 using namespace md;

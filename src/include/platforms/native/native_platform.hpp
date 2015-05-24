@@ -3,7 +3,8 @@
 
 
 #include <platforms/platform.hpp>
-#include <config.hpp>
+#include <utils/config/particle_system_config.hpp>
+#include <utils/config/lennard_jones_config.hpp>
 #include <platforms/native/types.hpp>
 
 #include <md_types.h> // legacy support

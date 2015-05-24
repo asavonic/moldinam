@@ -3,10 +3,16 @@
 #include <functional>
 #include <sstream>
 #include <platforms/platform.hpp>
+#include <utils/config/config.hpp>
+
+using namespace md;
 
 class TraceError : public std::runtime_error {
     using std::runtime_error::runtime_error;
 };
+
+class TraceConfig;
+class ParticleSystem;
 
 class TraceCollector {
 public:
@@ -25,18 +31,8 @@ public:
     {
     }
 
-    void attach(ParticleSystem& par_sys)
-    {
-        using namespace std::placeholders;
-        ParticleSystem::IterationCb cb = std::bind(&TraceCollector::onInteration, this, _1);
-        par_sys.registerOnIterationCb(cb);
-
-    }
-
-    void onInteration(ParticleSystem* pSys)
-    {
-        m_os << "onIteration" << std::endl;
-    }
+    void attach(ParticleSystem& par_sys);
+    void onInteration(ParticleSystem* pSys);
 
 private:
     std::string m_filename;
