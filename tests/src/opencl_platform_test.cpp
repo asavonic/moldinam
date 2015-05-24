@@ -144,3 +144,20 @@ TEST(opencl_platform, euler_reference_bruteforce_heavy)
 {
     euler_reference_bruteforce(1024 * 1024);
 }
+
+TEST(opencl_platform, store)
+{
+    std::vector<Molecule> ref_mol = generate_random_molecules_vector(10);
+
+    ParticleSystemConfig conf;
+    conf.dt = 0.5;
+
+    NativeParticleSystem native = md::legacy::convertToNativeSystem(ref_mol, conf);
+    OpenCLParticleSystem cl_sys;
+    cl_sys.fromNative(native);
+
+    std::cout << "Native:\n";
+    native.storeParticles(std::cout);
+    std::cout << "OpenCL:\n";
+    cl_sys.storeParticles(std::cout);
+}

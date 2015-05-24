@@ -23,6 +23,9 @@ public:
     virtual void applyVerletIntegration() = 0;
     virtual void applyEulerIntegration() = 0;
 
+    virtual void loadParticles(std::istream& is, size_t num) = 0;
+    virtual void storeParticles(std::ostream& os) = 0;
+
     const ParticleSystemConfig& config() const { return m_config; }
 
     typedef std::function<void(ParticleSystem*)> IterationCb;

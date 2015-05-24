@@ -62,6 +62,9 @@ private:
 
 
 namespace cl {
+    std::ostream& operator<<(std::ostream& os, const cl_float3& f3);
+    std::istream& operator>>(std::istream& is, cl_float3& f3);
+
 
     template <typename T>
     struct cl_type_traits {
@@ -229,6 +232,21 @@ namespace cl {
             md::float3vec result(m_size);
             cl::conv_copy(m_queue, m_buffer, result.begin(), result.end());
             return result;
+        }
+
+        value_type* map()
+        {
+            ::size_t size = sizeof(value_type) * m_size;
+            value_type* pointer = 
+                static_cast<value_type*>(m_queue.enqueueMapBuffer(m_buffer, CL_TRUE, CL_MAP_WRITE, 0, size, 0, 0, nullptr));
+            return pointer;
+        }
+
+        void unmap(value_type* ptr)
+        {
+            Event end;
+            m_queue.enqueueUnmapMemObject(m_buffer, ptr, 0, &end);
+            end.wait();
         }
     protected:
         ::size_t m_size;

@@ -22,6 +22,7 @@ public:
                                float3vec&& accel);
 
     virtual void loadParticles(std::istream& is, size_t num);
+    virtual void storeParticles(std::ostream& os);
 
     virtual void applyPeriodicConditions();
     virtual void applyVerletIntegration();
@@ -33,6 +34,11 @@ public:
     const float3vec& pos_prev() const { return m_pos_prev; }
     const float3vec& vel() const { return m_vel; }
     const float3vec& accel() const { return m_accel; }
+
+    float3vec& pos() { return m_pos; }
+    float3vec& pos_prev() { return m_pos_prev; }
+    float3vec& vel() { return m_vel; }
+    float3vec& accel() { return m_accel; }
 
 protected:
     void periodicLennardJonesInteraction();

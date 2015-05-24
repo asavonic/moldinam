@@ -25,9 +25,14 @@ void NativeParticleSystem::loadParticles(std::istream& is, size_t num)
     m_accel.resize(num);
 
     for (size_t i = 0; i < num; i++) {
-        is >> m_pos[i].x >> m_pos[i].y >> m_pos[i].z;
-        is >> m_vel[i].x >> m_vel[i].y >> m_vel[i].z;
-        is >> m_accel[i].x >> m_accel[i].y >> m_accel[i].z;
+        is >> m_pos[i] >> m_vel[i] >> m_accel[i];
+    }
+}
+
+void NativeParticleSystem::storeParticles(std::ostream& os)
+{
+    for (size_t i = 0; i < m_pos.size(); i++) {
+        os << m_pos[i] << " " << m_vel[i] << " " << m_accel[i] << "\n";
     }
 }
 
