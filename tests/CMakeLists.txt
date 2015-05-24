@@ -22,20 +22,22 @@ endfunction(add_test_executable)
 function(add_opencl_test_executable TEST_NAME)
   include_directories(${OPENCL_INCLUDE_DIRS})
   add_test_executable(${TEST_NAME} ${ARGN})
-  target_link_libraries(${TEST_NAME} moldynam_opencl moldynam_native ${OPENCL_LIBRARIES})
+  target_link_libraries(${TEST_NAME} moldynam_opencl moldynam_native moldynam_utils ${OPENCL_LIBRARIES})
 endfunction()
 
 function(add_native_test_executable TEST_NAME)
   include_directories(${OPENCL_INCLUDE_DIRS})
   add_test_executable(${TEST_NAME} ${ARGN})
-  target_link_libraries(${TEST_NAME} moldynam_native ${OPENCL_LIBRARIES})
+  target_link_libraries(${TEST_NAME} moldynam_native moldynam_utils ${OPENCL_LIBRARIES})
 endfunction()
 
 add_test_executable( algorithms_test src/algorithms_test.cpp  )
 add_test_executable( file_io_test src/file_io_test.cpp  )
 
 add_native_test_executable( config_test src/config_test.cpp  )
+add_native_test_executable( trace_test src/trace_test.cpp  )
 add_native_test_executable( native_platform_test src/native_platform_test.cpp  )
+
 add_opencl_test_executable( opencl_platform_test src/opencl_platform_test.cpp  )
 
 #installation of executable files
@@ -53,6 +55,7 @@ INSTALL ( FILES
           testfiles/config_test.conf
           testfiles/config_test_neg1.conf
           testfiles/config_test_neg2.conf
+          testfiles/config_test_trace.conf
 
           PERMISSIONS OWNER_WRITE OWNER_READ GROUP_READ
           DESTINATION tests COMPONENT tests  OPTIONAL

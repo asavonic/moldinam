@@ -291,7 +291,10 @@ void trace_write::final(std::vector<Molecule>& molecules)
 
 Molecule generate_random_molecule()
 {
+    static size_t seed = 666;
     std::mt19937 rng_engine;
+    rng_engine.seed(seed);
+    ++seed;
     std::uniform_real_distribution<double> dist(0.0, 5.0);
 
     auto rand_double = std::bind(dist, std::ref(rng_engine));

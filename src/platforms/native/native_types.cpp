@@ -10,7 +10,7 @@ std::istream& operator>>(std::istream& is, float3& f3)
 
 std::ostream& operator<<(std::ostream& os, const float3& f3)
 {
-    os << f3.x << f3.y << f3.z;
+    os << f3.x << " " << f3.y << " " << f3.z;
     return os;
 }
 
