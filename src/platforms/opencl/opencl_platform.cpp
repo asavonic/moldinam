@@ -75,6 +75,37 @@ void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
     cl::float3vec accel(num);
 
 
+    cl::float3vec::value_type* pos_mapped = nullptr;
+    cl::float3vec::value_type* vel_mapped = nullptr;
+    cl::float3vec::value_type* accel_mapped = nullptr;
+
+    try {
+        using namespace cl;
+        pos_mapped = pos.map();
+        vel_mapped = vel.map();
+        accel_mapped = accel.map();
+
+        for (::size_t i = 0; i < m_pos.size(); i++) {
+            is >> pos_mapped[i] >> vel_mapped[i] >> accel_mapped[i];
+        }
+    } catch (...) {
+        if (accel_mapped) {
+            accel.unmap(accel_mapped);
+        }
+        if (vel_mapped) {
+            vel.unmap(vel_mapped);
+        }
+        if (pos_mapped) {
+            pos.unmap(pos_mapped);
+        }
+
+        throw;
+    }
+
+    m_pos = std::move(pos);
+    m_pos_prev = std::move(pos_prev);
+    m_vel = std::move(vel);
+    m_accel = std::move(accel);
 }
 
 void OpenCLParticleSystem::storeParticles(std::ostream& os)
@@ -93,9 +124,15 @@ void OpenCLParticleSystem::storeParticles(std::ostream& os)
             os << pos_mapped[i] << " " << vel_mapped[i] << " " << accel_mapped[i] << "\n";
         }
     } catch (...) {
-        m_accel.unmap(accel_mapped);
-        m_vel.unmap(vel_mapped);
-        m_pos.unmap(pos_mapped);
+        if (accel_mapped) {
+            m_accel.unmap(accel_mapped);
+        }
+        if (vel_mapped) {
+            m_vel.unmap(vel_mapped);
+        }
+        if (pos_mapped) {
+            m_pos.unmap(pos_mapped);
+        }
 
         throw;
     }
