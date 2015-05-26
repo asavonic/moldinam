@@ -151,11 +151,10 @@ void OpenCLParticleSystem::storeParticles(std::ostream& os)
 
 void OpenCLParticleSystem::iterate(size_t iterations)
 {
-    applyEulerIntegration(); // to compute pos_prev
+    IterateLJVerlet kernel = OpenCLManager::Instance().getContext().GetKernel<IterateLJVerlet>();
 
-    for (size_t i = 0; i < iterations; ++i) {
-        applyLennardJonesInteraction();
-        applyVerletIntegration();
-    }
+    kernel.set_system(this);
+    kernel.set_iterations(iterations);
+    kernel.execute();
 }
 

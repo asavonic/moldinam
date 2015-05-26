@@ -18,7 +18,7 @@ public:
     }
 
     template <class T>
-    T GetKernel()
+    T GetKernel() const
     {
         return T();
     }

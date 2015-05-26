@@ -18,9 +18,7 @@ void HelloWorldKernel::execute()
 
     OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
-    cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
-
-    cl::Program program = device->CreateProgram(src);
+    cl::Program program = device->CreateProgram(m_source);
     cl::Kernel kernel(program, "print");
 
     cl::Event event;
@@ -52,9 +50,7 @@ void VerletIntegrationKernel::execute()
 
     OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
-    cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
-
-    cl::Program program = device->CreateProgram(src);
+    cl::Program program = device->CreateProgram(m_source);
     cl::Kernel kernel(program, "VerletIntegration");
 
     kernel.setArg(0, m_sys->pos().buffer()());
@@ -93,9 +89,7 @@ void EulerIntegrationKernel::execute()
 
     OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
-    cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
-
-    cl::Program program = device->CreateProgram(src);
+    cl::Program program = device->CreateProgram(m_source);
     cl::Kernel kernel(program, "EulerIntegration");
 
     kernel.setArg(0, m_sys->pos().buffer()());
@@ -178,8 +172,6 @@ void LennardJonesInteractionKernel::execute()
 
     OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
-    cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
-
     LennardJonesConfig lj_config = ConfigManager::Instance().getLennardJonesConfig();
     LennardJonesConstants lj_constants = lj_config.getConstants();
 
@@ -189,7 +181,7 @@ void LennardJonesInteractionKernel::execute()
     ss << " -Dsigma_pow_6=" << lj_constants.get_sigma_pow_6<float>();
     ss << " -Dsigma_pow_12=" << lj_constants.get_sigma_pow_12<float>();
 
-    cl::Program program = device->CreateProgram(src, ss.str().c_str());
+    cl::Program program = device->CreateProgram(m_source, ss.str().c_str());
     cl::Kernel kernel(program, "LennardJonesInteraction");
 
     kernel.setArg(0, m_sys->pos().buffer()());
@@ -217,18 +209,21 @@ IterateLJVerlet::IterateLJVerlet()
     void VerletIntegration(__global float3* pos, __global float3* pos_prev,
                            __global float3* accel, float dt);
 
-    __kernel IterateLJVerlet(__global float3* pos, __global float3* pos_prev,
-                               __global float3* vel, __global float3* accel, 
-                               uint num_particles, float dt)
+    void EulerIntegration(__global float3* pos, __global float3* pos_prev,
+                          __global float3* vel, __global float3* accel, float dt);
+
+    __kernel void IterateLJVerlet(__global float3* pos, __global float3* pos_prev,
+                             __global float3* vel, __global float3* accel, 
+                             uint num_particles, float dt)
     {
         EulerIntegration(pos, pos_prev, vel, accel, dt);
-        for (size_t i = 0; i < ITERATIONS; ++i) {
+        for (size_t i = 0; i < ITERATIONS_LJVerlet; ++i) {
             LennardJonesInteraction(pos, pos_prev, vel, accel, num_particles);
-            VerletIntegration(pos, pos_prev, vel, accel, dt);
+            VerletIntegration(pos, pos_prev, accel, dt);
 
-            work_group_barrier(CLK_GLOBAL_MEM_FENCE);
+            barrier(CLK_GLOBAL_MEM_FENCE);
 
-            float3* tmp = pos;
+            __global float3* tmp = pos;
             pos = pos_prev;
             pos_prev = tmp;
         }
@@ -242,9 +237,16 @@ void IterateLJVerlet::execute()
         throw std::runtime_error("No particle system set to EulerIntegrationKernel");
     }
 
-    OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
-    cl::Program::Sources src(1, std::make_pair(m_source.c_str(),m_source.length()));
+    OpenCLContext ctx = OpenCLManager::Instance().getContext();
+
+    std::string lj_src = ctx.GetKernel<LennardJonesInteractionKernel>().get_source();
+    std::string verlet_src = ctx.GetKernel<VerletIntegrationKernel>().get_source();
+    std::string euler_src = ctx.GetKernel<EulerIntegrationKernel>().get_source();
+
+    std::vector<std::string> sources { m_source, lj_src, verlet_src, euler_src };
+
+    OpenCLDispatcher::DevicePtr device =  OpenCLDispatcher::Instance().getDeviceFor(*this);
 
     LennardJonesConfig lj_config = ConfigManager::Instance().getLennardJonesConfig();
     LennardJonesConstants lj_constants = lj_config.getConstants();
@@ -254,8 +256,9 @@ void IterateLJVerlet::execute()
     ss << " -Dsigma=" << lj_constants.get_sigma<float>();
     ss << " -Dsigma_pow_6=" << lj_constants.get_sigma_pow_6<float>();
     ss << " -Dsigma_pow_12=" << lj_constants.get_sigma_pow_12<float>();
+    ss << " -DITERATIONS_LJVerlet=" << m_iterations;
 
-    cl::Program program = device->CreateProgram(src, ss.str().c_str());
+    cl::Program program = device->CreateProgram(sources, ss.str().c_str());
     cl::Kernel kernel(program, "IterateLJVerlet");
 
     kernel.setArg(0, m_sys->pos().buffer()());

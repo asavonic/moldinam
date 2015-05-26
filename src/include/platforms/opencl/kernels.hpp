@@ -52,6 +52,10 @@ class IterateLJVerlet : public OpenCLParticleSystemKernel
 public:
     IterateLJVerlet();
     virtual void execute();
+    void set_iterations(size_t iterations_num) { m_iterations = iterations_num; }
+
+private:
+    size_t m_iterations;
 };
 
 #endif // __OPENCL_KERNELS_HPP
