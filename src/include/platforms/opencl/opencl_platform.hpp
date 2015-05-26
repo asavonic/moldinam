@@ -18,6 +18,10 @@ public:
     virtual void applyVerletIntegration();
     virtual void applyEulerIntegration();
 
+    virtual void applyLennardJonesInteraction();
+
+    virtual void iterate(size_t iterations);
+
     virtual void loadParticles(std::istream& is, ::size_t num);
     virtual void storeParticles(std::ostream& os);
 

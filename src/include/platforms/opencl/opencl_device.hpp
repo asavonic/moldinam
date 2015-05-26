@@ -17,11 +17,18 @@ public:
 
     cl::CommandQueue& get_queue() { return m_queue; }
 
-    cl::Program CreateProgram(cl::Program::Sources source)
+    cl::Program CreateProgram(cl::Program::Sources source, const char* build_options = NULL)
     {
-       cl::Program program(m_context, source);
-       program.build();
-       return program;
+        cl::Program program(m_context, source);
+        try {
+            program.build(build_options);
+        } catch (cl::Error& err) {
+            std::cout << "program build failed:\n" << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(m_devices[0]);
+            std::cout << std::endl;
+            throw;
+        }
+
+        return program;
     }
 
 

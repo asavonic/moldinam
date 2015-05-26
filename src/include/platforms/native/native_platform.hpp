@@ -29,6 +29,8 @@ public:
     virtual void applyVerletIntegration();
     virtual void applyEulerIntegration();
     virtual void applyLennardJonesInteraction();
+
+    virtual void iterate(size_t iterations);
     
 
     const float3vec& pos() const { return m_pos; }
