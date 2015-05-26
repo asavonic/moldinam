@@ -18,7 +18,7 @@ public:
     }
 
     template <class T>
-    T GetKernel()
+    T GetKernel() const
     {
         return T();
     }
@@ -224,7 +224,7 @@ namespace cl {
         {
         }
 
-        inline ::size_t size() { return m_size; }
+        inline ::size_t size() const { return m_size; }
         inline cl::Buffer& buffer() { return m_buffer; }
 
         md::float3vec to_native()

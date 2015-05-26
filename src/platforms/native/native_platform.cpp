@@ -215,3 +215,16 @@ md::legacy::convertToNativeSystem(const std::vector<Molecule>& legacy_mol_vec,
 
     return native;
 }
+
+
+void NativeParticleSystem::iterate(size_t iterations)
+{
+    applyEulerIntegration(); // to compute pos_prev
+
+    for (size_t i = 0; i < iterations; ++i) {
+        applyLennardJonesInteraction();
+        applyVerletIntegration();
+
+        invokeOnIteration();
+    }
+}

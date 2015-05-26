@@ -67,6 +67,17 @@ void OpenCLParticleSystem::applyEulerIntegration()
     std::swap(m_pos, m_pos_prev);
 }
 
+void OpenCLParticleSystem::applyLennardJonesInteraction()
+{
+    OpenCLManager& ocl = OpenCLManager::Instance();
+    OpenCLContext context = ocl.getContext();
+    LennardJonesInteractionKernel kernel = context.GetKernel<LennardJonesInteractionKernel>();
+
+    kernel.set_system(this);
+
+    kernel.execute();
+}
+
 void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
 {
     cl::float3vec pos(num);
@@ -137,3 +148,13 @@ void OpenCLParticleSystem::storeParticles(std::ostream& os)
         throw;
     }
 }
+
+void OpenCLParticleSystem::iterate(size_t iterations)
+{
+    IterateLJVerlet kernel = OpenCLManager::Instance().getContext().GetKernel<IterateLJVerlet>();
+
+    kernel.set_system(this);
+    kernel.set_iterations(iterations);
+    kernel.execute();
+}
+

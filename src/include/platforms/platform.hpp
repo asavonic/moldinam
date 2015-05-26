@@ -10,6 +10,15 @@
 
 using namespace md;
 
+enum class IntegrationAlg {
+    Verlet,
+    Euler
+};
+
+enum class PotentialAlg {
+    LennardJones
+};
+
 class ParticleSystem {
 public:
     ParticleSystem()
@@ -25,6 +34,11 @@ public:
 
     virtual void loadParticles(std::istream& is, size_t num) = 0;
     virtual void storeParticles(std::ostream& os) = 0;
+
+    virtual void iterate(size_t iterations) = 0;
+
+    void setIntegrationAlg(IntegrationAlg alg) { m_integration_alg = alg; }
+    void setPotentialAlg(PotentialAlg alg) { m_potential_alg = alg; }
 
     const ParticleSystemConfig& config() const { return m_config; }
 
@@ -43,6 +57,10 @@ public:
 
 protected:
     ParticleSystemConfig m_config;
+
+    // TODO: add to config?
+    IntegrationAlg m_integration_alg;
+    PotentialAlg m_potential_alg;
 
     std::vector<IterationCb> m_on_iter_cb;
 };

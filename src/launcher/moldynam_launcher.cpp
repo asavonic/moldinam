@@ -88,10 +88,10 @@ void moldynam(std::vector<std::string> configs, std::string platform, size_t ite
         psys.reset(new OpenCLParticleSystem(psys_conf));
     }
 
-    psys->applyEulerIntegration();
-    for (size_t i = 0; i < iterations; i++) {
-        psys->applyVerletIntegration();
-    }
+    psys->setIntegrationAlg(IntegrationAlg::Verlet);
+    psys->setPotentialAlg(PotentialAlg::LennardJones);
+
+    psys->iterate(iterations);
 
     std::ostream* outstream_ptr;
     std::ofstream ofs;
