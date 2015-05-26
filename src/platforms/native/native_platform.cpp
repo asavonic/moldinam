@@ -225,6 +225,6 @@ void NativeParticleSystem::iterate(size_t iterations)
         applyLennardJonesInteraction();
         applyVerletIntegration();
 
-        invokeOnIteration();
+        invokeOnIteration(i);
     }
 }

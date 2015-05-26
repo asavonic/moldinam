@@ -49,8 +49,11 @@ TEST(config, trace)
     ConfigManager& conf_man = ConfigManager::Instance();
     conf_man.loadFromFile("config_test_trace.conf");
     TraceConfig trace_config = conf_man.getTraceConfig();
+
+    ASSERT_TRUE(trace_config.enabled);
     ASSERT_EQ("testfile.file", trace_config.filename.value());
-    ASSERT_FLOAT_EQ(0.1, trace_config.threshold);
+    ASSERT_FLOAT_EQ(0.1, trace_config.value_threshold);
+    ASSERT_EQ(1000, trace_config.iterations_threshold);
 }
 
 TEST(config, init_file_native)

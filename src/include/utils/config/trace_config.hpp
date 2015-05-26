@@ -1,3 +1,5 @@
+#pragma once
+
 #include <utils/config/config.hpp>
 
 class TraceConfig : public IConfig {
@@ -7,15 +9,22 @@ public:
         m_config_name = "TraceConfig";
         loadDefault();
     }
+
     virtual void loadDefault()
     {
+        enabled = ConfigEntry<bool>(false, "enabled");
         filename = ConfigEntry<std::string>("", "filename");
-        threshold = ConfigEntry<float>(0, "threshold");
+        value_threshold = ConfigEntry<float>(0, "value_threshold");
+        iterations_threshold = ConfigEntry<size_t>(0, "iterations_threshold");
 
+        m_strEntryMap[enabled.name()] = &enabled;
         m_strEntryMap[filename.name()] = &filename;
-        m_strEntryMap[threshold.name()] = &threshold;
+        m_strEntryMap[value_threshold.name()] = &value_threshold;
+        m_strEntryMap[iterations_threshold.name()] = &iterations_threshold;
     }
 
+    ConfigEntry<bool> enabled;
     ConfigEntry<std::string> filename;
-    ConfigEntry<float> threshold;
+    ConfigEntry<float> value_threshold;
+    ConfigEntry<size_t> iterations_threshold;
 };
