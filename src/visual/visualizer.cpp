@@ -25,7 +25,6 @@ public:
     {
         std::vector<glm::vec3> particles;
         particles.push_back(glm::vec3(0.5, 0.0, 0.0));
-        particle_render.set_positions(particles);
     }
 
     virtual void draw()

@@ -16,6 +16,6 @@ target_link_libraries(visualizer ${MD_LIB_NAME})
 target_link_libraries(visualizer ${Boost_LIBRARIES})
 target_link_libraries(visualizer glfw ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
 
-INSTALL(TARGETS visualizer visualizer_legacy
+INSTALL(TARGETS visualizer
 	RUNTIME DESTINATION "bin"
 )
