@@ -1,3 +1,5 @@
+#pragma once
+
 #include <utils/config/config.hpp>
 
 class TraceConfig : public IConfig {

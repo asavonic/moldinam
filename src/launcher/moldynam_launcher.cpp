@@ -5,6 +5,7 @@
 #include <string>
 #include <memory>
 
+#include <utils/trace.hpp>
 #include <utils/config/config_manager.hpp>
 #include <platforms/platform.hpp>
 #include <platforms/native/native_platform.hpp>
@@ -90,6 +91,10 @@ void moldynam(std::vector<std::string> configs, std::string platform, size_t ite
 
     psys->setIntegrationAlg(IntegrationAlg::Verlet);
     psys->setPotentialAlg(PotentialAlg::LennardJones);
+
+    // disabled by default, use config to enable and setup
+    TraceCollector trace;
+    trace.attach(*psys);
 
     psys->iterate(iterations);
 
