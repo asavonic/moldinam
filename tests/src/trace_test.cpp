@@ -13,5 +13,5 @@ TEST(trace, simple)
     TraceCollector trace(std::cout);
     trace.attach(p_sys);
 
-    p_sys.invokeOnIteration();
+    p_sys.invokeOnIteration(1);
 }

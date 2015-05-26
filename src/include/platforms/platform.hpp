@@ -42,16 +42,16 @@ public:
 
     const ParticleSystemConfig& config() const { return m_config; }
 
-    typedef std::function<void(ParticleSystem*)> IterationCb;
+    typedef std::function<void(ParticleSystem*, size_t)> IterationCb;
     virtual void registerOnIterationCb(IterationCb cb)
     {
         m_on_iter_cb.push_back(cb);
     }
 
-    virtual void invokeOnIteration()
+    virtual void invokeOnIteration(size_t iteration)
     {
         for(auto& cb : m_on_iter_cb) {
-            cb(this);
+            cb(this, iteration);
         }
     }
 

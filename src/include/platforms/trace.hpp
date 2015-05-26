@@ -4,6 +4,7 @@
 #include <sstream>
 #include <platforms/platform.hpp>
 #include <utils/config/config.hpp>
+#include <utils/config/trace_config.hpp>
 
 using namespace md;
 
@@ -19,7 +20,8 @@ public:
     TraceCollector(std::string filename) :
         m_filename(filename),
         m_ofs(filename),
-        m_os(m_ofs)
+        m_os(m_ofs),
+        m_last_iteration(0)
     {
         if (!m_ofs.good()) {
             throw TraceError("Unable to open trace file" + filename);
@@ -27,7 +29,8 @@ public:
     }
 
     TraceCollector(std::ostream& os) :
-        m_os(os)
+        m_os(os),
+        m_last_iteration(0)
     {
     }
 
@@ -38,4 +41,7 @@ private:
     std::string m_filename;
     std::ofstream m_ofs;
     std::ostream& m_os;
+
+    size_t m_last_iteration;
+    TraceConfig m_trace_conf;
 };
