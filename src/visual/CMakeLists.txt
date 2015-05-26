@@ -10,12 +10,6 @@ include_directories(${GLEW_INCLUDE_DIR})
 include_directories(${GLEXT_INCLUDE_DIR})
 include_directories(${Boost_INCLUDE_DIRS})
 
-add_executable(visualizer_legacy visualizer_legacy.cpp cube_renderer.cpp particles_renderer.cpp renderer.cpp)
-
-target_link_libraries(visualizer_legacy ${MD_LIB_NAME})
-target_link_libraries(visualizer_legacy ${Boost_LIBRARIES})
-target_link_libraries(visualizer_legacy glfw ${GLFW_LIBRARIES} ${GLEW_LIBRARIES})
-
 add_executable(visualizer visualizer.cpp cube_renderer.cpp particles_renderer.cpp renderer.cpp)
 
 target_link_libraries(visualizer ${MD_LIB_NAME})
