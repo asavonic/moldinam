@@ -21,7 +21,7 @@ public:
     void display();
     void set_particles_positions(const std::vector<glm::vec3>& pos, glm::vec3 area_size);
 
-protected: 
+protected:
     void setup_program();
     void _drawPoints();
 
