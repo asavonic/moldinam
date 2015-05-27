@@ -58,7 +58,13 @@ public:
 
         cube_render.set_mvp(mvp);
 
+        static bool finished = false;
         m_part_system.loadParticles(m_trace_stream);
+        if (!finished && !m_trace_stream.good()) {
+            std::cout << "Trace finished" << std::endl;
+            finished = true;
+        }
+
         particle_render.set_particles_positions(m_part_system.pos(), m_part_system.config().area_size.value());
 
         particle_render.set_mvp(mvp);
