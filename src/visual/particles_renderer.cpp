@@ -14,29 +14,21 @@ ParticleRenderer::ParticleRenderer()
 
 ParticleRenderer::~ParticleRenderer() {}
 
-void ParticleRenderer::set_positions(std::vector<glm::vec3>& _positions)
-{
-    positions = _positions;
-}
-
 void
-ParticleRenderer::set_particles_positions(std::vector<Molecule> molecules)
+ParticleRenderer::set_particles_positions(const std::vector<glm::vec3>& pos, glm::vec3 area_size)
 {
-    positions.resize(molecules.size());
+    positions.resize(pos.size());
 
-    // TODO remove hardcode
-    double3 area_size(10, 10, 10);
     glm::mat3 scale_matrix = get_particles_scale_matrix(area_size);
 
     // positions are scaling to the range [0, 2] and then shifted to the range
     // [-1, 1]
-    for (size_t i = 0; i < molecules.size(); i++) {
-        positions[i] = scale_matrix * glm::vec3(molecules[i].pos.x, molecules[i].pos.y,
-                                                molecules[i].pos.z) + glm::vec3(-1.0, -1.0, -1.0);
+    for (size_t i = 0; i < pos.size(); i++) {
+        positions[i] = scale_matrix * pos[i] + glm::vec3(-1.0, -1.0, -1.0);
     }
 }
 
-glm::mat3 ParticleRenderer::get_particles_scale_matrix(double3 area_size)
+glm::mat3 ParticleRenderer::get_particles_scale_matrix(glm::vec3 area_size)
 {
     glm::mat3 scale_matrix;
     scale_matrix[0][0] = 2 / area_size.x;

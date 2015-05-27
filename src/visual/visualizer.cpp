@@ -9,78 +9,27 @@
 #include "cube_renderer.h"
 #include "particles_renderer.h"
 
-#include <md_types.h>
-#include <md_helpers.h>
+#include <platforms/native/types.hpp>
+#include <utils/config/config_manager.hpp>
+#include <platforms/native/native_platform.hpp>
+
 #include <boost/program_options.hpp>
 
+
 namespace po = boost::program_options;
-
-class ParticleDataSource {
-public:
-    ParticleDataSource()
-        : updated_(true){};
-    virtual bool updated() { return updated_; };
-    virtual std::vector<Molecule> get_data() = 0;
-
-protected:
-    bool updated_;
-};
-
-class StateParticleData : public ParticleDataSource {
-public:
-    StateParticleData(std::string _state_file)
-        : ParticleDataSource()
-    {
-        state_file = _state_file;
-        molecules = read_molecules_from_file(state_file);
-    }
-
-    virtual std::vector<Molecule> get_data()
-    {
-        updated_ = false; // state updated only once
-        return molecules;
-    }
-
-protected:
-    StateParticleData(){};
-
-    std::string state_file;
-    std::vector<Molecule> molecules;
-};
-
-class TraceParticleData : public ParticleDataSource {
-public:
-    TraceParticleData(std::string trace_file)
-        : ParticleDataSource()
-    {
-        trace.open(trace_file);
-        molecules = trace.initial();
-    }
-
-    virtual std::vector<Molecule> get_data()
-    {
-        if (trace.active) {
-            molecules = trace.next();
-        }
-        return molecules;
-    }
-
-protected:
-    trace_read trace;
-    std::vector<Molecule> molecules;
-};
 
 class VisualizerWindow : public glfw::window {
 
     typedef glfw::window parent_t;
 
 public:
-    VisualizerWindow()
-        : glfw::window()
+    VisualizerWindow(NativeParticleSystem& psys, std::ifstream& trace_stream)
+        : glfw::window(),
+          m_part_system(psys),
+          m_trace_stream(trace_stream)
     {
         std::vector<glm::vec3> particles;
         particles.push_back(glm::vec3(0.5, 0.0, 0.0));
-        particle_render.set_positions(particles);
     }
 
     virtual void draw()
@@ -109,10 +58,8 @@ public:
 
         cube_render.set_mvp(mvp);
 
-        if (particle_data_source_->updated()) {
-            particle_render.set_particles_positions(
-                particle_data_source_->get_data());
-        }
+        m_part_system.loadParticles(m_trace_stream);
+        particle_render.set_particles_positions(m_part_system.pos(), m_part_system.config().area_size.value());
 
         particle_render.set_mvp(mvp);
 
@@ -150,37 +97,32 @@ public:
         }
     }
 
-    virtual void
-    set_particle_data_source(std::unique_ptr<ParticleDataSource> _in)
-    {
-        particle_data_source_ = std::move(_in);
-    }
-
     glm::vec2 mouse_move;
     int mouse_action;
     int mouse_button;
 
     glm::vec2 angle;
 
+    NativeParticleSystem& m_part_system;
+    std::istream& m_trace_stream;
+
     ParticleRenderer particle_render;
     CubeRenderer cube_render;
-
-    std::unique_ptr<ParticleDataSource> particle_data_source_;
 };
 
 int main(int argc, char** argv)
 {
     try {
-        std::string state_file;
+        std::vector<std::string> config_files;
         std::string trace_file;
 
-        // named arguments
         po::options_description desc("Allowed options");
-        desc.add_options()("help", "produce help message")(
-            "state", po::value<std::string>(&state_file),
-            "view state file (input or output)")(
-            "trace", po::value<std::string>(&trace_file),
-            "view trace file with animation");
+        desc.add_options()
+            ("help", "produce help message")
+            ("config,c", po::value<std::vector<std::string> >(&config_files)->required()->multitoken(),
+             "path to particle system config")
+            ("trace,t", po::value<std::string>(&trace_file), "use another trace file")
+        ;
 
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(desc).run(), vm);
@@ -190,21 +132,28 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        if (vm.count("state") + vm.count("trace") > 1 || vm.count("state") + vm.count("trace") == 0) {
-            throw po::error("State OR trace file must be specified");
-        }
-
         po::notify(vm);
 
-        VisualizerWindow window;
-
-        if (vm.count("state")) {
-            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(
-                new StateParticleData(state_file)));
-        } else {
-            window.set_particle_data_source(std::unique_ptr<ParticleDataSource>(
-                new TraceParticleData(trace_file)));
+        ConfigManager& conf_man = ConfigManager::Instance();
+        for (auto& conf : config_files) {
+            conf_man.loadFromFile(conf);
         }
+        ParticleSystemConfig psys_conf = conf_man.getParticleSystemConfig();
+        NativeParticleSystem native_system(psys_conf);
+
+        TraceConfig trace_conf = conf_man.getTraceConfig();
+        if (trace_conf.filename.value() == "") {
+            throw std::runtime_error("TraceConfig does not contain filename to read");
+        }
+
+        std::string filename = (trace_file != "") ? trace_file : trace_conf.filename;
+        std::ifstream ifs(filename);
+
+        if (!ifs.good()) {
+            throw std::runtime_error("Unable to open file: " + filename);
+        }
+
+        VisualizerWindow window(native_system, ifs);
 
         window.start();
     }

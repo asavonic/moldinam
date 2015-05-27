@@ -119,6 +119,11 @@ void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
     m_accel = std::move(accel);
 }
 
+void OpenCLParticleSystem::loadParticles(std::istream& is)
+{
+    loadParticles(is, m_config.particles_num);
+}
+
 void OpenCLParticleSystem::storeParticles(std::ostream& os)
 {
     cl::float3vec::value_type* pos_mapped = nullptr;

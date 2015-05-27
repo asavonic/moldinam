@@ -33,6 +33,7 @@ public:
     virtual void applyEulerIntegration() = 0;
 
     virtual void loadParticles(std::istream& is, size_t num) = 0;
+    virtual void loadParticles(std::istream& is) = 0;
     virtual void storeParticles(std::ostream& os) = 0;
 
     virtual void iterate(size_t iterations) = 0;

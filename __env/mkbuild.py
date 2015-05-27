@@ -10,6 +10,7 @@ import subprocess
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--hash', dest="build_hash", help='Hash of git commit')
+parser.add_argument('--clean', dest="clean", help='Clean installation directory before install')
 parser.add_argument('--debug', dest="build_type", action='store_const', const="Debug", default="Release", help='Build debug binaries')
 parser.add_argument('--rel-with-dbg', dest="build_type", action='store_const', const="RelWithDebInfo", help='Build relase binaries with debug info')
 parser.add_argument('--compiler', dest="compiler", default="gcc", help='available options are gcc, intel')
@@ -40,15 +41,16 @@ build_dir = os.path.join( MD_ROOT, "builds", args.build_hash )
 if not os.path.isdir( build_dir ):
     os.makedirs( build_dir )
 else:
-    # remove all files (leaving empty dirs)
-    for root, dirs, files in os.walk(build_dir):
-        for file in files:
-            os.remove(os.path.join(root, file))
+    if args.clean:
+        # remove all files (leaving empty dirs)
+        for root, dirs, files in os.walk(build_dir):
+            for file in files:
+                os.remove(os.path.join(root, file))
 
-    try:
-        os.makedirs(build_dir)
-    except OSError as e:
-        print("Warning: make dir failed %s" % e)
+        try:
+            os.makedirs(build_dir)
+        except OSError as e:
+            print("Warning: make dir failed %s" % e)
 
 tmp_dir = os.path.join( MD_ROOT, "tmp" )
 

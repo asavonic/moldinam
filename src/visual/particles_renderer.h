@@ -19,15 +19,13 @@ public:
     ~ParticleRenderer();
 
     void display();
-    void set_positions( std::vector< glm::vec3 >& );
+    void set_particles_positions(const std::vector<glm::vec3>& pos, glm::vec3 area_size);
 
-    void set_particles_positions( std::vector<Molecule> molecules );
-    glm::mat3 get_particles_scale_matrix( double3 area_size );
-
-protected: 
+protected:
     void setup_program();
-
     void _drawPoints();
+
+    glm::mat3 get_particles_scale_matrix(glm::vec3 area_size);
 
 protected:
     std::vector< glm::vec3 > positions;

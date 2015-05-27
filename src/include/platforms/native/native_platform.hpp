@@ -23,6 +23,7 @@ public:
                                float3vec&& accel);
 
     virtual void loadParticles(std::istream& is, size_t num);
+    virtual void loadParticles(std::istream& is);
     virtual void storeParticles(std::ostream& os);
 
     virtual void applyPeriodicConditions();

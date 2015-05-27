@@ -43,6 +43,11 @@ void NativeParticleSystem::loadParticles(std::istream& is, size_t num)
     }
 }
 
+void NativeParticleSystem::loadParticles(std::istream& is)
+{
+    loadParticles(is, m_config.particles_num);
+}
+
 void NativeParticleSystem::storeParticles(std::ostream& os)
 {
     for (size_t i = 0; i < m_pos.size(); i++) {
