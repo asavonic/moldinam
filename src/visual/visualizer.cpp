@@ -114,12 +114,14 @@ int main(int argc, char** argv)
 {
     try {
         std::vector<std::string> config_files;
+        std::string trace_file;
 
         po::options_description desc("Allowed options");
         desc.add_options()
             ("help", "produce help message")
             ("config,c", po::value<std::vector<std::string> >(&config_files)->required()->multitoken(),
              "path to particle system config")
+            ("trace,t", po::value<std::string>(&trace_file), "use another trace file")
         ;
 
         po::variables_map vm;
@@ -144,9 +146,11 @@ int main(int argc, char** argv)
             throw std::runtime_error("TraceConfig does not contain filename to read");
         }
 
-        std::ifstream ifs(trace_conf.filename.value());
+        std::string filename = (trace_file != "") ? trace_file : trace_conf.filename;
+        std::ifstream ifs(filename);
+
         if (!ifs.good()) {
-            throw std::runtime_error("Unable to open file: " + trace_conf.filename.value());
+            throw std::runtime_error("Unable to open file: " + filename);
         }
 
         VisualizerWindow window(native_system, ifs);
