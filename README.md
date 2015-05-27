@@ -3,6 +3,27 @@ moldynam
 
 Molecular dynamic project
 
+TODO
+--------
+*Common:*
+* Area split (24h)
+* binary traces (1h)
+* Windows build (8h)
+
+*Visualizer:*
+* trace rewind forward/backward (1h)
+* trace speed (1h)
+* particle color from velocity (2h)
+
+*Optimization:*
+* Native with OMP (port to platforms) (3h)
+* Native with TBB (5h)
+* OpenCL: avoid global barrier after each iteration (?)
+* MPI: depends on area split (8h)
+
+*Code cleanup*
+* Move old code to reference directory and use it only it tests (3h)
+
 Requirements
 --------
 C++ compiler with C++11 support<br/>
