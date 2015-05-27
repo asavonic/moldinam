@@ -224,11 +224,17 @@ md::legacy::convertToNativeSystem(const std::vector<Molecule>& legacy_mol_vec,
 
 void NativeParticleSystem::iterate(size_t iterations)
 {
+    bool periodic = m_config.periodic;
+
     applyEulerIntegration(); // to compute pos_prev
 
     for (size_t i = 0; i < iterations; ++i) {
         applyLennardJonesInteraction();
         applyVerletIntegration();
+
+        if (periodic) {
+            applyPeriodicConditions();
+        }
 
         invokeOnIteration(i);
     }
