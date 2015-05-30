@@ -19,7 +19,7 @@ void TraceCollector::onInteration(ParticleSystem* pSys, size_t iteration)
         return;
     }
 
-    pSys->storeParticles(*m_os);
+    pSys->storeParticles(m_os);
 
     m_last_iteration = iteration;
 }

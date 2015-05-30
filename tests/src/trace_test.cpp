@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include <utils/trace.hpp>
+#include <utils/stream.hpp>
 #include <platforms/native/native_platform.hpp>
 
 #include "utils.hpp"
@@ -14,4 +15,9 @@ TEST(trace, simple)
     trace.attach(p_sys);
 
     p_sys.invokeOnIteration(1);
+}
+
+TEST(trace, bytestream)
+{
+    
 }

@@ -4,7 +4,7 @@
 #include <memory>
 
 #define __CL_ENABLE_EXCEPTIONS
-#include <CL/cl.hpp>
+#include <opencl.hpp>
 
 #include <platforms/native/types.hpp>
 #include <iostream>

@@ -7,6 +7,7 @@
 
 #include <utils/config/particle_system_config.hpp>
 #include <platforms/native/types.hpp>
+#include <utils/stream.hpp>
 
 using namespace md;
 
@@ -32,9 +33,9 @@ public:
     virtual void applyVerletIntegration() = 0;
     virtual void applyEulerIntegration() = 0;
 
-    virtual void loadParticles(std::istream& is, size_t num) = 0;
-    virtual void loadParticles(std::istream& is) = 0;
-    virtual void storeParticles(std::ostream& os) = 0;
+    virtual void loadParticles(ParticleIStreamPtr is, size_t num) = 0;
+    virtual void loadParticles(ParticleIStreamPtr is) = 0;
+    virtual void storeParticles(ParticleOStreamPtr os) = 0;
 
     virtual void iterate(size_t iterations) = 0;
 

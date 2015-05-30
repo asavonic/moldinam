@@ -98,14 +98,7 @@ void moldynam(std::vector<std::string> configs, std::string platform, size_t ite
 
     psys->iterate(iterations);
 
-    std::ostream* outstream_ptr;
-    std::ofstream ofs;
-    if (output != "") {
-        ofs.open(output);
-        outstream_ptr = &ofs;
-    } else {
-        outstream_ptr = &std::cout;
-    }
+    // TODO: open output as stream
 
-    psys->storeParticles(*outstream_ptr);
+    psys->storeParticles(nullptr);
 }

@@ -13,6 +13,8 @@
 #include <utils/config/config_manager.hpp>
 #include <platforms/native/native_platform.hpp>
 
+#include <utils/stream.hpp>
+
 #include <boost/program_options.hpp>
 
 
@@ -23,7 +25,7 @@ class VisualizerWindow : public glfw::window {
     typedef glfw::window parent_t;
 
 public:
-    VisualizerWindow(NativeParticleSystem& psys, std::ifstream& trace_stream)
+    VisualizerWindow(NativeParticleSystem& psys, ParticleIStreamPtr trace_stream)
         : glfw::window(),
           m_part_system(psys),
           m_trace_stream(trace_stream)
@@ -60,7 +62,7 @@ public:
 
         static bool finished = false;
         m_part_system.loadParticles(m_trace_stream);
-        if (!finished && !m_trace_stream.good()) {
+        if (!finished && !m_trace_stream->good()) {
             std::cout << "Trace finished" << std::endl;
             finished = true;
         }
@@ -110,7 +112,7 @@ public:
     glm::vec2 angle;
 
     NativeParticleSystem& m_part_system;
-    std::istream& m_trace_stream;
+    ParticleIStreamPtr m_trace_stream;
 
     ParticleRenderer particle_render;
     CubeRenderer cube_render;
@@ -153,13 +155,9 @@ int main(int argc, char** argv)
         }
 
         std::string filename = (trace_file != "") ? trace_file : trace_conf.filename;
-        std::ifstream ifs(filename);
-
-        if (!ifs.good()) {
-            throw std::runtime_error("Unable to open file: " + filename);
-        }
-
-        VisualizerWindow window(native_system, ifs);
+        // TODO: open trace file 
+        
+        VisualizerWindow window(native_system, nullptr /*here*/);
 
         window.start();
     }
