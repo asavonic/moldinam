@@ -13,7 +13,8 @@ OpenCLParticleSystem::OpenCLParticleSystem(ParticleSystemConfig conf) : Particle
             throw std::runtime_error("particles_num is not defined in config file!");
         }
 
-        // TODO init file
+        ParticleIStreamPtr init = StreamFactory::Instance()->MakeInitIStream(m_config);
+        loadParticles(init);
     }
 }
 

@@ -154,10 +154,13 @@ int main(int argc, char** argv)
             throw std::runtime_error("TraceConfig does not contain filename to read");
         }
 
-        std::string filename = (trace_file != "") ? trace_file : trace_conf.filename;
-        // TODO: open trace file 
-        
-        VisualizerWindow window(native_system, nullptr /*here*/);
+        // override default filename with user-supplied one
+        if (trace_file != "") {
+            trace_conf.filename = trace_file;
+        }
+
+        ParticleIStreamPtr trace = StreamFactory::Instance()->MakeTraceIStream(trace_conf);
+        VisualizerWindow window(native_system, trace);
 
         window.start();
     }

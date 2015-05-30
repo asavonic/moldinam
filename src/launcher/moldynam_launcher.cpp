@@ -96,9 +96,13 @@ void moldynam(std::vector<std::string> configs, std::string platform, size_t ite
     TraceCollector trace;
     trace.attach(*psys);
 
+
+    if (output != "") {
+        psys_conf.result_file = output;
+    }
+    ParticleOStreamPtr result = StreamFactory::Instance()->MakeResultOStream(psys_conf);
+
     psys->iterate(iterations);
 
-    // TODO: open output as stream
-
-    psys->storeParticles(nullptr);
+    psys->storeParticles(result);
 }

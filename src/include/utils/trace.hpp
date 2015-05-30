@@ -22,10 +22,7 @@ public:
     TraceCollector() : m_last_iteration(0), m_os(nullptr)
     {
         m_trace_conf = ConfigManager::Instance().getTraceConfig();
-
-        std::string filename = m_trace_conf.filename.value();
-
-        // TODO: open ofs from trace
+        m_os = StreamFactory::Instance()->MakeTraceOStream(m_trace_conf);
     }
 
     void attach(ParticleSystem& par_sys);

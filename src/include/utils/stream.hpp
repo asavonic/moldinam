@@ -3,8 +3,9 @@
 #include <sstream>
 #include <memory>
 
-#include <platforms/platform.hpp>
 #include <platforms/native/types.hpp>
+#include <utils/config/trace_config.hpp>
+#include <utils/config/particle_system_config.hpp>
 #include <CL/cl.h>
 
 enum class StreamIgnore : unsigned char {
@@ -123,3 +124,25 @@ protected:
     std::shared_ptr<std::istream> m_stream_ptr;
 };
 
+class StringStream : public TextIStream {
+    StringStream();
+};
+
+class StreamFactory {
+public:
+    static StreamFactory* Instance()
+    {
+        static StreamFactory sf;
+        return &sf;
+    }
+
+    ParticleIStreamPtr MakeTraceIStream(TraceConfig conf);
+    ParticleOStreamPtr MakeTraceOStream(TraceConfig conf);
+    ParticleIStreamPtr MakeInitIStream(ParticleSystemConfig conf);
+    ParticleOStreamPtr MakeResultOStream(ParticleSystemConfig conf);
+
+protected:
+    StreamFactory()
+    {
+    }
+};
