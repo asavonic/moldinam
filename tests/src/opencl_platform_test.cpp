@@ -156,8 +156,9 @@ TEST(opencl_platform, store)
     OpenCLParticleSystem cl_sys;
     cl_sys.fromNative(native);
 
-    std::cout << "Native:\n";
-    native.storeParticles(std::cout);
-    std::cout << "OpenCL:\n";
-    cl_sys.storeParticles(std::cout);
+    // TODO: add result check
+    // std::cout << "Native:\n";
+    // native.storeParticles(std::cout);
+    // std::cout << "OpenCL:\n";
+    // cl_sys.storeParticles(std::cout);
 }

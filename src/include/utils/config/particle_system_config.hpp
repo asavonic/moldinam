@@ -22,6 +22,9 @@ public:
         dt = ConfigEntry<float>(0.000005, "dt");
         particles_num = ConfigEntry<size_t>(0, "particles_num");
         init_file = ConfigEntry<std::string>("", "init_file");
+        init_file_binary = ConfigEntry<bool>(false, "init_file_binary");
+        result_file = ConfigEntry<std::string>("", "result_file");
+        result_file_binary = ConfigEntry<bool>(false, "result_file_binary");
 
         m_strEntryMap[periodic.name()] = &periodic;
         m_strEntryMap[use_cutoff.name()] = &use_cutoff;
@@ -29,6 +32,9 @@ public:
         m_strEntryMap[dt.name()] = &dt;
         m_strEntryMap[particles_num.name()] = &particles_num;
         m_strEntryMap[init_file.name()] = &init_file;
+        m_strEntryMap[init_file_binary.name()] = &init_file_binary;
+        m_strEntryMap[result_file.name()] = &result_file;
+        m_strEntryMap[result_file_binary.name()] = &result_file_binary;
     }
 
     // made all config variables public to avoid function number explosion
@@ -38,4 +44,7 @@ public:
     ConfigEntry<float> dt;
     ConfigEntry<size_t> particles_num;
     ConfigEntry<std::string> init_file;
+    ConfigEntry<bool> init_file_binary;
+    ConfigEntry<std::string> result_file;
+    ConfigEntry<bool> result_file_binary;
 };

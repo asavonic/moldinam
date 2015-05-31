@@ -13,12 +13,8 @@ OpenCLParticleSystem::OpenCLParticleSystem(ParticleSystemConfig conf) : Particle
             throw std::runtime_error("particles_num is not defined in config file!");
         }
 
-        std::ifstream ifs(init_file);
-        if (!ifs.good()) {
-            throw std::runtime_error("Unable to open file: " + init_file);
-        }
-
-        loadParticles(ifs, particles_num);
+        ParticleIStreamPtr init = StreamFactory::Instance()->MakeInitIStream(m_config);
+        loadParticles(init);
     }
 }
 
@@ -78,7 +74,7 @@ void OpenCLParticleSystem::applyLennardJonesInteraction()
     kernel.execute();
 }
 
-void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
+void OpenCLParticleSystem::loadParticles(ParticleIStreamPtr is, size_t num)
 {
     cl::float3vec pos(num);
     cl::float3vec pos_prev(num);
@@ -97,7 +93,7 @@ void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
         accel_mapped = accel.map();
 
         for (::size_t i = 0; i < m_pos.size(); i++) {
-            is >> pos_mapped[i] >> vel_mapped[i] >> accel_mapped[i];
+            is->Read(pos_mapped[i], vel_mapped[i], accel_mapped[i]);
         }
     } catch (...) {
         if (accel_mapped) {
@@ -119,12 +115,12 @@ void OpenCLParticleSystem::loadParticles(std::istream& is, size_t num)
     m_accel = std::move(accel);
 }
 
-void OpenCLParticleSystem::loadParticles(std::istream& is)
+void OpenCLParticleSystem::loadParticles(ParticleIStreamPtr is)
 {
     loadParticles(is, m_config.particles_num);
 }
 
-void OpenCLParticleSystem::storeParticles(std::ostream& os)
+void OpenCLParticleSystem::storeParticles(ParticleOStreamPtr os)
 {
     cl::float3vec::value_type* pos_mapped = nullptr;
     cl::float3vec::value_type* vel_mapped = nullptr;
@@ -137,7 +133,7 @@ void OpenCLParticleSystem::storeParticles(std::ostream& os)
         accel_mapped = m_accel.map();
 
         for (::size_t i = 0; i < m_pos.size(); i++) {
-            os << pos_mapped[i] << " " << vel_mapped[i] << " " << accel_mapped[i] << "\n";
+            os->Write(pos_mapped[i], vel_mapped[i], accel_mapped[i]);
         }
     } catch (...) {
         if (accel_mapped) {

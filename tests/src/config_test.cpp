@@ -62,8 +62,12 @@ TEST(config, init_file_native)
     conf_man.loadFromFile("config_test_init_file.conf");
     NativeParticleSystem native(conf_man.getParticleSystemConfig());
 
-    std::stringstream ss;
-    native.storeParticles(ss);
+    StringStream native_stream;
+    StringStreamPtr data_ptr(&native_stream, [](StringStream*){});
+    native.storeParticles(data_ptr);
+
+    std::stringstream& ss = native_stream.stream();
+    std::cout << ss.str() << std::endl;
 
     std::ifstream ifs("config_test_init_file.data");
 
@@ -72,6 +76,9 @@ TEST(config, init_file_native)
         std::getline(ss, native_data);
         std::getline(ifs, ref);
         lines_num++;
+
+        // remove trailing whitespaces
+        native_data.resize(native_data.find_last_not_of(' ') + 1);
 
         ASSERT_EQ(native_data, ref);
     }

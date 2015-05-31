@@ -13,12 +13,8 @@ NativeParticleSystem::NativeParticleSystem(ParticleSystemConfig conf) : Particle
             throw std::runtime_error("particles_num is not defined in config file!");
         }
 
-        std::ifstream ifs(init_file);
-        if (!ifs.good()) {
-            throw std::runtime_error("Unable to open file: " + init_file);
-        }
-
-        loadParticles(ifs, particles_num);
+        ParticleIStreamPtr init = StreamFactory::Instance()->MakeInitIStream(m_config);
+        loadParticles(init);
     }
 }
 
@@ -31,7 +27,7 @@ void NativeParticleSystem::loadParticles(float3vec&& pos, float3vec&& pos_prev,
     m_accel = accel;
 }
 
-void NativeParticleSystem::loadParticles(std::istream& is, size_t num)
+void NativeParticleSystem::loadParticles(ParticleIStreamPtr is, size_t num)
 {
     m_pos.resize(num);
     m_pos_prev.resize(num);
@@ -39,19 +35,19 @@ void NativeParticleSystem::loadParticles(std::istream& is, size_t num)
     m_accel.resize(num);
 
     for (size_t i = 0; i < num; i++) {
-        is >> m_pos[i] >> m_vel[i] >> m_accel[i];
+        is->Read(m_pos[i], m_vel[i], m_accel[i]);
     }
 }
 
-void NativeParticleSystem::loadParticles(std::istream& is)
+void NativeParticleSystem::loadParticles(ParticleIStreamPtr is)
 {
     loadParticles(is, m_config.particles_num);
 }
 
-void NativeParticleSystem::storeParticles(std::ostream& os)
+void NativeParticleSystem::storeParticles(ParticleOStreamPtr os)
 {
     for (size_t i = 0; i < m_pos.size(); i++) {
-        os << m_pos[i] << " " << m_vel[i] << " " << m_accel[i] << "\n";
+        os->Write(m_pos[i], m_vel[i], m_accel[i]);
     }
 }
 

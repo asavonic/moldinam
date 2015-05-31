@@ -22,9 +22,9 @@ public:
 
     virtual void iterate(size_t iterations);
 
-    virtual void loadParticles(std::istream& is, ::size_t num);
-    virtual void loadParticles(std::istream& is);
-    virtual void storeParticles(std::ostream& os);
+    virtual void loadParticles(ParticleIStreamPtr is, size_t num);
+    virtual void loadParticles(ParticleIStreamPtr is);
+    virtual void storeParticles(ParticleOStreamPtr os);
 
     cl::float3vec& pos() { return m_pos; }
     cl::float3vec& pos_prev() { return m_pos_prev; }

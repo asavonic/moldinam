@@ -6,6 +6,7 @@
 #include <utils/config/particle_system_config.hpp>
 #include <utils/config/lennard_jones_config.hpp>
 #include <platforms/native/types.hpp>
+#include <utils/stream.hpp>
 
 #include <md_types.h> // legacy support
 
@@ -22,9 +23,9 @@ public:
     virtual void loadParticles(float3vec&& pos, float3vec&& pos_prev, float3vec&& vel,
                                float3vec&& accel);
 
-    virtual void loadParticles(std::istream& is, size_t num);
-    virtual void loadParticles(std::istream& is);
-    virtual void storeParticles(std::ostream& os);
+    virtual void loadParticles(ParticleIStreamPtr is, size_t num);
+    virtual void loadParticles(ParticleIStreamPtr is);
+    virtual void storeParticles(ParticleOStreamPtr os);
 
     virtual void applyPeriodicConditions();
     virtual void applyVerletIntegration();
