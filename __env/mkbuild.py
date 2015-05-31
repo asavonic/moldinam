@@ -25,6 +25,7 @@ compiler_opt = ""
 if args.compiler == "gcc":
     print( "Using compiler: " + args.compiler.upper() )
     compiler_opt = "-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
+
 if args.compiler == "intel":
     compiler_opt = "-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icc"
 

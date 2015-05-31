@@ -5,8 +5,8 @@ project(${PROJECT_NAME_STR} C CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/__env/cmake")
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -Wno-deprecated-declarations -pthread -fPIC -fopenmp -Wl,--unresolved-symbols=ignore-in-object-files")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -pthread -fPIC -fopenmp -Wno-deprecated-declarations -Wl,--unresolved-symbols=ignore-in-object-files")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wall -pedantic -Wextra -Wno-deprecated-declarations -pthread -fPIC -fopenmp -Wl,--unresolved-symbols=ignore-in-object-files -march=native")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99 -pthread -fPIC -fopenmp -Wno-deprecated-declarations -Wl,--unresolved-symbols=ignore-in-object-files -march=native")
 
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0")

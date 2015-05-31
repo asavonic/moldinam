@@ -98,9 +98,14 @@ void NativeParticleSystem::applyLennardJonesInteraction()
         periodicLennardJonesInteraction();
     }
 
-    for (int i = 0; i < (int)m_pos.size() - 1; i++) {
+    #pragma omp parallel for 
+    for (int i = 0; i < (int)m_pos.size(); i++) {
+        for (int j = 0; j < i; j++) {
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
+        }
+
         for (int j = i + 1; j < (int)m_pos.size(); j++) {
-            doubleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], m_accel[j]);
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
         }
     }
 
