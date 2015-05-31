@@ -111,7 +111,7 @@ void EulerIntegrationKernel::execute()
 LennardJonesInteractionKernel::LennardJonesInteractionKernel()
 {
     m_source = R"(
-    float computeLennardJonesForce(float r)
+    inline float computeLennardJonesForce(float r)
     {
         float ri = 1 / r;
         float ri3 = ri * ri * ri;
@@ -123,7 +123,7 @@ LennardJonesInteractionKernel::LennardJonesInteractionKernel()
         return force;
     }
 
-    float computeLennardJonesPotential(float r)
+    inline float computeLennardJonesPotential(float r)
     {
         float ri = 1 / r;
         float ri3 = ri * ri * ri;
@@ -180,6 +180,10 @@ void LennardJonesInteractionKernel::execute()
     ss << " -Dsigma=" << lj_constants.get_sigma<float>();
     ss << " -Dsigma_pow_6=" << lj_constants.get_sigma_pow_6<float>();
     ss << " -Dsigma_pow_12=" << lj_constants.get_sigma_pow_12<float>();
+
+    if (m_sys->config().use_cutoff) {
+        ss << " -DUSE_CUTOFF";
+    }
 
     cl::Program program = device->CreateProgram(m_source, ss.str().c_str());
     cl::Kernel kernel(program, "LennardJonesInteraction");
@@ -257,6 +261,10 @@ void IterateLJVerlet::execute()
     ss << " -Dsigma_pow_6=" << lj_constants.get_sigma_pow_6<float>();
     ss << " -Dsigma_pow_12=" << lj_constants.get_sigma_pow_12<float>();
     ss << " -DITERATIONS_LJVerlet=" << m_iterations;
+
+    if (m_sys->config().use_cutoff) {
+        ss << " -DUSE_CUTOFF";
+    }
 
     cl::Program program = device->CreateProgram(sources, ss.str().c_str());
     cl::Kernel kernel(program, "IterateLJVerlet");

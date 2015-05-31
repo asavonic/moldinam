@@ -14,6 +14,5 @@ std::ostream& operator<<(std::ostream& os, const float3& f3)
     return os;
 }
 
-
 } // namespace md
 

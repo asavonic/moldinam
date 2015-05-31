@@ -13,11 +13,8 @@ namespace md {
 
     inline float sqr_distance(const float3& lhs, const float3& rhs)
     {
-        float dx = lhs.x - rhs.x;
-        float dy = lhs.y - rhs.y;
-        float dz = lhs.z - rhs.z;
-
-        return dx * dx + dy * dy + dz * dz;
+        float3 d = lhs - rhs;
+        return d.x * d.x + d.y * d.y + d.z * d.z;
     }
 
     std::istream& operator>>(std::istream& is, float3& f3);
