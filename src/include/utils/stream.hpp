@@ -9,6 +9,7 @@
 #include <CL/cl.h>
 
 enum class StreamIgnore : unsigned char {
+    NO_IGNORE    = 0x00,
     IGNORE_POS   = 0x01,
     IGNORE_VEL   = 0x02,
     IGNORE_ACCEL = 0x04,
@@ -18,6 +19,12 @@ inline StreamIgnore operator|(StreamIgnore lhs, StreamIgnore rhs)
 {
     using T = std::underlying_type<StreamIgnore>::type;
     return (StreamIgnore)(static_cast<T>(lhs) | static_cast<T>(rhs));
+}
+
+inline StreamIgnore operator&(StreamIgnore lhs, StreamIgnore rhs)
+{
+    using T = std::underlying_type<StreamIgnore>::type;
+    return (StreamIgnore)(static_cast<T>(lhs) & static_cast<T>(rhs));
 }
 
 inline bool operator!(StreamIgnore rhs)
@@ -32,7 +39,9 @@ inline bool operator!(StreamIgnore rhs)
 
 class ParticleStream {
 public:
-    void setIgnore(unsigned char ignore_flags);
+    ParticleStream() : m_ignore_flags(StreamIgnore::NO_IGNORE) {}
+    virtual void setIgnore(StreamIgnore ignore_flags) { m_ignore_flags = ignore_flags; }
+    virtual ~ParticleStream() {}
 
 protected:
     StreamIgnore m_ignore_flags;
@@ -41,6 +50,7 @@ protected:
 class ParticleOStream : public ParticleStream {
 public:
     virtual void open(std::string filename) = 0;
+    virtual bool good() = 0;
 
     virtual void Write(md::float3 pos, md::float3 vel, md::float3 accel) = 0;
     virtual void Write(cl_float3 pos, cl_float3 vel, cl_float3 accel) = 0;
@@ -84,7 +94,7 @@ protected:
 class ParticleIStream : public ParticleStream {
 public:
     virtual void open(std::string filename) = 0;
-    virtual bool good();
+    virtual bool good() = 0;
 
     virtual void Read(md::float3& pos, md::float3& vel, md::float3& accel) = 0;
     virtual void Read(cl_float3& pos, cl_float3& vel, cl_float3& accel) = 0;
@@ -124,9 +134,17 @@ protected:
     std::shared_ptr<std::istream> m_stream_ptr;
 };
 
-class StringStream : public TextIStream {
+class StringStream : public TextOStream {
+public:
     StringStream();
+    std::string str();
+    std::stringstream& stream() { return m_ss; }
+
+protected:
+    std::stringstream m_ss;
 };
+
+using StringStreamPtr = std::shared_ptr<StringStream>;
 
 class StreamFactory {
 public:

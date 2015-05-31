@@ -26,30 +26,30 @@ bool ByteOStream::good()
 
 void ByteOStream::Write(md::float3 pos, md::float3 vel, md::float3 accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr << pos;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr << vel;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr << accel;
     }
 }
 
 void ByteOStream::Write(cl_float3 pos, cl_float3 vel, cl_float3 accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr << pos.s[0] << pos.s[1] << pos.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr << vel.s[0] << vel.s[1] << vel.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr << accel.s[0] << accel.s[1] << accel.s[2];
     }
 }
@@ -80,30 +80,30 @@ bool ByteIStream::good()
 
 void ByteIStream::Read(md::float3& pos, md::float3& vel, md::float3& accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr >> pos;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr >> vel;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr >> accel;
     }
 }
 
 void ByteIStream::Read(cl_float3& pos, cl_float3& vel, cl_float3& accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr >> pos.s[0] >> pos.s[1] >> pos.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr >> vel.s[0] >> vel.s[1] >> vel.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr >> accel.s[0] >> accel.s[1] >> accel.s[2];
     }
 }
@@ -134,15 +134,15 @@ bool TextOStream::good()
 
 void TextOStream::Write(md::float3 pos, md::float3 vel, md::float3 accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr << pos << " ";
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr << vel << " ";
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr << accel << " ";
     }
 
@@ -151,15 +151,15 @@ void TextOStream::Write(md::float3 pos, md::float3 vel, md::float3 accel)
 
 void TextOStream::Write(cl_float3 pos, cl_float3 vel, cl_float3 accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr << pos.s[0] << " " << pos.s[1] << " " << pos.s[2] << " ";
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr << vel.s[0] << " " << vel.s[1] << " " << vel.s[2] << " ";
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr << accel.s[0] << " " << accel.s[1] << " " << accel.s[2] << " ";
     }
 
@@ -192,37 +192,37 @@ bool TextIStream::good()
 
 void TextIStream::Read(md::float3& pos, md::float3& vel, md::float3& accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr >> pos;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr >> vel;
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr >> accel;
     }
 }
 
 void TextIStream::Read(cl_float3& pos, cl_float3& vel, cl_float3& accel)
 {
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_POS)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_POS)) {
         *m_stream_ptr >> pos.s[0] >> pos.s[1] >> pos.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_VEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_VEL)) {
         *m_stream_ptr >> vel.s[0] >> vel.s[1] >> vel.s[2];
     }
 
-    if (!(m_ignore_flags | StreamIgnore::IGNORE_ACCEL)) {
+    if (!(m_ignore_flags & StreamIgnore::IGNORE_ACCEL)) {
         *m_stream_ptr >> accel.s[0] >> accel.s[1] >> accel.s[2];
     }
 }
 
 StringStream::StringStream()
 {
-    m_stream_ptr.reset(new std::stringstream());
+    m_stream_ptr.reset(&m_ss, [](decltype(m_ss)* ptr){});
 }
 
 

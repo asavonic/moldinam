@@ -56,25 +56,31 @@ TEST(config, trace)
     ASSERT_EQ(1000, trace_config.iterations_threshold);
 }
 
-// TODO: fix this!
-// TEST(config, init_file_native)
-// {
-//     ConfigManager& conf_man = ConfigManager::Instance();
-//     conf_man.loadFromFile("config_test_init_file.conf");
-//     NativeParticleSystem native(conf_man.getParticleSystemConfig());
+TEST(config, init_file_native)
+{
+    ConfigManager& conf_man = ConfigManager::Instance();
+    conf_man.loadFromFile("config_test_init_file.conf");
+    NativeParticleSystem native(conf_man.getParticleSystemConfig());
 
-//     std::stringstream ss;
-//     native.storeParticles(ss);
+    StringStream native_stream;
+    StringStreamPtr data_ptr(&native_stream, [](StringStream*){});
+    native.storeParticles(data_ptr);
 
-//     std::ifstream ifs("config_test_init_file.data");
+    std::stringstream& ss = native_stream.stream();
+    std::cout << ss.str() << std::endl;
 
-//     size_t lines_num = 0;
-//     for(std::string native_data, ref; ifs.good() && ss.good(); ) {
-//         std::getline(ss, native_data);
-//         std::getline(ifs, ref);
-//         lines_num++;
+    std::ifstream ifs("config_test_init_file.data");
 
-//         ASSERT_EQ(native_data, ref);
-//     }
-//     ASSERT_EQ(5, lines_num);
-// }
+    size_t lines_num = 0;
+    for(std::string native_data, ref; ifs.good() && ss.good(); ) {
+        std::getline(ss, native_data);
+        std::getline(ifs, ref);
+        lines_num++;
+
+        // remove trailing whitespaces
+        native_data.resize(native_data.find_last_not_of(' ') + 1);
+
+        ASSERT_EQ(native_data, ref);
+    }
+    ASSERT_EQ(5, lines_num);
+}
