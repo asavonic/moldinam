@@ -98,14 +98,16 @@ void NativeParticleSystem::applyLennardJonesInteraction()
         periodicLennardJonesInteraction();
     }
 
+    auto lj_constants = m_lj_config.getConstants();
+
     #pragma omp parallel for 
     for (int i = 0; i < (int)m_pos.size(); i++) {
         for (int j = 0; j < i; j++) {
-            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], lj_constants);
         }
 
         for (int j = i + 1; j < (int)m_pos.size(); j++) {
-            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], lj_constants);
         }
     }
 
@@ -121,10 +123,10 @@ void NativeParticleSystem::periodicLennardJonesInteraction()
 // e.g. when using distributed memory
 void
 NativeParticleSystem::singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos,
-                                                    float3& target_accel)
+                                                    float3& target_accel,
+                                                    const LennardJonesConstants& lj_constants)
 {
     float r_sqr = sqr_distance(target_pos, other_pos);
-    auto lj_constants = m_lj_config.getConstants();
 
     bool use_cutoff = m_config.use_cutoff;
     if (use_cutoff && r_sqr > 2.5 * 2.5 * lj_constants.get_sigma_pow_2<float>()) {
@@ -146,10 +148,10 @@ NativeParticleSystem::singleLennardJonesInteraction(const float3& target_pos, co
 // to be avaliable for read and change
 inline void
 NativeParticleSystem::doubleLennardJonesInteraction(const float3& first_pos, const float3& second_pos,
-                                                    float3& first_accel, float3& second_accel)
+                                                    float3& first_accel, float3& second_accel,
+                                                    const LennardJonesConstants& lj_constants)
 {
     float r_sqr = sqr_distance(first_pos, second_pos);
-    auto lj_constants = m_lj_config.getConstants();
 
     bool use_cutoff = m_config.use_cutoff;
     if (use_cutoff && r_sqr > 2.5 * 2.5 * lj_constants.get_sigma_pow_2<float>()) {

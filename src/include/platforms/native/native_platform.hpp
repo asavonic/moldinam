@@ -52,14 +52,16 @@ protected:
     // Used when we have only read access to other particle,
     // e.g. when using distributed memory
     void singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos,
-                                              float3& target_accel);
+                                       float3& target_accel,
+                                       const LennardJonesConstants& lj_constants);
     
 
     // Both particles changed at the same time
     // faster than single interaction, but requires second particle
     // to be avaliable for read and change
     inline void doubleLennardJonesInteraction(const float3& first_pos, const float3& second_pos,
-                                              float3& first_accel, float3& second_accel);
+                                              float3& first_accel, float3& second_accel,
+                                              const LennardJonesConstants& lj_constants);
     
 
     // rsqr is a perf hack to avoid sqrt() calls
