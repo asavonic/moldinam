@@ -4,14 +4,11 @@ import time
 import subprocess
 import argparse
 import csv
+import timeit
 
 
 def time_call(args):
-    start = time.process_time()
-    subprocess.call(args)
-    finish = time.process_time()
-
-    return finish - start
+    return timeit.timeit('subprocess.call(%s)' % (args.__repr__()), setup='import subprocess', number=1)
 
 
 def bench(platforms, iterations, result, command):
