@@ -1,3 +1,5 @@
+#!/bin/env python
+
 import random
 import sys
 
@@ -7,7 +9,7 @@ class Particle:
         pass
 
     def __str__( self ):
-        return str( "H %f %f %f %f %f %f 0 0 0" % ( self.pos[0],
+        return str( "%f %f %f %f %f %f 0 0 0" % ( self.pos[0],
                                                self.pos[1],
                                                self.pos[2],
                                                self.vel[0],
