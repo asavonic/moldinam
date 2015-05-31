@@ -51,7 +51,7 @@ protected:
     // Changes only target particle, other particle is not affected
     // Used when we have only read access to other particle,
     // e.g. when using distributed memory
-    inline void singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos,
+    void singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos,
                                               float3& target_accel);
     
 
