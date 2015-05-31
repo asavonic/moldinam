@@ -10,6 +10,7 @@
 #include <platforms/platform.hpp>
 #include <platforms/native/native_platform.hpp>
 #include <platforms/opencl/opencl_platform.hpp>
+#include <platforms/tbb/tbb_platform.hpp>
 
 
 namespace po = boost::program_options;
@@ -31,7 +32,7 @@ int main(int argc, char** argv)
             ("iterations", po::value<int>(&iterations)->required(), "number of iterations")
             ("config,c", po::value<std::vector<std::string> >(&config_files)->required()->multitoken(), "path to particle system config")
             ("output,o", po::value<std::string>(&output_file), "path to result data file")
-            ("platform,p", po::value<std::string>(&platform)->default_value("native"), "platform usage: native, opencl")
+            ("platform,p", po::value<std::string>(&platform)->default_value("native"), "platform usage: native, opencl, tbb")
         ;
 
         // positional arguments
@@ -50,7 +51,7 @@ int main(int argc, char** argv)
 
         po::notify(vm);
 
-        if (platform != "native" && platform != "opencl") {
+        if (platform != "native" && platform != "opencl" && platform != "tbb") {
             throw po::error("invalid value for platform: " + platform);
         }
 
@@ -87,6 +88,8 @@ void moldynam(std::vector<std::string> configs, std::string platform, size_t ite
         psys.reset(new NativeParticleSystem(psys_conf));
     } else if (platform == "opencl") {
         psys.reset(new OpenCLParticleSystem(psys_conf));
+    } else if (platform == "tbb") {
+        psys.reset(new TBBParticleSystem(psys_conf));
     }
 
     psys->setIntegrationAlg(IntegrationAlg::Verlet);
