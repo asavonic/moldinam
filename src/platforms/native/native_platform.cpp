@@ -175,7 +175,7 @@ NativeParticleSystem::computeLennardJonesForcePotential(float r_sqr, const Lenna
 {
     float ri_sqr = 1 / r_sqr;
     float ri6 = ri_sqr * ri_sqr * ri_sqr;
-    float ri8 = ri8 * ri_sqr;
+    float ri8 = ri6 * ri_sqr;
 
     force = 48 * constants.get_eps<float>() * ri8 *
         (constants.get_sigma_pow_12<float>() * ri6 - constants.get_sigma_pow_6<float>() / 2);
