@@ -62,8 +62,9 @@ protected:
                                               float3& first_accel, float3& second_accel);
     
 
-    inline void computeLennardJonesForcePotential(double r, const LennardJonesConstants& constants,
-                                                  double& force, double& potential);
+    // rsqr is a perf hack to avoid sqrt() calls
+    inline void computeLennardJonesForcePotential(float rsqr, const LennardJonesConstants& constants,
+                                                  float& force, float& potential);
 
 protected:
     float3vec m_pos;

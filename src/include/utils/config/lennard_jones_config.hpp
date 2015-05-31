@@ -7,12 +7,13 @@ class LennardJonesConstants
     public:
 
     LennardJonesConstants() {
-        sigma = sigma_pow_6 = sigma_pow_12 = 1;
+        sigma = sigma_pow_2 = sigma_pow_6 = sigma_pow_12 = 1;
         eps = eps_pow_6 = eps_pow_12 = 1;
     }
 
     void set_sigma( double _sigma ) {
         sigma = _sigma;
+        sigma_pow_2 = std::pow( sigma, 2 );
         sigma_pow_6 = std::pow( sigma, 6 );
         sigma_pow_12 = std::pow( sigma, 12 );
     }
@@ -30,6 +31,9 @@ class LennardJonesConstants
     T get_eps() const { return eps; }
 
     template<typename T = double>
+    T get_sigma_pow_2() const { return sigma_pow_2; }
+
+    template<typename T = double>
     T get_sigma_pow_6() const { return sigma_pow_6; }
 
     template<typename T = double>
@@ -40,6 +44,8 @@ private:
     double eps;
 
     // precomputed pow( sigma, N ) used due to performance reasons
+    double sigma_pow_2;
+
     double sigma_pow_6;
     double eps_pow_6;
 
