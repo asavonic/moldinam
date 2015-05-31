@@ -98,14 +98,16 @@ void NativeParticleSystem::applyLennardJonesInteraction()
         periodicLennardJonesInteraction();
     }
 
+    auto lj_constants = m_lj_config.getConstants();
+
     #pragma omp parallel for 
     for (int i = 0; i < (int)m_pos.size(); i++) {
         for (int j = 0; j < i; j++) {
-            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], lj_constants);
         }
 
         for (int j = i + 1; j < (int)m_pos.size(); j++) {
-            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i]);
+            singleLennardJonesInteraction(m_pos[i], m_pos[j], m_accel[i], lj_constants);
         }
     }
 
@@ -121,23 +123,22 @@ void NativeParticleSystem::periodicLennardJonesInteraction()
 // e.g. when using distributed memory
 void
 NativeParticleSystem::singleLennardJonesInteraction(const float3& target_pos, const float3& other_pos,
-                                                    float3& target_accel)
+                                                    float3& target_accel,
+                                                    const LennardJonesConstants& lj_constants)
 {
-    float r = distance(target_pos, other_pos);
-
-    auto lj_constants = m_lj_config.getConstants();
+    float r_sqr = sqr_distance(target_pos, other_pos);
 
     bool use_cutoff = m_config.use_cutoff;
-    if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
+    if (use_cutoff && r_sqr > 2.5 * 2.5 * lj_constants.get_sigma_pow_2<float>()) {
         return;
     }
 
-    double force_scalar = 0;
-    double potential = 0;
-    computeLennardJonesForcePotential(r, lj_constants, force_scalar, potential);
+    float force_scalar = 0;
+    float potential = 0;
+    computeLennardJonesForcePotential(r_sqr, lj_constants, force_scalar, potential);
 
-    float3 force_direction = (target_pos - other_pos) / r;
-    float3 force_vec = force_direction * (float)force_scalar;
+    float3 force_direction = (target_pos - other_pos) / sqrtf(r_sqr);
+    float3 force_vec = force_direction * force_scalar;
 
     target_accel += force_vec;
 }
@@ -147,37 +148,36 @@ NativeParticleSystem::singleLennardJonesInteraction(const float3& target_pos, co
 // to be avaliable for read and change
 inline void
 NativeParticleSystem::doubleLennardJonesInteraction(const float3& first_pos, const float3& second_pos,
-                                                    float3& first_accel, float3& second_accel)
+                                                    float3& first_accel, float3& second_accel,
+                                                    const LennardJonesConstants& lj_constants)
 {
-    float r = distance(first_pos, second_pos);
-
-    auto lj_constants = m_lj_config.getConstants();
+    float r_sqr = sqr_distance(first_pos, second_pos);
 
     bool use_cutoff = m_config.use_cutoff;
-    if (use_cutoff && r > 2.5 * lj_constants.get_sigma()) {
+    if (use_cutoff && r_sqr > 2.5 * 2.5 * lj_constants.get_sigma_pow_2<float>()) {
         return;
     }
 
-    double force_scalar = 0;
-    double potential = 0;
-    computeLennardJonesForcePotential(r, lj_constants, force_scalar, potential);
+    float force_scalar = 0;
+    float potential = 0;
+    computeLennardJonesForcePotential(r_sqr, lj_constants, force_scalar, potential);
 
-    float3 force_direction = (first_pos - second_pos) / r;
-    float3 force_vec = force_direction * (float)force_scalar;
+    float3 force_direction = (first_pos - second_pos) / sqrtf(r_sqr);
+    float3 force_vec = force_direction * force_scalar;
 
     first_accel += force_vec;
     second_accel -= force_vec;
 }
 
 inline void
-NativeParticleSystem::computeLennardJonesForcePotential(double r, const LennardJonesConstants& constants,
-                                                        double& force, double& potential)
+NativeParticleSystem::computeLennardJonesForcePotential(float r_sqr, const LennardJonesConstants& constants,
+                                                        float& force, float& potential)
 {
-    double ri = 1 / r;
-    double ri3 = ri * ri * ri;
-    double ri6 = ri3 * ri3;
+    float ri_sqr = 1 / r_sqr;
+    float ri6 = ri_sqr * ri_sqr * ri_sqr;
+    float ri8 = ri6 * ri_sqr;
 
-    force = 48 * constants.get_eps<float>() * ri6 * ri * ri *
+    force = 48 * constants.get_eps<float>() * ri8 *
         (constants.get_sigma_pow_12<float>() * ri6 - constants.get_sigma_pow_6<float>() / 2);
 
     potential = 4 * constants.get_eps<float>() * ri6 *
