@@ -4,6 +4,8 @@ project(${PROJECT_NAME_STR} C CXX)
 
 get_property(MD_LIB_NAME GLOBAL PROPERTY PROJECT_LIB_NAME)
 
+include_directories(${MD_ROOT}/ext/glm)
+
 function( add_test_executable TEST_NAME TEST_SRC )
     include_directories(${GTEST_INCLUDE_DIR})
     message(${MD_INCLUDE_DIR})
